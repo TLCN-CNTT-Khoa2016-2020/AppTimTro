@@ -1,6 +1,12 @@
-import {createAppContainer,
-        createStackNavigator, 
-        createBottomTabNavigator} from 'react-navigation';
+import React from 'react';
+import {
+    createAppContainer,
+    createStackNavigator,
+    createBottomTabNavigator
+} from 'react-navigation';
+//import icon-vector
+import { Ionicons } from '@expo/vector-icons';
+//import screen
 import ManHinhChinh from '../screens/ManHinhChinh';
 import TimKiem from '../screens/TimKiem';
 import BaiDang from '../screens/BaiDang';
@@ -12,66 +18,105 @@ import XemBaiDang from '../screens/XemBaiDang';
 
 // create stack ManHinhChinh
 const stackManHinhChinh = createStackNavigator({
-    ManHinhChinh :{
-        screen: ManHinhChinh
+    ManHinhChinh: {
+        screen: ManHinhChinh,
+        navigationOptions : {
+            header : null
+        }
     },
-    TimKiem : {
-        screen : TimKiem
+    DangPhong: {
+        screen: DangPhong
     },
-    DangPhong : {
-        screen : DangPhong
-    },
-    XemBaiDang : {
-        screen : XemBaiDang
+    XemBaiDang: {
+        screen: XemBaiDang
     }
-},{
-    initialRouteName: "ManHinhChinh"
-});
+}, {
+        initialRouteName: "ManHinhChinh"
+        
+    });
 // create stack TimKiem
 const stackTimKiem = createStackNavigator({
-    TimKiem :{
-        screen :TimKiem
+    TimKiem: {
+        screen: TimKiem,
+        navigationOptions : {
+            header : null
+        }
     },
-    XemBaiDang : {
-        screen : XemBaiDang
+    XemBaiDang: {
+        screen: XemBaiDang
     }
-},{
-    initialRouteName: "TimKiem"
-});
+}, {
+        initialRouteName: "TimKiem"
+    });
 // create stack BaiDang
 const stackBaiDang = createStackNavigator({
-    BaiDang : {
-        screen : BaiDang
+    BaiDang: {
+        screen: BaiDang,
+        navigationOptions : {
+            header : null
+        }
     },
-    XemBaiDang  :{
-        screen : XemBaiDang
+    XemBaiDang: {
+        screen: XemBaiDang
     },
-    DangPhong : {
-        screen : DangPhong
+    DangPhong: {
+        screen: DangPhong
     }
-},{
-    initialRouteName: "BaiDang"
-});
+}, {
+        initialRouteName: "BaiDang"
+    });
 // create stackTaiKhoan
 const stackTaiKhoan = createStackNavigator({
-    TaiKhoan :{
-        screen : TaiKhoan
+    TaiKhoan: {
+        screen: TaiKhoan,
+        navigationOptions : {
+            header : null
+        }
     },
-    CaiDatTaiKhoan : {
-        screen : CaiDatTaiKhoan
+    CaiDatTaiKhoan: {
+        screen: CaiDatTaiKhoan
     }
-},{
-    initialRouteName: "TaiKhoan"
-});
+}, {
+        initialRouteName: "TaiKhoan",
+        
+    });
 // create tabNavigate
 
 const tabNavigation = createBottomTabNavigator({
-    ManHinhChinh : stackManHinhChinh,
-    TimKiem : stackTimKiem,
-    BaiDang : stackBaiDang,
-    TaiKhoan : stackTaiKhoan
-},{
-    initialRouteName: "ManHinhChinh"
-});
+    ManHinhChinh: {
+        screen : stackManHinhChinh,
+        navigationOptions: {
+            title : "Màn Hình Chính",
+            tabBarIcon: ({tintColor}) => <Ionicons name="ios-home" size={26} color={tintColor} />
+        }
+    },
+    TimKiem: {
+        screen : stackTimKiem,
+        navigationOptions: {
+            title : "Tìm Kiếm",
+            tabBarIcon: ({tintColor}) => <Ionicons name="ios-search" size={26} color={tintColor} />
+        }
+    },
+    BaiDang: {
+        screen : stackBaiDang,
+        navigationOptions: {
+            title : "Bài Đăng",
+            tabBarIcon: ({tintColor}) => <Ionicons name="ios-add-circle" size={26} color={tintColor} />
+        }
+    },
+    TaiKhoan: {
+        screen : stackTaiKhoan,
+        navigationOptions: {
+            title : "Tài Khoản",
+            tabBarIcon: ({tintColor}) => <Ionicons name="ios-person" size={26} color={tintColor} />
+        }
+    },
+}, {
+        initialRouteName: "ManHinhChinh",
+        tabBarOptions : {
+            // activeTintColor : "#58318D",
+            // activeBackgroundColor : "#DEC3C3"
+        }
+    });
 //create AppContainer
 export const AppContainer = createAppContainer(tabNavigation);
