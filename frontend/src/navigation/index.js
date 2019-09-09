@@ -6,6 +6,10 @@ import {
 } from 'react-navigation';
 //import icon-vector
 import { Ionicons } from '@expo/vector-icons';
+//auth
+import DangKi from '../screens/DangKi';
+import DangNhap from '../screens/DangNhap';
+import AuthLoading from '../screens/AuthLoading';
 //import screen
 import ManHinhChinh from '../screens/ManHinhChinh';
 import TimKiem from '../screens/TimKiem';
@@ -86,6 +90,7 @@ const tabNavigation = createBottomTabNavigator({
     ManHinhChinh: {
         screen : stackManHinhChinh,
         navigationOptions: {
+            header: null,
             title : "Màn Hình Chính",
             tabBarIcon: ({tintColor}) => <Ionicons name="ios-home" size={26} color={tintColor} />
         }
@@ -118,5 +123,17 @@ const tabNavigation = createBottomTabNavigator({
             // activeBackgroundColor : "#DEC3C3"
         }
     });
+//create stack App
+const stackAuth = createStackNavigator({
+    AuthLoading : AuthLoading,
+    DangNhap : DangNhap,
+    DangKi : DangKi,
+    tabNavigation : tabNavigation
+},{
+    initialRouteName : 'AuthLoading',
+    defaultNavigationOptions: {
+        header : null
+    }
+});
 //create AppContainer
-export const AppContainer = createAppContainer(tabNavigation);
+export const AppContainer = createAppContainer(stackAuth);
