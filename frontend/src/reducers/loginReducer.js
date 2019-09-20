@@ -5,7 +5,7 @@ const initialState = {
     error :{},
     isLoginComplete : false,
     isLoginError: false,
-    isLogining: false
+    isLoginRequest: false
 
 }
 
