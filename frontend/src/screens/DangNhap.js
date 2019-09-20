@@ -209,7 +209,7 @@ export default class DangNhap extends Component {
                             opacity: this.buttonOpacity,
                             transform: [{ translateY: this.buttonY }]
                         }}>
-                        <TouchableOpacity onPress = {this.signInWithGoogleAsync} >
+                        <TouchableOpacity onPress = {this.signInWithGoogleAsync } >
                             <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>
                                 SIGN IN WITH FACEBOOK
                             </Text>
