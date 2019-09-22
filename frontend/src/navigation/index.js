@@ -6,6 +6,8 @@ import {
 } from 'react-navigation';
 //import icon-vector
 import { Ionicons } from '@expo/vector-icons';
+//color
+import {MAIN_COLOR, TEXT_COLOR} from '../../assets/color';
 //auth
 import DangKi from '../screens/DangKi';
 import DangNhap from '../screens/DangNhap';
@@ -92,35 +94,42 @@ const tabNavigation = createBottomTabNavigator({
         navigationOptions: {
             header: null,
             title : "Màn Hình Chính",
-            tabBarIcon: ({tintColor}) => <Ionicons name="ios-home" size={26} color={tintColor} />
+            labelStyle : {color : MAIN_COLOR},
+            tabBarIcon: ({tintColor}) => <Ionicons name="ios-home" size={28} color={tintColor} />
         }
     },
     TimKiem: {
         screen : stackTimKiem,
         navigationOptions: {
             title : "Tìm Kiếm",
-            tabBarIcon: ({tintColor}) => <Ionicons name="ios-search" size={26} color={tintColor} />
+            labelStyle : {color : MAIN_COLOR},
+            tabBarIcon: ({tintColor}) => <Ionicons name="ios-search" size={28} color={tintColor} />
         }
     },
     BaiDang: {
         screen : stackBaiDang,
         navigationOptions: {
             title : "Bài Đăng",
-            tabBarIcon: ({tintColor}) => <Ionicons name="ios-add-circle" size={26} color={tintColor} />
+            labelStyle : {color : MAIN_COLOR},
+            tabBarIcon: ({tintColor}) => <Ionicons name="ios-add-circle" size={28} color={tintColor} />
         }
     },
     TaiKhoan: {
         screen : stackTaiKhoan,
         navigationOptions: {
             title : "Tài Khoản",
-            tabBarIcon: ({tintColor}) => <Ionicons name="ios-person" size={26} color={tintColor} />
+            labelStyle : {color : MAIN_COLOR},
+            tabBarIcon: ({tintColor}) => <Ionicons name="ios-person" size={28} color={tintColor} />
         }
     },
 }, {
         initialRouteName: "ManHinhChinh",
         tabBarOptions : {
-            // activeTintColor : "#58318D",
-            // activeBackgroundColor : "#DEC3C3"
+            activeTintColor : MAIN_COLOR,
+            
+            style : {
+                backgroundColor : 'white' 
+            }
         }
     });
 //create stack App

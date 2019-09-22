@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, ActivityIndicator, AsyncStorage } from 'react-native';
 import { AppLoading} from 'expo';
 import { Asset} from 'expo-asset';
+import * as Font from 'expo-font';
 
 function cacheImages(images) {
     return images.map(image => {
@@ -31,6 +32,10 @@ export default class AuthLoading extends Component {
         try {
             let userData = await AsyncStorage.getItem("userData");
             let data = await JSON.parse(userData);
+            await Font.loadAsync({
+              'roboto-regular' : require('../../assets/fonts/Roboto-Regular.ttf'),
+              'roboto-medium' : require('../../assets/fonts/Roboto-Medium.ttf')
+            });
             this.setState({
                 userData: data,
                 isLoading: false
