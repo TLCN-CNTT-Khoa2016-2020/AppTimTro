@@ -20,8 +20,10 @@ const CardPost = ({
             <Image
                 style={styles.image} 
                 source = {{uri : item.image }} />
-            <Text numberOfLines={1} > 
-                {item.address < 23
+            <Text 
+                numberOfLines={1}
+                style = {{fontFamily : 'roboto-medium'}} > 
+                {item.address.length < 23
                     ? `${item.address}`
                     : `${item.address.substring(0,20)}...` } 
             </Text>

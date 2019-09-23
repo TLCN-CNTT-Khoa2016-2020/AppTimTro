@@ -92,7 +92,6 @@ const tabNavigation = createBottomTabNavigator({
     ManHinhChinh: {
         screen : stackManHinhChinh,
         navigationOptions: {
-            header: null,
             title : "Màn Hình Chính",
             labelStyle : {color : MAIN_COLOR},
             tabBarIcon: ({tintColor}) => <Ionicons name="ios-home" size={28} color={tintColor} />
@@ -141,7 +140,7 @@ const stackAuth = createStackNavigator({
 },{
     initialRouteName : 'AuthLoading',
     defaultNavigationOptions: {
-        header : null
+        headerLeft : null
     }
 });
 //create AppContainer
