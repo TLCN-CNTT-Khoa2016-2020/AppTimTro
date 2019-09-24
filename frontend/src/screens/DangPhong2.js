@@ -9,6 +9,7 @@ import {
     ScrollView,
     KeyboardAvoidingView
 } from 'react-native';
+import { CheckBox } from 'react-native-elements';
 import RadioForm from 'react-native-simple-radio-button';
 import ButtonComponent from '../components/ButtonComponent';
 import StepIndicator from '../components/StepIndicator';
@@ -32,7 +33,8 @@ export default class DangPhong2 extends Component {
         super(props);
         this.state = {
             kindOfRoom: 0,
-            sex: 0
+            sex: 0,
+            checked: true
         };
     }
 
@@ -143,7 +145,19 @@ export default class DangPhong2 extends Component {
                                 style={styles.textInputStyle} />
                             <View style={styles.underLine} ></View>
                         </View>
+                        <View style={styles.cell} >
+                        <CheckBox
+                            center
+                            title='Có chỗ để xe'
+                            containerStyle = {{backgroundColor : 'rgba(52, 52, 52, 0)', borderColor: '#fff',}}
+                            checked={this.state.checked}
+                            checkedColor = {MAIN_COLOR}
+                            textStyle = {{fontFamily : 'roboto-regular'}}
+                            onPress={() => this.setState({ checked: !this.state.checked })}
+                        />
                     </View>
+                    </View>
+                    
                 </ScrollView>
                 <View style={styles.bottomBar} >
                     <ButtonComponent
