@@ -6,6 +6,7 @@ import { View,
          FlatList,
          ActivityIndicator
           } from 'react-native';
+import Constants from 'expo-constants';
 import ButtonComponent from '../components/ButtonComponent';
 import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view';
 import { MAIN_COLOR, TEXT_COLOR } from '../../assets/color';
@@ -90,6 +91,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "column",
         justifyContent: "center",
+        marginTop: Constants.statusBarHeight,
 
     },
     header: {

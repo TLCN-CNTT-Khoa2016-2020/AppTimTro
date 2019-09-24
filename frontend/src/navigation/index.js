@@ -17,7 +17,10 @@ import ManHinhChinh from '../screens/ManHinhChinh';
 import TimKiem from '../screens/TimKiem';
 import BaiDang from '../screens/BaiDang';
 import CaiDatTaiKhoan from '../screens/CaiDatTaiKhoan';
-import DangPhong from '../screens/DangPhong';
+import DangPhong1 from '../screens/DangPhong1';
+import DangPhong2 from '../screens/DangPhong2';
+import DangPhong3 from '../screens/DangPhong3';
+import DangPhong4 from '../screens/DangPhong4';
 import TaiKhoan from '../screens/TaiKhoan';
 import XemBaiDang from '../screens/XemBaiDang';
 
@@ -30,9 +33,7 @@ const stackManHinhChinh = createStackNavigator({
             header : null
         }
     },
-    DangPhong: {
-        screen: DangPhong
-    },
+    
     XemBaiDang: {
         screen: XemBaiDang
     }
@@ -65,9 +66,6 @@ const stackBaiDang = createStackNavigator({
     XemBaiDang: {
         screen: XemBaiDang
     },
-    DangPhong: {
-        screen: DangPhong
-    }
 }, {
         initialRouteName: "BaiDang"
     });
@@ -86,6 +84,19 @@ const stackTaiKhoan = createStackNavigator({
         initialRouteName: "TaiKhoan",
         
     });
+//create stack DangPhong
+const stackDangPhong = createStackNavigator({
+    DangPhong1 : DangPhong1,
+    DangPhong2 : DangPhong2,
+    DangPhong3 : DangPhong3,
+    DangPhong4 : DangPhong4
+},{
+    initialRouteName : "DangPhong1",
+    defaultNavigationOptions : {
+        //header : null
+    }
+});
+
 // create tabNavigate
 
 const tabNavigation = createBottomTabNavigator({
@@ -136,11 +147,14 @@ const stackAuth = createStackNavigator({
     AuthLoading : AuthLoading,
     DangNhap : DangNhap,
     DangKi : DangKi,
-    tabNavigation : tabNavigation
+    tabNavigation : tabNavigation,
+    stackDangPhong: {
+        screen: stackDangPhong,
+    },
 },{
     initialRouteName : 'AuthLoading',
     defaultNavigationOptions: {
-        headerLeft : null
+        header : null
     }
 });
 //create AppContainer

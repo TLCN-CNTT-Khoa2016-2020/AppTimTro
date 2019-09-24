@@ -14,7 +14,8 @@ const ButtonComponent = ({
         title = {title ? title : 'Button'}
         buttonStyle = { [styles.buttonStyle,style]}
         titleStyle = {styles.titleStyle}
-        icon = {icon ? icon : null} />
+        icon = {icon ? icon : null}
+        onPress = {onPress} />
 );
 const styles = StyleSheet.create({
     titleStyle : {

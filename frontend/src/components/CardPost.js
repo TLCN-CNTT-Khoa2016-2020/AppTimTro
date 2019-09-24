@@ -13,9 +13,10 @@ const { width, height } = Dimensions.get('window')
 const CardPost = ({
     item,
     index,
+    onPress
 }) => (
     <TouchableOpacity
-        onPress = {()=>console.log(item)}
+        onPress = {()=>onPress()}
         style = {styles.container} >
             <Image
                 style={styles.image} 

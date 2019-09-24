@@ -9,6 +9,7 @@ import {
     FlatList
 } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
+import Constants from 'expo-constants';
 import ButtonComponent from '../components/ButtonComponent';
 import { Ionicons } from '@expo/vector-icons';
 import { MAIN_COLOR, TEXT_COLOR } from '../../assets/color';
@@ -42,7 +43,8 @@ export default class ManHinhChinh extends Component {
                         title="Đăng phòng"
                         icon={
                             <Ionicons name="ios-add-circle" size={28} color={MAIN_COLOR} />
-                        } />
+                        }
+                        onPress = {()=>this.props.navigation.navigate("stackDangPhong")} />
                 </View>
                 <Text
                     numberOfLines={1}
@@ -78,7 +80,11 @@ export default class ManHinhChinh extends Component {
                         contentContainerStyle={styles.flatList}
                         data={this.state.dataRecommend}
                         renderItem={({ item, index }) =>
-                            <CardPost item={item} index={index} />}
+                            <CardPost 
+                                item={item} 
+                                index={index}
+                                onPress = {()=>this.props.navigation.navigate("XemBaiDang")} 
+                                />}
                         keyExtractor={item => item.id.toString()}
                         numColumns={2}
                         ListHeaderComponent={this.headerComponent}
@@ -93,6 +99,7 @@ export default class ManHinhChinh extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        marginTop: Constants.statusBarHeight,
         flexDirection: "column",
         justifyContent: "center",
     },
