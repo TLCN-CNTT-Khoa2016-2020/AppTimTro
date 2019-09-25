@@ -3,57 +3,101 @@ import {
     View,
     Text,
     StyleSheet,
-    Dimensions
+    Dimensions,
+    Picker,
+    TextInput,
+    ScrollView,
+    KeyboardAvoidingView
 } from 'react-native';
 import ButtonComponent from '../components/ButtonComponent';
 import StepIndicator from '../components/StepIndicator';
-import {MAIN_COLOR,BORDER_COLOR, TEXT_COLOR} from '../../assets/color';
+import { MAIN_COLOR, BORDER_COLOR, TEXT_COLOR } from '../../assets/color';
 
 
-const {height, width}  = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 export default class DangPhong4 extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-    };
-  }
+    constructor(props) {
+        super(props);
+        this.state = {
+        };
+    }
 
-  render() {
-    return (
-      <View style = {styles.container} >
-                <StepIndicator step = {4} />
-            <View style = {styles.bottomBar} >
-                <ButtonComponent 
-                  title = "Xác nhận"
-                  onPress = {()=>this.props.navigation.navigate("DangPhong4")} />
-            </View>
-            </View>
-    );
-  }
+    render() {
+        return (
+            <KeyboardAvoidingView style={styles.container} behavior="padding" enable >
+                <StepIndicator step={4} />
+                <ScrollView contentContainerStyle={{  marginTop : 0 }} >
+                    {/* body */}
+                    <View style={styles.body} >
+          
+                    </View>
+                </ScrollView>
+                <View style={styles.bottomBar} >
+                    <ButtonComponent
+                        title="Tiếp theo"
+                        onPress={() => this.props.navigation.navigate("DangPhong4")} />
+                </View>
+            </KeyboardAvoidingView>
+        );
+    }
 }
 const styles = StyleSheet.create({
-  container : {
-      flex : 1,
-      flexDirection : "column",
-      justifyContent : "center",
-      //alignItems : "center"
+    container: {
+        flex: 1,
+        flexDirection: "column",
+        justifyContent: "center",
 
-  },
-  stepIndicator : {
-      position : "absolute",
-      top : 10,
-      left : 0
-  },
-  bottomBar : {
-      width : width,
-      height : height/11,
-      backgroundColor : BORDER_COLOR,
-      position : "absolute",
-      bottom: 0,
-      left: 0,
-      flexDirection : "row",
-      justifyContent : "flex-end",
-      alignItems : "center",
-      paddingRight : 10
-  }
+
+    },
+    stepIndicator: {
+        // // position: "absolute",
+        // top: 10,
+        // left: 0,
+        // zIndex : 100
+    },
+    bottomBar: {
+        width: width,
+        height: height / 11,
+        backgroundColor: BORDER_COLOR,
+        //position: "absolute",
+        bottom: 0,
+        left: 0,
+        flexDirection: "row",
+        justifyContent: "flex-end",
+        alignItems: "center",
+        paddingRight: 10
+    },
+    body: {
+        flexDirection: 'column',
+        justifyContent: "center",
+        marginHorizontal : 30,
+        marginBottom : 30
+    },
+    cell: {
+        marginVertical: 10
+    },
+    title: {
+        fontSize: 20,
+        fontFamily: 'roboto-medium',
+        marginVertical: 5
+    },
+    smallTitle: {
+        fontSize: 14,
+        fontFamily: 'roboto-medium'
+    },
+    underLine: {
+        height: 2,
+        width: width * 0.8,
+        backgroundColor: MAIN_COLOR
+    },
+    pickerStyle : {
+        color: 'gray',
+        marginHorizontal : 20
+    },
+    textInputStyle : {
+        marginHorizontal : 30,
+        marginBottom : 10,
+        marginTop : 5
+        
+    }
 });
