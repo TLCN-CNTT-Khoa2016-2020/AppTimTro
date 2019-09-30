@@ -34,9 +34,9 @@ const stackManHinhChinh = createStackNavigator({
         }
     },
     
-    XemBaiDang: {
-        screen: XemBaiDang
-    }
+    // XemBaiDang: {
+    //     screen: XemBaiDang
+    // }
 }, {
         initialRouteName: "ManHinhChinh"
         
@@ -49,9 +49,9 @@ const stackTimKiem = createStackNavigator({
             header : null
         }
     },
-    XemBaiDang: {
-        screen: XemBaiDang
-    }
+    // XemBaiDang: {
+    //     screen: XemBaiDang
+    // }
 }, {
         initialRouteName: "TimKiem"
     });
@@ -63,9 +63,9 @@ const stackBaiDang = createStackNavigator({
             header : null
         }
     },
-    XemBaiDang: {
-        screen: XemBaiDang
-    },
+    // XemBaiDang: {
+    //     screen: XemBaiDang
+    // },
 }, {
         initialRouteName: "BaiDang"
     });
@@ -96,6 +96,7 @@ const stackDangPhong = createStackNavigator({
         //header : null
     }
 });
+
 
 // create tabNavigate
 
@@ -151,6 +152,9 @@ const stackAuth = createStackNavigator({
     stackDangPhong: {
         screen: stackDangPhong,
     },
+    XemBaiDang : {
+        screen : XemBaiDang
+    }
 },{
     initialRouteName : 'AuthLoading',
     defaultNavigationOptions: {
