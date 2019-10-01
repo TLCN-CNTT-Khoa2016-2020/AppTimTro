@@ -13,9 +13,11 @@ import CalloutMap from '../components/CalloutMap';
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
-import MapView, { PROVIDER_GOOGLE, Marker, Callout } from "react-native-maps";
+import { PROVIDER_GOOGLE, Marker, Callout } from "react-native-maps";
+import MapView from 'react-native-map-clustering';
 import FilterBar from '../components/FilterBar';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+
 import { mockData } from '../mockData';
 
 
@@ -32,10 +34,26 @@ export default class TimKiem extends Component {
             isLoading: true,
             errorMessage: null,
             markers: [],
+            //
+            tracksViewChanges : true
            
         };
 
     }
+    componentWillReceiveProps(nextProps) {
+        if (!isEqual(this.props, nextProps)) {
+          this.setState(() => ({
+            tracksViewChanges: true,
+          }))
+        }
+      }
+      componentDidUpdate() {
+        if (this.state.tracksViewChanges) {
+          this.setState(() => ({
+            tracksViewChanges: false,
+          }))
+        }
+      }
     
     _getLocationAsync = async () => {
         let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -74,14 +92,16 @@ export default class TimKiem extends Component {
                     <MapView
                         style={styles.mapStyle}
                         provider={PROVIDER_GOOGLE}
-                        initialRegion={this.state.currentLocation}
+                        region={this.state.currentLocation}
                         customMapStyle={mapStyle}
                         loadingEnabled = {true}
-
+                        clustering = {true}
+                        
                     >
                        
                         <Marker
                             coordinate={this.state.currentLocation}
+                            cluster = {false}
                         ></Marker>
                         
                         {this.state.markers.map((item, index) => {
@@ -92,7 +112,7 @@ export default class TimKiem extends Component {
                                         latitude: item.latitude,
                                         longitude: item.longitude
                                     }}
-                                    tracksViewChanges = {false}
+                                    tracksViewChanges = {this.state.tracksViewChanges}
 
                                 //onCalloutPress = {()=>this.navigation.navigate("XemBaiDang")}
                                 >
