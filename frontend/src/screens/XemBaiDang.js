@@ -45,8 +45,9 @@ export default class XemBaiDang extends Component {
         })
     }
     componentWillMount = () => {
-        this.showModalImage(false, 0)
-        this.showModalForm(false)
+        this.showModalImage(false, 0);
+        this.showModalForm(false);
+        this.hideDateTimePicker();
     }
 
     showModalImage = (visible, index) => {
@@ -68,7 +69,7 @@ export default class XemBaiDang extends Component {
 
     handleDatePicked = date => {
         this.setState({
-            chosenDate : moment(date).format('MM-DD-YYYY')
+            chosenDate : moment(date).format('DD-MM-YYYY')
         });
         this.hideDateTimePicker();
     };
@@ -127,7 +128,7 @@ export default class XemBaiDang extends Component {
                                                 <View style={[styles.underLine, { width: width * 0.5 }]} ></View>
                                             </View>
                                             <View style={{ flexDirection: "column" }} >
-                                                <Text style={styles.smallTitle} >Số ĐT</Text>
+                                                <Text style={styles.smallTitle} >Ngày giờ đặt lịch</Text>
                                                 <TouchableOpacity 
                                                     onPress = {this.showDateTimePicker}
                                                     style = {styles.textInputStyle} >

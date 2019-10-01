@@ -4,22 +4,27 @@ import {
     Text,
     StyleSheet,
     Image,
+    Platform,
+    TouchableOpacity,
     ActivityIndicator
 } from 'react-native';
-import {MAIN_COLOR} from '../../assets/color';
+import { MAIN_COLOR } from '../../assets/color';
 import CalloutMap from '../components/CalloutMap';
-//import * as Location from ' expo-location';
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from "react-native-maps";
+import FilterBar from '../components/FilterBar';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
-import {mockData} from '../mockData';
+import { mockData } from '../mockData';
+
+
 
 
 
 
 export default class TimKiem extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -27,9 +32,11 @@ export default class TimKiem extends Component {
             isLoading: true,
             errorMessage: null,
             markers: [],
+           
         };
-        
+
     }
+    
     _getLocationAsync = async () => {
         let { status } = await Permissions.askAsync(Permissions.LOCATION);
         if (status !== 'granted') {
@@ -58,7 +65,7 @@ export default class TimKiem extends Component {
             markers: mockData
         });
     }
-    
+
     render() {
         return (
             this.state.isLoading
@@ -68,11 +75,15 @@ export default class TimKiem extends Component {
                         style={styles.mapStyle}
                         provider={PROVIDER_GOOGLE}
                         initialRegion={this.state.currentLocation}
-                        
+                        customMapStyle={mapStyle}
+                        loadingEnabled = {true}
+
                     >
+                       
                         <Marker
                             coordinate={this.state.currentLocation}
                         ></Marker>
+                        
                         {this.state.markers.map((item, index) => {
                             return (
                                 <Marker
@@ -81,18 +92,25 @@ export default class TimKiem extends Component {
                                         latitude: item.latitude,
                                         longitude: item.longitude
                                     }}
-                                    
+                                    tracksViewChanges = {false}
+
                                 //onCalloutPress = {()=>this.navigation.navigate("XemBaiDang")}
                                 >
                                     <MaterialCommunityIcons name="home-circle" size={28} color={MAIN_COLOR} />
-                                    <Callout onPress = {()=>console.log('press')} >
-                                        <CalloutMap item = {item} />
+                                    <Callout
+                                        onPress={() => console.log('press')}
+                                    >
+                                        <CalloutMap item={item} />
                                     </Callout>
                                 </Marker>
                             );
                         })}
+                         
 
                     </MapView>
+                    {/* Overlay component => FilterBar */}
+                    <FilterBar />
+                        {/*  */}
                 </View>
 
 
@@ -110,3 +128,39 @@ const styles = StyleSheet.create({
     }
 
 });
+const mapStyle = [
+    {
+        "featureType": "administrative",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "poi",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "labels.icon",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "transit",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    }
+];

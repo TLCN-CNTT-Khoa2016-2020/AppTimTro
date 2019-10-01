@@ -33,10 +33,6 @@ const stackManHinhChinh = createStackNavigator({
             header : null
         }
     },
-    
-    // XemBaiDang: {
-    //     screen: XemBaiDang
-    // }
 }, {
         initialRouteName: "ManHinhChinh"
         
@@ -46,7 +42,7 @@ const stackTimKiem = createStackNavigator({
     TimKiem: {
         screen: TimKiem,
         navigationOptions : {
-            header : null
+             header : null
         }
     },
     // XemBaiDang: {
@@ -60,7 +56,7 @@ const stackBaiDang = createStackNavigator({
     BaiDang: {
         screen: BaiDang,
         navigationOptions : {
-            header : null
+             header : null
         }
     },
     // XemBaiDang: {
@@ -74,7 +70,7 @@ const stackTaiKhoan = createStackNavigator({
     TaiKhoan: {
         screen: TaiKhoan,
         navigationOptions : {
-            header : null
+             header : null
         }
     },
     CaiDatTaiKhoan: {
@@ -145,12 +141,35 @@ const tabNavigation = createBottomTabNavigator({
     });
 //create stack App
 const stackAuth = createStackNavigator({
-    AuthLoading : AuthLoading,
-    DangNhap : DangNhap,
-    DangKi : DangKi,
-    tabNavigation : tabNavigation,
+    AuthLoading : {
+        screen : AuthLoading,
+        navigationOptions : {
+            header : null
+        }
+    },
+    DangNhap : {
+        screen : DangNhap,
+        navigationOptions : {
+            header : null
+        }
+    },
+    DangKi : {
+        screen : DangKi,
+        navigationOptions : {
+            header : null
+        }
+    } ,
+    tabNavigation : {
+        screen : tabNavigation,
+        navigationOptions : {
+            header : null
+        }
+    },
     stackDangPhong: {
         screen: stackDangPhong,
+        navigationOptions : {
+            header : null
+        }
     },
     XemBaiDang : {
         screen : XemBaiDang
@@ -158,7 +177,7 @@ const stackAuth = createStackNavigator({
 },{
     initialRouteName : 'AuthLoading',
     defaultNavigationOptions: {
-        header : null
+        // header : null
     }
 });
 //create AppContainer
