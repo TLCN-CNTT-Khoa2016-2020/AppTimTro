@@ -27,26 +27,8 @@ class FilterBar extends Component {
                 <BorderlessButton
                     //onPress={() => navigation.navigate('Search')}
                     style={styles.button}>
-                    <Entypo
-                        name="documents"
-                        size = {32}
-                        color={MAIN_COLOR}
-                    />
-                </BorderlessButton>
-                <BorderlessButton
-                    //onPress={() => navigation.navigate('Search')}
-                    style={styles.button}>
                     <Ionicons
-                        name="md-transgender"
-                        size = {32}
-                        color={MAIN_COLOR}
-                    />
-                </BorderlessButton>
-                <BorderlessButton
-                    //onPress={() => navigation.navigate('Search')}
-                    style={styles.button}>
-                    <Ionicons
-                        name="logo-usd"
+                        name="ios-list"
                         size = {32}
                         color={MAIN_COLOR}
                     />
@@ -62,10 +44,10 @@ const styles = StyleSheet.create({
         top: 0, // Constants.statusBarHeight,
         width: width,
         height: null,
-        backgroundColor: 'rgba(52, 52, 52, 0.1)',
+        backgroundColor: 'rgba(52, 52, 52, 0.0)',
         //backgroundColor : '#fff',
         flexDirection : "row",
-        justifyContent : "space-around",
+        justifyContent : "flex-end",
         alignItems : "center"
     },
     button : {
@@ -77,6 +59,7 @@ const styles = StyleSheet.create({
         justifyContent : "center",
         alignItems : "center",
         borderRadius : 50,
+        marginRight :6
 
     }
 });
