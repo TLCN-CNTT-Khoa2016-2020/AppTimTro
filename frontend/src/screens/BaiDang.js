@@ -57,7 +57,8 @@ export default class BaiDang extends Component {
             <View style={styles.container} >
                 <View style={styles.header} >
                     <ButtonComponent
-                        title="Đăng phòng ngay" />
+                        title="Đăng phòng ngay"
+                        onPress = {()=>this.props.navigation.navigate('stackDangPhong')} />
                 </View>
                 <View style={styles.body} >
                     <ScrollableTabView

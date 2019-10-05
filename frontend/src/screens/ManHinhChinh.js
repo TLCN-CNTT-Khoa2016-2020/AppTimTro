@@ -37,8 +37,10 @@ export default class ManHinhChinh extends Component {
                     <ButtonComponent
                         title="Tìm trọ ngay"
                         icon={
-                            <Ionicons name="ios-search" size={28} color={MAIN_COLOR} />
-                        } />
+                            <Ionicons name="ios-search" size={28} color={MAIN_COLOR}
+                             />
+                        } 
+                        onPress = {()=>this.props.navigation.navigate("TimKiem")}/>
                     <ButtonComponent
                         title="Đăng phòng"
                         icon={

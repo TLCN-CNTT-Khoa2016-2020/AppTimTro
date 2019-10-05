@@ -26,46 +26,7 @@ import TaiKhoan from '../screens/TaiKhoan';
 import XemBaiDang from '../screens/XemBaiDang';
 
 
-// create stack ManHinhChinh
-const stackManHinhChinh = createStackNavigator({
-    ManHinhChinh: {
-        screen: ManHinhChinh,
-        navigationOptions : {
-            header : null
-        }
-    },
-}, {
-        initialRouteName: "ManHinhChinh"
-        
-    });
-// create stack TimKiem
-const stackTimKiem = createStackNavigator({
-    TimKiem: {
-        screen: TimKiem,
-        navigationOptions : {
-             header : null
-        }
-    },
-    // XemBaiDang: {
-    //     screen: XemBaiDang
-    // }
-}, {
-        initialRouteName: "TimKiem"
-    });
-// create stack BaiDang
-const stackBaiDang = createStackNavigator({
-    BaiDang: {
-        screen: BaiDang,
-        navigationOptions : {
-             header : null
-        }
-    },
-    // XemBaiDang: {
-    //     screen: XemBaiDang
-    // },
-}, {
-        initialRouteName: "BaiDang"
-    });
+
 // create stackTaiKhoan
 const stackTaiKhoan = createStackNavigator({
     TaiKhoan: {
@@ -79,6 +40,7 @@ const stackTaiKhoan = createStackNavigator({
     }
 }, {
         initialRouteName: "TaiKhoan",
+        headerLayoutPreset: "center",
         transitionConfig: () => fadeIn(1000),
         
     });
@@ -93,16 +55,7 @@ const stackDangPhong = createStackNavigator({
     headerLayoutPreset: "center",
     transitionConfig: () => fadeIn(1000),
     defaultNavigationOptions : {
-        //header : null
-        title : "Đăng phòng",
-        
-        headerTitleStyle : {
-            // flex: 1,
-            // //alignSelf : "center",
-            // textAlign : "center",
-            // //width : '90%'
-        }
-        
+        title : "Đăng phòng", 
     }
 });
 
@@ -111,7 +64,7 @@ const stackDangPhong = createStackNavigator({
 
 const tabNavigation = createBottomTabNavigator({
     ManHinhChinh: {
-        screen : stackManHinhChinh,
+        screen : ManHinhChinh,
         navigationOptions: {
             title : "Màn Hình Chính",
             labelStyle : {color : MAIN_COLOR},
@@ -119,7 +72,7 @@ const tabNavigation = createBottomTabNavigator({
         }
     },
     TimKiem: {
-        screen : stackTimKiem,
+        screen : TimKiem,
         navigationOptions: {
             title : "Tìm Kiếm",
             labelStyle : {color : MAIN_COLOR},
@@ -127,7 +80,7 @@ const tabNavigation = createBottomTabNavigator({
         }
     },
     BaiDang: {
-        screen : stackBaiDang,
+        screen : BaiDang,
         navigationOptions: {
             title : "Bài Đăng",
             labelStyle : {color : MAIN_COLOR},
@@ -189,6 +142,7 @@ const stackAuth = createStackNavigator({
     }
 },{
     initialRouteName : 'AuthLoading',
+    headerLayoutPreset: "center",
     transitionConfig: () => fadeIn(1000),
     defaultNavigationOptions: {
         // header : null

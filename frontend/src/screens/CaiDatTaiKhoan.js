@@ -15,6 +15,9 @@ import ButtonComponent from '../components/ButtonComponent';
 
 const { height, width } = Dimensions.get('window');
 export default class CaiDatTaiKhoan extends Component {
+    static navigationOptions = {
+        title  : "Cài Đặt Trạng Thái"
+    }
     constructor(props) {
         super(props);
         this.state = {

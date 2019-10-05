@@ -25,6 +25,11 @@ import { lstPost } from '../mockData';
 
 const { height, width } = Dimensions.get('window');
 export default class XemBaiDang extends Component {
+    static navigationOptions = {
+        title : "Chi Tiết",
+        
+    }
+
     constructor(props) {
         super(props);
         this.state = {
@@ -283,7 +288,7 @@ export default class XemBaiDang extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: Constants.statusBarHeight,
+        //marginTop: Constants.statusBarHeight,
         flexDirection: "column",
         justifyContent: "center",
 
