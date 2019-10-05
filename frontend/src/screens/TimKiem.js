@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center"
     },
-    btnContainer: {
+    btnContainer: { 
         position: 'absolute',
         top: 0,
         right: 0,

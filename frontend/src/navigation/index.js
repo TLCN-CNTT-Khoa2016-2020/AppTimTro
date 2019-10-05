@@ -6,8 +6,9 @@ import {
 } from 'react-navigation';
 //import icon-vector
 import { Ionicons } from '@expo/vector-icons';
-//color
+//color animation
 import {MAIN_COLOR, TEXT_COLOR} from '../../assets/color';
+import { fromLeft, fromTop, fromRight, fromBottom, fadeIn, fadeOut, zoomIn, zoomOut, flipY, flipX } from 'react-navigation-transitions';
 //auth
 import DangKi from '../screens/DangKi';
 import DangNhap from '../screens/DangNhap';
@@ -78,6 +79,7 @@ const stackTaiKhoan = createStackNavigator({
     }
 }, {
         initialRouteName: "TaiKhoan",
+        transitionConfig: () => fadeIn(1000),
         
     });
 //create stack DangPhong
@@ -88,8 +90,19 @@ const stackDangPhong = createStackNavigator({
     DangPhong4 : DangPhong4
 },{
     initialRouteName : "DangPhong1",
+    headerLayoutPreset: "center",
+    transitionConfig: () => fadeIn(1000),
     defaultNavigationOptions : {
         //header : null
+        title : "Đăng phòng",
+        
+        headerTitleStyle : {
+            // flex: 1,
+            // //alignSelf : "center",
+            // textAlign : "center",
+            // //width : '90%'
+        }
+        
     }
 });
 
@@ -176,6 +189,7 @@ const stackAuth = createStackNavigator({
     }
 },{
     initialRouteName : 'AuthLoading',
+    transitionConfig: () => fadeIn(1000),
     defaultNavigationOptions: {
         // header : null
     }
