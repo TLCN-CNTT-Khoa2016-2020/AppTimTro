@@ -28,7 +28,7 @@ app.use(morgan('dev'));
 const usersRouters = require('./api/routes/users.routes');
 
 //ROUTES
-//app.use('/users', usersRouters);
+app.use('/users', usersRouters);
 
 
 //handling error
@@ -36,7 +36,7 @@ app.use((error, req, res, next) => {
     res.status(error.status || 500);
     res.json({
         error: {
-            message: error.message
+            message: error
         }
     })
 })
