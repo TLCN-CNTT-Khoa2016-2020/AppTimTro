@@ -4,8 +4,13 @@ const app            = express(); //define our app using express
 const bodyParser     = require('body-parser');
 const morgan         = require('morgan');//loging
 const mongoose       = require('mongoose');
+//env config
+require('dotenv').config();
 //connect to database
-mongoose.connect('mongodb://thanghiep001:thanghiep001@cluster0-shard-00-00-vpujr.mongodb.net:27017,cluster0-shard-00-01-vpujr.mongodb.net:27017,cluster0-shard-00-02-vpujr.mongodb.net:27017/AppTimTro?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority');
+// mongoose.connect('mongodb://thanghiep001:'
+//                 + process.env.MONGO_ATLAS_PW
+//                 +'@cluster0-shard-00-00-vpujr.mongodb.net:27017,cluster0-shard-00-01-vpujr.mongodb.net:27017,cluster0-shard-00-02-vpujr.mongodb.net:27017/AppTimTro?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority');
+mongoose.connect('mongodb+srv://thanghiep001:'+ process.env.MONGO_ATLAS_PW +'@cluster0-vpujr.mongodb.net/AppTimTro?retryWrites=true&w=majority')
 mongoose.Promise = global.Promise;
 
 //<--------------------- APP CONFIG --------------------->
