@@ -13,7 +13,7 @@ const User = require('../models/users.model');
 
 /*<--------- GET / ---------> */ 
 /* MISSION : GET ALL USER  */
-router.get('/', (req, res, next)=> {
+router.get('/',checkAuth, (req, res, next)=> {
     User.find()
         .select(" _id fullname username")
         .exec()
