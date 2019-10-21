@@ -27,7 +27,11 @@ const userSchema = new Schema({
         [^:&.~\s]  a character class that exclude all the characters you don't want
          */
     },
-    fullname : { type : String, required : true }
+    fullname : { type : String, required : true },
+    posts: [{
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "Post"
+    }]
 });
 
 

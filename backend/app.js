@@ -32,17 +32,21 @@ app.use(morgan('dev'));
 //<--------------------- ROUTES FOR API --------------------->
 //IMPORT ROUTERS
 const usersRouters = require('./api/routes/users.routes');
+const postsRouters = require('./api/routes/posts.routes');
 
 //ROUTES
 app.use('/users', usersRouters);
+app.use('/posts', postsRouters);
 
 
 //handling error
+
 app.use((error, req, res, next) => {
     res.status(error.status || 500);
     res.json({
         error: {
-            message: error
+            message: error,
+            me:"chonay"
         }
     })
 })

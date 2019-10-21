@@ -13,7 +13,7 @@ const User = require('../models/users.model');
 
 /*<--------- GET / ---------> */ 
 /* MISSION : GET ALL USER  */
-router.get('/',checkAuth, (req, res, next)=> {
+router.get('/',checkAuth, (req, res, next)=> {  
     User.find()
         .select(" _id fullname username")
         .exec()
@@ -91,15 +91,16 @@ router.post('/login', (req,res,next) => {
             console.log(user)
             if(!user){
                 return res.status(401).json({
-                    message : "Auth Failed",
+                    message : "Login Failed",
                 })
             }
             //compare password
             console.log(req.body.password, user.password)
             bcrypt.compare(req.body.password, user.password, (err, result) => {
+                // if compare fail
                 if(err){
                     return res.status(401).json({
-                        message : "Auth Failed",
+                        message : "Login Failed",
                         error : err
                     })
                 };
@@ -107,8 +108,8 @@ router.post('/login', (req,res,next) => {
                     //json web token, create token
                     const token = jwt.sign(
                         {
-                        username : user.username,
-                        userId   : user._id
+                            username : user.username,
+                            userId   : user._id
                         },
                         process.env.JWT_KEY,
                         {
@@ -116,12 +117,12 @@ router.post('/login', (req,res,next) => {
                         }  
                     );
                     return res.status(200).json({
-                        message : "Auth success !",
+                        message : "Login success !",
                         token   : token 
                     });
                 };
                 res.status(401).json({
-                    message : "Auth Failed"
+                    message : "Login Failed"
                 })
             });
         })
