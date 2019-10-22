@@ -6,7 +6,7 @@ const checkAuth  = require('../middleware/check-auth');
 
 /*<--------------------- IMPORT CONTROLLERS --------------------->*/
 const PostsController = require('../controllers/post.controllers');
-
+const subPostRouter   = require('../routes/subposts.routes');
 /*<--------------------- ROUTES --------------------->*/
 
 
@@ -22,13 +22,18 @@ router.post('/',checkAuth, PostsController.create_posts);
 /* MISSION : GET POST WITH ID  */
 router.get('/:postID', checkAuth, PostsController.get_posts_withID);
 
-/*<--------- PATH /:postID ---------> */ 
+/*<--------- PUT /:postID ---------> */ 
 /* MISSION : UPDATE POST WITH ID  */
 router.put('/:postID', checkAuth, PostsController.update_posts);
 
 /*<--------- DELETE /:postID ---------> */ 
 /* MISSION : DELETE POST WITH ID  */
-router.delete("/:postID", checkAuth, PostsController.delete_posts);
+router.delete("/", checkAuth, PostsController.delete_posts);
+
+/*<--------- GET /approvedpost ---------> */ 
+/* MISSION : GET POST IS APPROVED  */
+//router.get('/approvedpost/', checkAuth, PostsController.get_posts_isApproved);
+router.use('/',subPostRouter);
 
 
 //<---------------------  EXPORT ROUTES --------------------->

@@ -38,6 +38,7 @@ const postSchema = new Schema({
         nha_bep     : {type: Boolean, default : false},
         thu_cung    : {type: Boolean, default : false}
     },
+    is_approved : {type : Boolean , default : false},
     userId : {
          type : mongoose.Schema.Types.ObjectId,
          required : true,

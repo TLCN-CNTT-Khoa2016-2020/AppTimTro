@@ -4,6 +4,7 @@ const mongoose   = require('mongoose');
 
 /*<--------------------- IMPORT MODELS --------------------->*/
 const Post = require('../models/posts.model');
+const User = require('../models/users.model');
 
 /*<--------------------- CONTROLERS --------------------->*/
 
@@ -81,9 +82,21 @@ exports.create_posts = (req, res, next) => {
     //save post to database
     post.save()
         .then(result => {
-            res.status(201).json({
-                message : "Posts created !",
-            })
+            // save postsID to userShema
+            User.findByIdAndUpdate({_id : req.body.userId},{$push: {posts : post._id}})
+                .exec()
+                .then(result =>{
+                    res.status(201).json({
+                        message : "Posts created !",
+                    })
+                })
+                .catch(err => {
+                    res.status(500).json({
+                        error: err
+                    })
+                })
+
+            
         })
         .catch(err => {
             res.status(500).json({
@@ -95,6 +108,7 @@ exports.create_posts = (req, res, next) => {
 
 //MISSION : GET POST WITH ID
 exports.get_posts_withID = (req, res, next) => {
+    console.log("chonay")
     Post.findById(req.params.postID)
         .populate("userId")
         .exec()
@@ -190,15 +204,99 @@ exports.update_posts = (req, res, next) => {
 // MISSION : DELETE POST WITH ID
 exports.delete_posts = (req, res, next) => {
     // find and detele post with ID
-    Post.findByIdAndRemove({_id : req.params.postID})
+    Post.findByIdAndRemove({_id : req.body.postID})
         .exec()
         .then(result => {
-            res.status(200).json({
-                messsage : "Delete Successfull !"
-            })
+
+            // remove id in usersSchema
+            User.findByIdAndUpdate({_id : req.body.userID},{$pull : {posts : {$in : req.body.postID}}})
+                .exec()
+                .then(result =>{
+                    res.status(200).json({
+                        messsage : "Delete Successfull !"
+                    })
+                })
+                .catch(err => {
+                    res.status(500).json({
+                        error : err
+                    })
+                })    
         })
         .catch(err => {
             req.status(500).json({
+                error : err
+            })
+        })
+};
+
+// MISSION : GET POSTS IS APPROVED = TRUE
+exports.get_posts_isApproved = (req, res, next) => {
+    // pageOptions
+    const pageOptions = {
+        page : parseInt(req.query.page) || 0,
+        limit : parseInt( req.query.limit) || 10
+    }
+    Post.find(
+            {   
+                userId : req.params.userID,
+                is_approved : true
+            }
+        )
+        .skip(pageOptions.page * pageOptions.limit)
+        .limit(pageOptions.limit)
+        .select("_id title room_price address")
+        .exec()
+        .then(result =>{
+            res.status(200).json({
+                count : result.length,
+                result : result.map(item => {
+                    return {
+                        "_id"       : item.id,
+                        "title"     : item.title,
+                        "room_price": item.room_price,
+                        "address"   : item.address
+                    }
+                })
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                error : err
+            })
+        })
+};
+// MISSION : GET POSTS IS APPROVED = TRUE
+exports.get_posts_isUnApproved = (req, res, next) => {
+    // pageOptions
+    const pageOptions = {
+        page : parseInt(req.query.page) || 0,
+        limit : parseInt( req.query.limit) || 10
+    }
+    Post.find(
+            {   
+                userId : req.params.userID,
+                is_approved : false
+            }
+        )
+        .skip(pageOptions.page * pageOptions.limit)
+        .limit(pageOptions.limit)
+        .select("_id title room_price address")
+        .exec()
+        .then(result =>{
+            res.status(200).json({
+                count : result.length,
+                result : result.map(item => {
+                    return {
+                        "_id"       : item.id,
+                        "title"     : item.title,
+                        "room_price": item.room_price,
+                        "address"   : item.address
+                    }
+                })
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
                 error : err
             })
         })

@@ -33,10 +33,12 @@ app.use(morgan('dev'));
 //IMPORT ROUTERS
 const usersRouters = require('./api/routes/users.routes');
 const postsRouters = require('./api/routes/posts.routes');
+const approvedPostRouter = require('./api/routes/subposts.routes');
 
 //ROUTES
 app.use('/users', usersRouters);
 app.use('/posts', postsRouters);
+app.use('/approvedpost',approvedPostRouter);
 
 
 //handling error

@@ -4,8 +4,12 @@ module.exports = (req, res, next) => {
     try {
         
         //check header or null parameters or post parameters for token
-        const token = req.body.token || req.params.token || req.headers['x-access-token'];
-        console.log(token)
+        let token = req.headers['x-access-token'] || req.headers['authorization']; 
+        
+        if (token.startsWith('Bearer ')) {
+            // Remove Bearer from string
+            token = token.slice(7, token.length);
+        }
         //decode token
         if(token){
             // verifies secret and check exp
