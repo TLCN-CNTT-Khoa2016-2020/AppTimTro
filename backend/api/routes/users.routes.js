@@ -86,7 +86,36 @@ router.post('/signupwithgoogle', (req, res, next) => {
     // check googleID
     User.findOne({"google.googleID" : req.body.googleID})
         .exec()
-        .then()
+        .then(user => {
+            if (user) { // if(user) it will return [] => always right
+                return res.status(409).json({
+                    message: "Username exists"
+                });
+            } else {
+                // create new user
+                const user = new User({
+                    _id: new mongoose.Types.ObjectId(),
+                    fullname : req.body.fullname,
+                    avatarUrl : req.body.avatarUrl,
+                    google : {
+                        googleID : req.body.googleID
+                    }
+                });
+                //save user to database
+                user.save()
+                .then(result => {
+                    res.status(201).json({
+                        message: "User created"
+                    });
+                })
+                .catch(err => {
+                    res.status(500).json({
+                        error: err
+                    })
+                });
+            }
+
+        })
         .catch()
 });
 

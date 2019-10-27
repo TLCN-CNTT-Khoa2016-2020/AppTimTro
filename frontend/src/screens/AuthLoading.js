@@ -40,8 +40,8 @@ export default class AuthLoading extends Component {
                 userData: data,
                 isLoading: false
             })
-            //this.props.navigation.navigate(userData ? 'tabNavigation' : 'DangNhap')
-            this.props.navigation.navigate(userData ? 'tabNavigation' : 'tabNavigation')
+            this.props.navigation.navigate(userData ? 'tabNavigation' : 'DangNhap')
+            //this.props.navigation.navigate(userData ? 'tabNavigation' : 'tabNavigation')
 
         } catch (error) {
             console.log("something went wrong" + `${error}`);
