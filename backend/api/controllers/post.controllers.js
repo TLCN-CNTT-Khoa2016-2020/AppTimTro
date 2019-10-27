@@ -108,7 +108,6 @@ exports.create_posts = (req, res, next) => {
 
 //MISSION : GET POST WITH ID
 exports.get_posts_withID = (req, res, next) => {
-    console.log("chonay")
     Post.findById(req.params.postID)
         .populate("userId")
         .exec()
@@ -301,3 +300,75 @@ exports.get_posts_isUnApproved = (req, res, next) => {
             })
         })
 };
+
+
+//<-----------ADMIN------------->
+// MISSON : SHOWPOST WITH ID
+exports.admin_get_post_with_id = (req, res, next) => {
+    Post.findById(req.params.postID)
+        .populate("userId")
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                result : 
+                        {
+                            "_id"           : result.id,
+                            "title"         : result.title,
+                            "address"       : result.address,
+                            "day_submit"    : result.day_submit,
+                            "kind_of_room"  : result.kind_of_room,
+                            "room_price"    : result.room_price,
+                            "room_area"     : result.room_area,
+                            "room_deposi"   : result.room_deposi,
+                            "electric_price": result.electric_price,
+                            "water_price"   : result.water_price,
+                            "parking_price" : result.parking_price,
+                            "wifi_price"    : result.wifi_price,
+                            "gender"        : result.gender,
+                            "description"   : result.description,
+                            "utilities"     : result.utilities,
+                            "user" : {
+                                "_id"       : result.userId.id,
+                                "fullname"  :result.userId.fullname
+                            }
+                        }
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                error : err,
+                message : "ID không tồn tại" 
+            })
+        })
+}   
+//MISSION : CHECK POST
+exports.admin_check_post = (req, res, next) => {
+    
+}
+// MISSON : DELETE POST
+exports.admin_delete_post = (req, res, next) => {
+    // find and detele post with ID
+    Post.findByIdAndRemove({_id : req.body.postID})
+        .exec()
+        .then(result => {
+
+            // remove id in usersSchema
+            User.findByIdAndUpdate({_id : req.body.userID},{$pull : {posts : {$in : req.body.postID}}})
+                .exec()
+                .then(result =>{
+                    res.status(200).json({
+                        messsage : "Delete Successfull !"
+                    })
+                })
+                .catch(err => {
+                    res.status(500).json({
+                        error : err
+                    })
+                })    
+        })
+        .catch(err => {
+            req.status(500).json({
+                error : err
+            })
+        })
+}

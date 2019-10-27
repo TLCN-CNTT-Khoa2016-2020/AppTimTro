@@ -34,11 +34,13 @@ app.use(morgan('dev'));
 const usersRouters = require('./api/routes/users.routes');
 const postsRouters = require('./api/routes/posts.routes');
 const approvedPostRouter = require('./api/routes/subposts.routes');
+const adminRouter        = require('./api/routes/admin.routes');
 
 //ROUTES
 app.use('/users', usersRouters);
 app.use('/posts', postsRouters);
 app.use('/approvedpost',approvedPostRouter);
+app.use('/admin', adminRouter);
 
 
 //handling error

@@ -80,10 +80,102 @@ router.post('/signup', (req, res, next) => {
             }
         })
 });
+/*<--------- POST /signupwithgoogle ---------> */ 
+/* MISSION : CREATE NEW USER WITH GOOGLE */ 
+router.post('/signupwithgoogle', (req, res, next) => {
+    // check googleID
+    User.findOne({"google.googleID" : req.body.googleID})
+        .exec()
+        .then()
+        .catch()
+});
 
 /*<--------- POST /login ---------> */ 
 /* MISSION : USER LOGIN  */
 router.post('/login', (req,res,next) => {
+    //find user to check username exists?
+    User.findOne({username : req.body.username})
+        .exec()
+        .then(user => {
+            console.log(user)
+            if(!user){
+                return res.status(401).json({
+                    message : "Login Failed",
+                })
+            }
+            if(user.role !== "Admin")
+            {
+                bcrypt.compare(req.body.password, user.password, (err, result) => {
+                    // if compare fail
+                    if(err){
+                        return res.status(401).json({
+                            message : "Login Failed",
+                            error : err
+                        })
+                    };
+                    if(result){
+                        //json web token, create token
+                        const token = jwt.sign(
+                            {
+                                username : user.username,
+                                userId   : user._id
+                            },
+                            process.env.JWT_KEY,
+                            {
+                                expiresIn : "1h"
+                            }  
+                        );
+                        return res.status(200).json({
+                            message : "Login success !",
+                            token   : token 
+                        });
+                    };
+                    res.status(401).json({
+                        message : "Login Failed"
+                    })
+                });
+            } else {
+                bcrypt.compare(req.body.password, user.password, (err, result) => {
+                    // if compare fail
+                    if(err){
+                        return res.status(401).json({
+                            message : "Login Failed",
+                            error : err
+                        })
+                    };
+                    if(result){
+                        //json web token, create token
+                        const token = jwt.sign(
+                            {
+                                username : user.username,
+                                userId   : user._id
+                            },
+                            process.env.ADMIN_JWT_KEY,
+                            {
+                                expiresIn : "1h"
+                            }  
+                        );
+                        return res.status(200).json({
+                            message : "Login success !",
+                            token   : token 
+                        });
+                    };
+                    res.status(401).json({
+                        message : "Login Failed"
+                    })
+                });
+            }
+            
+        })
+        .catch(err => {
+            res.status(500).json({
+                message : err
+            })
+        })
+});
+
+/* MISSION : ADMIN LOGIN  */
+router.post('/adminLogin', (req,res,next) => {
     //find user to check username exists?
     User.findOne({username : req.body.username})
         .exec()
@@ -111,7 +203,7 @@ router.post('/login', (req,res,next) => {
                             username : user.username,
                             userId   : user._id
                         },
-                        process.env.JWT_KEY,
+                        process.env.ADMIN_JWT_KEY,
                         {
                             expiresIn : "1h"
                         }  
