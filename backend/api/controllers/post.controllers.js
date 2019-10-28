@@ -1,5 +1,7 @@
 /*<--------------------- CALL THE PACKAGE --------------------->*/
 const mongoose   = require('mongoose');
+// const multer     = require('multer');
+// const upload     = multer({dest : '/uploads/'})
 
 
 /*<--------------------- IMPORT MODELS --------------------->*/
@@ -34,6 +36,7 @@ exports.get_all_posts =  (req, res, next) => {
                         "gender"        : item.gender,
                         "description"   : item.description,
                         "utilities"     : item.utilities,
+                        "room_image"    : item.room_image,
                         "user" : {
                             "_id"       : item.userId.id,
                             "fullname"  :item.userId.fullname
@@ -47,6 +50,8 @@ exports.get_all_posts =  (req, res, next) => {
 
 // MISSION : CREATE NEW POST
 exports.create_posts = (req, res, next) => {
+
+    console.log(req.file);
     //create new Post
     const post = new Post({
         _id : new mongoose.Types.ObjectId(),
@@ -63,22 +68,24 @@ exports.create_posts = (req, res, next) => {
         wifi_price : req.body.wifi_price,
         gender : req.body.gender,
         description :  req.body.description,
-        utilities : {
-            wc_rieng : req.body.utilities.wc_rieng,
-            an_ninh : req.body.utilities.an_ninh,
-            chu_rieng : req.body.utilities.chu_rieng,
-            tu_do : req.body.utilities.tu_do,
-            cua_so : req.body.utilities.cua_so,
-            chode_xe : req.body.utilities.chode_xe,
-            wifi : req.body.utilities.wifi,
-            may_lanh : req.body.utilities.may_lanh,
-            tu_lanh : req.body.utilities.tu_lanh,
-            may_giat : req.body.utilities.may_giat,
-            nha_bep : req.body.utilities.nha_bep,
-            thu_cung : req.body.utilities.thu_cung
-        },
+        // utilities : {
+        //     wc_rieng : req.body.utilities.wc_rieng,
+        //     an_ninh : req.body.utilities.an_ninh,
+        //     chu_rieng : req.body.utilities.chu_rieng,
+        //     tu_do : req.body.utilities.tu_do,
+        //     cua_so : req.body.utilities.cua_so,
+        //     chode_xe : req.body.utilities.chode_xe,
+        //     wifi : req.body.utilities.wifi,
+        //     may_lanh : req.body.utilities.may_lanh,
+        //     tu_lanh : req.body.utilities.tu_lanh,
+        //     may_giat : req.body.utilities.may_giat,
+        //     nha_bep : req.body.utilities.nha_bep,
+        //     thu_cung : req.body.utilities.thu_cung
+        // },
+        room_image : req.file.path,
         userId : req.body.userId
     });
+    console.log(post)
     //save post to database
     post.save()
         .then(result => {
@@ -327,6 +334,7 @@ exports.admin_get_post_with_id = (req, res, next) => {
                             "gender"        : result.gender,
                             "description"   : result.description,
                             "utilities"     : result.utilities,
+                            "is_approved"   : result.is_approved,
                             "user" : {
                                 "_id"       : result.userId.id,
                                 "fullname"  :result.userId.fullname
@@ -343,7 +351,25 @@ exports.admin_get_post_with_id = (req, res, next) => {
 }   
 //MISSION : CHECK POST
 exports.admin_check_post = (req, res, next) => {
-    
+    Post.findByIdAndUpdate({_id : req.params.postID},{$set : {is_approved : true}})
+        .exec()
+        .then(result => {
+
+            //if result === null => no post
+            if(result === null){
+                res.status(500).json({
+                    message : "Can't find posts"
+                })
+            }
+            res.status(200).json({
+                message : "Update Successful !"
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                error : err
+            })
+        })
 }
 // MISSON : DELETE POST
 exports.admin_delete_post = (req, res, next) => {

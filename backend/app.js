@@ -16,6 +16,7 @@ mongoose.set('useCreateIndex', true);
 
 //<--------------------- APP CONFIG --------------------->
 
+app.use('/uploads', express.static('uploads'))
 //use body-parser to grab information from POST request
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

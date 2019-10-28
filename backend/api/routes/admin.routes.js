@@ -6,12 +6,12 @@ const checkAuthAdmin  = require('../middleware/check-auth-admin');
 /*<--------------------- IMPORT CONTROLLERS --------------------->*/
 const PostsController = require('../controllers/post.controllers');
 
-/*<--------------------- ROUTES --------------------->*/
+/*<--------------------- ROUTES --------------------->*/ 
 
 /*<--------- GET /:postID  ---------> */    
 router.get('/:postID', checkAuthAdmin,PostsController.admin_get_post_with_id);
 /*<--------- PUT /checkpost ---------> */
-router.put('/checkpost', checkAuthAdmin, PostsController.admin_check_post);
+router.put('/:postID', checkAuthAdmin, PostsController.admin_check_post);
 /*<--------- DELETE /deletepost ---------> */
 router.delete('/delete', checkAuthAdmin, PostsController.admin_delete_post);
 

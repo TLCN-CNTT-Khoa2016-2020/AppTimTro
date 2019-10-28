@@ -39,6 +39,10 @@ const postSchema = new Schema({
         thu_cung    : {type: Boolean, default : false}
     },
     is_approved : {type : Boolean , default : false},
+    room_image : [{
+         type : String,
+         require : true
+    }],
     userId : {
          type : mongoose.Schema.Types.ObjectId,
          required : true,
