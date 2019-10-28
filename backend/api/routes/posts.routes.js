@@ -21,13 +21,13 @@ const fileFilter = (req, file, cb) =>{
     
     
 }
-const upload     = multer({
+const upload = multer({
         storage: storage ,
         limits : {
             fileSize : 1024 * 1024 *5
         },
         fileFilter : fileFilter
-})
+}).array('room_image',5)
 
 
 /*<--------------------- IMPORT CONTROLLERS --------------------->*/
@@ -42,7 +42,7 @@ router.get('/',checkAuth, PostsController.get_all_posts);
 
 /*<--------- POST / ---------> */ 
 /* MISSION : CREATE POSTS  */
-router.post('/',checkAuth,upload.single('productImage'), PostsController.create_posts);
+router.post('/',checkAuth,upload, PostsController.create_posts);
 
 /*<--------- GET /:postID ---------> */ 
 /* MISSION : GET POST WITH ID  */

@@ -51,7 +51,7 @@ exports.get_all_posts =  (req, res, next) => {
 // MISSION : CREATE NEW POST
 exports.create_posts = (req, res, next) => {
 
-    console.log(req.file);
+    console.log(req.files);
     //create new Post
     const post = new Post({
         _id : new mongoose.Types.ObjectId(),
@@ -82,7 +82,9 @@ exports.create_posts = (req, res, next) => {
         //     nha_bep : req.body.utilities.nha_bep,
         //     thu_cung : req.body.utilities.thu_cung
         // },
-        room_image : req.file.path,
+        room_image : req.files.map(item => {
+            return item.path;
+        }),
         userId : req.body.userId
     });
     console.log(post)
