@@ -8,6 +8,7 @@ const checkAuth  = require('../middleware/check-auth');
 
 /*<--------------------- IMPORT MODELS --------------------->*/
 const User = require('../models/users.model');
+const subRoutes =  require('../routes/subusers.routes');
 
 /*<--------------------- ROUTES --------------------->*/
 
@@ -278,11 +279,38 @@ router.delete('/:userId',checkAuth, (req, res, next) => {
         });
 });
 
+/*<--------- GET /:userId --------->*/
+/* MISSION : GET USER WITH ID */
+
+router.get('/:userID', checkAuth, (req, res, next) => {
+    User.findById(req.params.userID)
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                result :  
+                {
+                    "userID"    : result._id,
+                    "fullname"  : result.fullname,
+                    "SDT"       : result.SDT,
+                    "timtroStatus" : result.timtroStatus
+                }
+            })
+            
+        })
+        .catch(err => {
+            res.status(500).json({
+                error : err
+            })
+        })
+})
+
+/*<--------- GET /:userId --------->*/
+/* MISSION : GET USER WITH ID */
 
 
 
 
-
+router.use('/', subRoutes);
 
 //<---------------------  EXPORT ROUTES --------------------->
 module.exports = router; 

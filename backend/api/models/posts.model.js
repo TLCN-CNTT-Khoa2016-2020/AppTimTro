@@ -43,6 +43,10 @@ const postSchema = new Schema({
          type : String,
          require : true
     }],
+    coordinates : {
+         latitude : { type : Number },
+         longitude : { type : Number} 
+    },
     userId : {
          type : mongoose.Schema.Types.ObjectId,
          required : true,

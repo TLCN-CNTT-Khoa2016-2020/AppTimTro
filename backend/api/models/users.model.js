@@ -27,6 +27,7 @@ const userSchema = new Schema({
     },
     fullname : { type : String, required : true },
     avatarUrl : { type : String},
+    SDT : {type : Number},
     //avatar : {type : ImageBitmap},
     google : {
         googleID : {type : String},
@@ -39,6 +40,17 @@ const userSchema = new Schema({
         acesssToken : { type : String},
         idToken : { type : String},
         refreshToken : { type : String }
+    },
+    timtroStatus : { type : Boolean, default : false },
+    timtroSettings : {
+        area : [{
+            latitude : { type : Number},
+            longitude : {type: Number}
+        }],
+        rangePrice : {
+            maxPrice  : { type : Number},
+            minPrice  : { type : Number}
+        }
     },
     role : {type : String , default : "User"},
     posts: [{

@@ -1,7 +1,6 @@
 /*<--------------------- CALL THE PACKAGE --------------------->*/
 const mongoose   = require('mongoose');
-// const multer     = require('multer');
-// const upload     = multer({dest : '/uploads/'})
+
 
 
 /*<--------------------- IMPORT MODELS --------------------->*/
@@ -68,23 +67,27 @@ exports.create_posts = (req, res, next) => {
         wifi_price : req.body.wifi_price,
         gender : req.body.gender,
         description :  req.body.description,
-        // utilities : {
-        //     wc_rieng : req.body.utilities.wc_rieng,
-        //     an_ninh : req.body.utilities.an_ninh,
-        //     chu_rieng : req.body.utilities.chu_rieng,
-        //     tu_do : req.body.utilities.tu_do,
-        //     cua_so : req.body.utilities.cua_so,
-        //     chode_xe : req.body.utilities.chode_xe,
-        //     wifi : req.body.utilities.wifi,
-        //     may_lanh : req.body.utilities.may_lanh,
-        //     tu_lanh : req.body.utilities.tu_lanh,
-        //     may_giat : req.body.utilities.may_giat,
-        //     nha_bep : req.body.utilities.nha_bep,
-        //     thu_cung : req.body.utilities.thu_cung
-        // },
+        utilities : {
+            wc_rieng : req.body.utilities.wc_rieng,
+            an_ninh : req.body.utilities.an_ninh,
+            chu_rieng : req.body.utilities.chu_rieng,
+            tu_do : req.body.utilities.tu_do,
+            cua_so : req.body.utilities.cua_so,
+            chode_xe : req.body.utilities.chode_xe,
+            wifi : req.body.utilities.wifi,
+            may_lanh : req.body.utilities.may_lanh,
+            tu_lanh : req.body.utilities.tu_lanh,
+            may_giat : req.body.utilities.may_giat,
+            nha_bep : req.body.utilities.nha_bep,
+            thu_cung : req.body.utilities.thu_cung
+        },
         room_image : req.files.map(item => {
             return item.path;
         }),
+        coordinates : {
+            latitude : req.body.coordinates.latitude,
+            longitude : req.body.coordinates.longitude
+        },
         userId : req.body.userId
     });
     console.log(post)
