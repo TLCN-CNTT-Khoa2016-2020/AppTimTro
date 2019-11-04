@@ -90,7 +90,6 @@ exports.create_posts = (req, res, next) => {
         },
         userId : req.body.userId
     });
-    console.log(post)
     //save post to database
     post.save()
         .then(result => {
