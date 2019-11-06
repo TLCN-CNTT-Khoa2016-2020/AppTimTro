@@ -157,6 +157,7 @@ router.post('/login', (req,res,next) => {
                         );
                         return res.status(200).json({
                             message : "Login success !",
+                            userID  : user._id,
                             token   : token 
                         });
                     };
@@ -187,6 +188,7 @@ router.post('/login', (req,res,next) => {
                         );
                         return res.status(200).json({
                             message : "Login success !",
+                            userID  : user._id,
                             token   : token 
                         });
                     };

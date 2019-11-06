@@ -10,6 +10,7 @@ import {
     TouchableOpacity
 } from 'react-native';
 import Svg, { Image, Circle, ClipPath } from 'react-native-svg';
+import { SocialIcon, Icon } from 'react-native-elements'
 import Animated, { Easing } from 'react-native-reanimated';
 import { TapGestureHandler, State } from 'react-native-gesture-handler';
 import { OauthKey } from '../androidClientid';
@@ -125,6 +126,8 @@ export default class DangNhap extends Component {
 
         this.state = {
             isLogin: false,
+            username : '',
+            password : ''
 
         };
     }
@@ -160,6 +163,19 @@ export default class DangNhap extends Component {
         } catch (e) {
             //   return { error: true };
             console.log(e)
+        }
+    }
+
+    handleSubmit = () => {
+        this.props.loginUser(this.state.username, this.state.password , this.navigateToMainScreen);
+    }
+    navigateToMainScreen = async (data) => {
+        try {
+            await AsyncStorage.setItem('userID', JSON.stringify(data.userID));
+            await AsyncStorage.setItem('authToken', JSON.stringify(data.token));
+            await this.props.navigation.navigate('tabNavigation');
+        } catch(error) {
+            console.log("Something went wrong", error);
         }
     }
 
@@ -204,18 +220,58 @@ export default class DangNhap extends Component {
                     </TapGestureHandler>
                     <Animated.View
                         style={{
-                            ...styles.button,
-                            backgroundColor: '#2E71DC',
-                            opacity: this.buttonOpacity,
-                            transform: [{ translateY: this.buttonY }]
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            alignItems: "center"
                         }}>
-                        <TouchableOpacity onPress = {this.signInWithGoogleAsync } >
-                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>
-                                SIGN IN WITH FACEBOOK
-                            </Text>
-                        </TouchableOpacity>
-                        
+
+                        <Animated.View
+                            style={{
+                                ...styles.circleButton,
+                                opacity: this.buttonOpacity,
+                                transform: [{ translateY: this.buttonY }]
+                            }}>
+                            <TouchableOpacity onPress={this.signInWithGoogleAsync} >
+                                <SocialIcon
+                                    type='google'
+                                />
+                            </TouchableOpacity>
+
+                        </Animated.View>
+                        <Animated.View
+                            style={{
+                                ...styles.circleButton,
+                                opacity: this.buttonOpacity,
+                                transform: [{ translateY: this.buttonY }]
+                            }}>
+                            <TouchableOpacity onPress={this.signInWithGoogleAsync} >
+                                <SocialIcon
+                                    type='facebook'
+                                />
+                            </TouchableOpacity>
+
+                        </Animated.View>
+                        <Animated.View
+                            style={{
+                                ...styles.circleButton,
+                                opacity: this.buttonOpacity,
+                                transform: [{ translateY: this.buttonY }]
+                            }}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('DangKi')} >
+                                <Icon
+                                    reverse
+                                    name='ios-add-circle'
+                                    type='ionicon'
+                                    color='#517fa4'
+                                />
+                            </TouchableOpacity>
+
+                        </Animated.View>
+
                     </Animated.View>
+
+
+
                     <Animated.View
                         style={{
                             zIndex: this.textInputZindex,
@@ -237,25 +293,31 @@ export default class DangNhap extends Component {
                                 </Animated.Text>
                             </Animated.View>
                         </TapGestureHandler>
-                        <View style = {styles.wrapTextInput} >
+                        <View style={styles.wrapTextInput} >
                             <TextInput
                                 placeholder="EMAIL"
                                 style={styles.textInput}
-                                placeholderTextColor='black' />
+                                placeholderTextColor='gray'
+                                onChangeText = {(username) => this.setState({username})} />
                         </View>
-                        <View style = {styles.wrapTextInput} >
+                        <View style={styles.wrapTextInput} >
                             <TextInput
+                                secureTextEntry={true}
                                 placeholder="PASSWORD"
                                 style={styles.textInput}
-                                placeholderTextColor='black' />
+                                placeholderTextColor='gray'
+                                onChangeText = {(password) => this.setState({password}) } />
                         </View>
-                        
-                        
+
+
                         <Animated.View style={styles.button} >
-                            <Text
-                                style={{ color: '#F56619', fontSize: 20, fontWeight: 'bold' }} >
-                                SIGN IN
+                            <TouchableOpacity onPress = {this.handleSubmit} >
+                                <Text
+                                    style={{ color: '#F56619', fontSize: 20, fontWeight: 'bold' }} >
+                                    SIGN IN 
                             </Text>
+                            </TouchableOpacity>
+
                         </Animated.View>
                     </Animated.View>
                 </View>
@@ -289,12 +351,29 @@ const styles = StyleSheet.create({
 
         elevation: 4,
     },
-    wrapTextInput : {
+    circleButton: {
+        backgroundColor: 'white',
+        marginHorizontal: 20,
+        borderRadius: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginVertical: 5,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.23,
+        shadowRadius: 2.62,
+
+        elevation: 4,
+    },
+    wrapTextInput: {
         backgroundColor: 'white',
         height: 50,
         borderRadius: 25,
         borderWidth: 0.5,
-        marginHorizontal: 20,       
+        marginHorizontal: 20,
         marginVertical: 5,
         borderColor: 'rgba(0,0,0,0.2)',
     },
@@ -304,7 +383,7 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         paddingLeft: 10,
         borderColor: 'rgba(0,0,0,0.2)',
-        color: '#fff'
+        color: '#000'
     },
     closeButton: {
         height: 40,

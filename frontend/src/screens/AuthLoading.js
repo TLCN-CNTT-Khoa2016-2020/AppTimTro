@@ -30,8 +30,8 @@ export default class AuthLoading extends Component {
       }
     componentDidMount = async () => {
         try {
-            let userData = await AsyncStorage.getItem("userData");
-            let data = await JSON.parse(userData);
+            let authToken = await AsyncStorage.getItem("authToken");
+            let data = await JSON.parse(authToken);
             await Font.loadAsync({
               'roboto-regular' : require('../../assets/fonts/Roboto-Regular.ttf'),
               'roboto-medium' : require('../../assets/fonts/Roboto-Medium.ttf')
@@ -40,7 +40,7 @@ export default class AuthLoading extends Component {
                 userData: data,
                 isLoading: false
             })
-            this.props.navigation.navigate(userData ? 'tabNavigation' : 'DangNhap')
+            this.props.navigation.navigate(authToken ? 'tabNavigation' : 'DangNhap')
             //this.props.navigation.navigate(userData ? 'tabNavigation' : 'tabNavigation')
 
         } catch (error) {

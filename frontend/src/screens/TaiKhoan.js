@@ -23,7 +23,7 @@ export default class TaiKhoan extends Component {
 
 
 	logOut = async () => {
-		await AsyncStorage.removeItem('userData');
+		await AsyncStorage.removeItem('authToken');
 		await this.props.navigation.navigate('DangNhap');
 	}
 	render() {

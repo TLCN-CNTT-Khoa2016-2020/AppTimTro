@@ -14,7 +14,7 @@ export const loginReducer = (prevState = initialState, action) =>{
         case LOGIN_REQUEST:
             return {
                 ...prevState,
-                isLogining: true,
+                isLoginRequest: true,
                 isLoginComplete: false,
                 isLoginError : false,
             };
@@ -24,7 +24,7 @@ export const loginReducer = (prevState = initialState, action) =>{
                 user : action.user,
                 isLoginComplete: true,
                 isLoginError: false,
-                isLogining : false
+                isLoginRequest : false
             };
         case LOGIN_ERROR :
             return {
@@ -32,7 +32,7 @@ export const loginReducer = (prevState = initialState, action) =>{
                 error : action.err,
                 isLoginError: true,
                 isLoginComplete: false,
-                isLogining: false
+                isLoginRequest: false
             }
     
         default: return prevState;

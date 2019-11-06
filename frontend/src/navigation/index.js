@@ -11,7 +11,7 @@ import {MAIN_COLOR, TEXT_COLOR} from '../../assets/color';
 import { fromLeft, fromTop, fromRight, fromBottom, fadeIn, fadeOut, zoomIn, zoomOut, flipY, flipX } from 'react-navigation-transitions';
 //auth
 import DangKi from '../screens/DangKi';
-import DangNhap from '../screens/DangNhap';
+//import DangNhap from '../screens/DangNhap';
 import AuthLoading from '../screens/AuthLoading';
 //import screen
 import ManHinhChinh from '../screens/ManHinhChinh';
@@ -24,6 +24,8 @@ import DangPhong3 from '../screens/DangPhong3';
 import DangPhong4 from '../screens/DangPhong4';
 import TaiKhoan from '../screens/TaiKhoan';
 import XemBaiDang from '../screens/XemBaiDang';
+//import contianer 
+import {DangNhapContainer} from '../containers/DangNhapContainer';
 
 
 
@@ -114,7 +116,7 @@ const stackAuth = createStackNavigator({
         }
     },
     DangNhap : {
-        screen : DangNhap,
+        screen : DangNhapContainer,
         navigationOptions : {
             header : null
         }
