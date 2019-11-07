@@ -403,4 +403,34 @@ exports.admin_delete_post = (req, res, next) => {
         })
 }
 
-//MISSON : 
+//MISSON :  GET 20 POST FOR MAINSCREEN
+exports.get_post_for_mainscreen = (req, res, next) => {
+    // pageOptions
+    const pageOptions = {
+        page : parseInt(req.query.page) || 0,
+        limit : parseInt( req.query.limit) || 10
+    }
+    Post.find()
+    .skip(pageOptions.page * pageOptions.limit)
+    .limit(pageOptions.limit)
+    .select("_id title room_price room_image")
+    .exec()
+    .then(result =>{
+        res.status(200).json({
+            count : result.length,
+            result : result.map(item => {
+                return {
+                    "_id"       : item.id,
+                    "title"     : item.title,
+                    "room_price": item.room_price,
+                    "room_image": item.room_image[0]
+                }
+            })
+        })
+    })
+    .catch(err => {
+        res.status(500).json({
+            error : err
+        })
+    })
+}

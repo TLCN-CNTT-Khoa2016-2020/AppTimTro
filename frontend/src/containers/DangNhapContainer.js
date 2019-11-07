@@ -4,7 +4,7 @@ import DangNhap from '../screens/DangNhap';
 
 
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state) => { 
     return {
         isLoginRequest   : state.loginReducer.isLoginRequest,
         isLoginComplete  : state.loginReducer.isLoginRequest,

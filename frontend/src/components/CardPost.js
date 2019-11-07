@@ -7,6 +7,7 @@ import { Text,
          Platform,
          Dimensions
          } from 'react-native';
+import {url} from '../ultils';
 import  { ParallaxImage } from 'react-native-snap-carousel';
 
 const { width, height } = Dimensions.get('window')
@@ -20,15 +21,15 @@ const CardPost = ({
         style = {styles.container} >
             <Image
                 style={styles.image} 
-                source = {{uri : item.image }} />
+                source = {{uri : `${url}`+ "/"  + item.room_image }} />
             <Text 
                 numberOfLines={1}
                 style = {{fontFamily : 'roboto-medium'}} > 
-                {item.address.length < 23
-                    ? `${item.address}`
-                    : `${item.address.substring(0,20)}...` } 
+                {item.title.length < 23
+                    ? `${item.title}`
+                    : `${item.title.substring(0,20)}...` } 
             </Text>
-            <Text numberOfLines={1}> {item.price} </Text>
+            <Text numberOfLines={1}> {item.room_price} </Text>
     </TouchableOpacity>
 );
 const styles = StyleSheet.create({

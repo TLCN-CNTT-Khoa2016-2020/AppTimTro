@@ -6,14 +6,15 @@ import {
     Dimensions,
     SafeAreaView,
     ScrollView,
-    FlatList
+    FlatList,
+    ActivityIndicator,
+    AsyncStorage
 } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import Constants from 'expo-constants';
 import ButtonComponent from '../components/ButtonComponent';
 import { Ionicons } from '@expo/vector-icons';
 import { MAIN_COLOR, TEXT_COLOR } from '../../assets/color';
-
 import CardPost from '../components/CardPost';
 
 
@@ -27,7 +28,9 @@ export default class ManHinhChinh extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            dataRecommend: mockData
+            isLoading : true,
+            page : 0,
+            dataRecommend : null
         };
     }
     headerComponent = () => {
@@ -74,24 +77,49 @@ export default class ManHinhChinh extends Component {
         );
     }
 
+    getPostForMainScreen = async() => {
+        let authToken = await AsyncStorage.getItem("authToken");
+        let data = await JSON.parse(authToken);
+        await this.props.getPostForMainScreen(data, this.state.page);
+    }
+    loadMore = async() => {
+        console.log('loadmore')
+        let authToken = await AsyncStorage.getItem("authToken");
+        let data = await JSON.parse(authToken);
+        await this.props.getPostForMainScreen(data, this.state.page + 1);
+        console.log(this.state.page);
+        this.setState({page : this.state.page + 1})
+    };
+    componentDidMount = async() => {
+        await this.getPostForMainScreen();
+        await this.setState({
+            isLoading : false,
+        })
+    }
+
+
     render() {
         return (
-            <SafeAreaView style={styles.container} >
+            this.state.isLoading
+                 ? <ActivityIndicator size = 'large' style = {{flex : 1}} />
+                 : <SafeAreaView style={styles.container} >
                 <View style={styles.body} >
                     <FlatList
                         contentContainerStyle={styles.flatList}
-                        data={this.state.dataRecommend}
+                        data={this.props.data}
                         renderItem={({ item, index }) =>
                             <CardPost 
                                 item={item} 
                                 index={index}
                                 onPress = {()=>this.props.navigation.navigate("XemBaiDang")} 
                                 />}
-                        keyExtractor={item => item.id.toString()}
+                        keyExtractor={(item, index) => String(index)}
                         numColumns={2}
                         ListHeaderComponent={this.headerComponent}
                         ListHeaderComponentStyle={styles.header}
-                        ItemSeparatorComponent={this.FlatListItemSeparator}
+                        ItemSeparatorComponent={this.FlatListItemSeparator} 
+                        onEndReached = {this.loadMore}
+                        onEndReachedThreshold = {0.4}
                     />
                 </View>
             </SafeAreaView>

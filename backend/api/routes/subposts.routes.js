@@ -15,6 +15,10 @@ router.get('/approvedpost/:userID', checkAuth, PostsController.get_posts_isAppro
 /*<--------- GET /unapprovedpost/:userID?page=xxx&limit=xxx ---------> */ 
 /* MISSION : GET POST IS UNAPPROVED  */
 router.get('/unapprovedpost/:userID', checkAuth, PostsController.get_posts_isUnApproved);
+/*<--------- GET /getpostformainscreen?page=xxx&limit=xxx ---------> */ 
+/* MISSION : GET POST FOR MAIN SCREEN  */
+router.get('/mainscreen/getpost', checkAuth, PostsController.get_post_for_mainscreen);
+
 
 
 

@@ -14,7 +14,7 @@ import DangKi from '../screens/DangKi';
 //import DangNhap from '../screens/DangNhap';
 import AuthLoading from '../screens/AuthLoading';
 //import screen
-import ManHinhChinh from '../screens/ManHinhChinh';
+//import ManHinhChinh from '../screens/ManHinhChinh';
 import TimKiem from '../screens/TimKiem';
 import BaiDang from '../screens/BaiDang';
 import CaiDatTaiKhoan from '../screens/CaiDatTaiKhoan';
@@ -26,6 +26,7 @@ import TaiKhoan from '../screens/TaiKhoan';
 import XemBaiDang from '../screens/XemBaiDang';
 //import contianer 
 import {DangNhapContainer} from '../containers/DangNhapContainer';
+import {ManHinhChinhContainer} from '../containers/ManHinhChinhContainer';
 
 
 
@@ -66,7 +67,7 @@ const stackDangPhong = createStackNavigator({
 
 const tabNavigation = createBottomTabNavigator({
     ManHinhChinh: {
-        screen : ManHinhChinh,
+        screen : ManHinhChinhContainer,
         navigationOptions: {
             title : "Màn Hình Chính",
             labelStyle : {color : MAIN_COLOR},
