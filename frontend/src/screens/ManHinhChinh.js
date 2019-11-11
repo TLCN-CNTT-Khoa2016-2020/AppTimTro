@@ -83,11 +83,10 @@ export default class ManHinhChinh extends Component {
         await this.props.getPostForMainScreen(data, this.state.page);
     }
     loadMore = async() => {
-        console.log('loadmore')
+        console.log('Loading more data....')
         let authToken = await AsyncStorage.getItem("authToken");
         let data = await JSON.parse(authToken);
         await this.props.getPostForMainScreen(data, this.state.page + 1);
-        console.log(this.state.page);
         this.setState({page : this.state.page + 1})
     };
     componentDidMount = async() => {
@@ -118,7 +117,10 @@ export default class ManHinhChinh extends Component {
                         ListHeaderComponent={this.headerComponent}
                         ListHeaderComponentStyle={styles.header}
                         ItemSeparatorComponent={this.FlatListItemSeparator} 
-                        onEndReached = {this.loadMore}
+                        onEndReached = {
+                            this.props.isInTheEnd   ? console.log("No more for loading !")
+                                                    : this.loadMore
+                        }
                         onEndReachedThreshold = {0.4}
                     />
                 </View>

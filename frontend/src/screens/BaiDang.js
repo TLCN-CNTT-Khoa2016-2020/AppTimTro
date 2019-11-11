@@ -4,7 +4,8 @@ import { View,
          StyleSheet,
          Dimensions,
          FlatList,
-         ActivityIndicator
+         ActivityIndicator,
+         AsyncStorage
           } from 'react-native';
 import Constants from 'expo-constants';
 import ButtonComponent from '../components/ButtonComponent';
@@ -19,10 +20,10 @@ export default class BaiDang extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            dataBaiDaDuyet: mockData,
-            dataBaiChuaDuyet: mockData,
-            dataBaiDaDuyetIsLoading : false,
-            dataBaiChuaDuyetIsLoading : false,
+            baiDaDuyetPage : 0,
+            baiChuaDuyetPage : 0,
+            dataBaiDaDuyetIsLoading : true,
+            dataBaiChuaDuyetIsLoading : true,
 
 
         };
@@ -32,10 +33,15 @@ export default class BaiDang extends Component {
             this.state.dataBaiDaDuyetIsLoading 
             ? <ActivityIndicator size = 'large' />
             : (<FlatList
-                data={this.state.dataBaiDaDuyet}
+                data={this.props.dataGetPostApproved}
                 renderItem={({ item, index }) =>
                     <CardPostHorizontal item={item} index={index} />}
-                keyExtractor={item => item.id.toString()}
+                keyExtractor={(item, index) => String(index)}
+                onEndReached = {
+                    this.props.isPostApprovedEnd    ? console.log("No more for loading !")
+                                                    : this.loadBaiDaDuyet
+                }
+                onEndReachedThreshold = {0.4}
             />)
         );
     }
@@ -44,12 +50,44 @@ export default class BaiDang extends Component {
             this.state.dataBaiChuaDuyetIsLoading
             ? <ActivityIndicator size = 'large' />
             : (<FlatList
-                data={this.state.dataBaiChuaDuyet}
+                data={this.props.dataGetPostUnApproved}
                 renderItem={({ item, index }) =>
                     <CardPostHorizontal item={item} index={index} />}
-                keyExtractor={item => item.id.toString()}
+                keyExtractor={(item, index) => String(index)}
+                onEndReached = {
+                    this.props.isPostUnApprovedEnd    ? console.log("No more for loading !")
+                                                      : this.loadBaiChuaDuyet
+                }
+                onEndReachedThreshold = {0.4}
             />)
         );
+    }
+    loadBaiDaDuyet = async() => {
+        let dataAuthToken   = await AsyncStorage.getItem("authToken");
+        let authToken       = await JSON.parse(dataAuthToken);
+        let dataUserID      = await AsyncStorage.getItem("userID")
+        let userID          = await JSON.parse(dataUserID);
+        await this.props.getPostApproved(authToken, this.state.baiDaDuyetPage, userID);
+        this.setState({
+            baiDaDuyetPage : this.state.baiDaDuyetPage + 1,
+            dataBaiDaDuyetIsLoading : false
+        })
+    }
+    loadBaiChuaDuyet = async() => {
+        let dataAuthToken   = await AsyncStorage.getItem("authToken");
+        let authToken       = await JSON.parse(dataAuthToken);
+        let dataUserID      = await AsyncStorage.getItem("userID")
+        let userID          = await JSON.parse(dataUserID);
+        await this.props.getPostUnApproved(authToken, this.state.baiChuaDuyetPage, userID);
+        this.setState({
+            baiChuaDuyetPage : this.state.baiChuaDuyetPage + 1,
+            dataBaiChuaDuyetIsLoading : false
+        })
+    }
+
+    componentDidMount = async() => {
+         await this.loadBaiDaDuyet();
+         await this.loadBaiChuaDuyet();
     }
 
     render() {

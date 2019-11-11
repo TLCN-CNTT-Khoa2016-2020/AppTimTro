@@ -6,6 +6,7 @@ const mapStateToProps = (state) => {
     return {
         data    : state.getPostForMainScreenReducer.data,
         error   : state.getPostForMainScreenReducer.error,
+        isInTheEnd : state.getPostForMainScreenReducer.isInTheEnd,
         isGetPostForMainScreenSuccess : state.getPostForMainScreenReducer.isGetPostForMainScreenSuccess,
         isGetPostForMainScreenRequest  : state.getPostForMainScreenReducer.isGetPostForMainScreenRequest,
         isGetPostForMainScreenError    : state.getPostForMainScreenReducer.isGetPostForMainScreenError

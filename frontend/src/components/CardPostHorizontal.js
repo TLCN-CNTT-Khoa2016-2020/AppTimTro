@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { MAIN_COLOR, TEXT_COLOR } from '../../assets/color';
 import { Foundation } from '@expo/vector-icons';
+import {url} from '../ultils/index'
 
 const CardPostHorizontal = ({
     item,
@@ -17,7 +18,7 @@ const CardPostHorizontal = ({
             <TouchableOpacity style={styles.post} >
                 <Image
                     style={styles.image}
-                    source={{ uri: item.image }} />
+                    source={{uri : `${url}`+ "/"  + item.room_image }} />
                 <View style={styles.content} >
                     <Text
                         style={{
@@ -34,7 +35,7 @@ const CardPostHorizontal = ({
                             fontFamily: 'roboto-regular',
                             fontSize: 14
                         }} >
-                        {item.price}
+                        {item.room_price}
                     </Text>
                     <Text
                         style={{

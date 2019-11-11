@@ -4,7 +4,7 @@ import {
     GETPOSTFORMAINSCREEN_REQUEST,
     GETPOSTFORMAINSCREEN_ERROR 
 } from '../actions/actionTypes';
-//import url
+//import url 
 import {url} from '../ultils/index';
 
 
@@ -13,10 +13,11 @@ const getPostForMainScreenRequest = () => {
         type : GETPOSTFORMAINSCREEN_REQUEST
     }
 };
-const getPostForMainScreenSuccess = (data) => {
+const getPostForMainScreenSuccess = (data, isInTheEnd) => {
     return {
-        type : GETPOSTFORMAINSCREEN_SUCCESS,
-        data : data
+        type        : GETPOSTFORMAINSCREEN_SUCCESS,
+        data        : data,
+        isInTheEnd  : isInTheEnd
     }
 };
 const getPostForMainScreenError = (err) => {
@@ -39,12 +40,15 @@ export const getPostForMainScreen = (authToken, page) => dispatch => {
             // if request success
             if(response.status === 200){
                 response.json().then(data => {
-                    dispatch(getPostForMainScreenSuccess(data.result));
-                    //console.log(data.result)
+                    if(data.result.length < 1 ){
+                        dispatch(getPostForMainScreenSuccess(data.result, true));   
+                    } else {
+                        dispatch(getPostForMainScreenSuccess(data.result, false));
+                    }
                 })
             } else {
                 dispatch(getPostForMainScreenError());
-                console.log("another 200")
+                console.log(" Response status another 200")
             }
         })
         .catch(err => {

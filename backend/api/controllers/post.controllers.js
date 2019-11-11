@@ -254,7 +254,7 @@ exports.get_posts_isApproved = (req, res, next) => {
         )
         .skip(pageOptions.page * pageOptions.limit)
         .limit(pageOptions.limit)
-        .select("_id title room_price address")
+        .select("_id title room_price address room_image")
         .exec()
         .then(result =>{
             res.status(200).json({
@@ -264,7 +264,8 @@ exports.get_posts_isApproved = (req, res, next) => {
                         "_id"       : item.id,
                         "title"     : item.title,
                         "room_price": item.room_price,
-                        "address"   : item.address
+                        "address"   : item.address,
+                        "room_image": item.room_image[0]
                     }
                 })
             })
@@ -290,7 +291,7 @@ exports.get_posts_isUnApproved = (req, res, next) => {
         )
         .skip(pageOptions.page * pageOptions.limit)
         .limit(pageOptions.limit)
-        .select("_id title room_price address")
+        .select("_id title room_price address room_image")
         .exec()
         .then(result =>{
             res.status(200).json({
@@ -300,7 +301,8 @@ exports.get_posts_isUnApproved = (req, res, next) => {
                         "_id"       : item.id,
                         "title"     : item.title,
                         "room_price": item.room_price,
-                        "address"   : item.address
+                        "address"   : item.address,
+                        "room_image": item.room_image[0]
                     }
                 })
             })

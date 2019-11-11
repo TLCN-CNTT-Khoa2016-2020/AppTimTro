@@ -7,6 +7,7 @@ import {
 const initialState = {
     data    : [],
     error   : {},
+    isInTheEnd : false,
     isGetPostForMainScreenSuccess : false,
     isGetPostForMainScreenRequest  : false,
     isGetPostForMainScreenError    : false
@@ -25,6 +26,7 @@ export const getPostForMainScreenReducer = (prevState = initialState, action) =>
             return {
                 ...prevState,
                 data : [...prevState.data,...action.data] ,
+                isInTheEnd : action.isInTheEnd,
                 isGetPostForMainScreenRequest   : false,
                 isGetPostForMainScreenSuccess   : true,
                 isGetPostForMainScreenError     : false,

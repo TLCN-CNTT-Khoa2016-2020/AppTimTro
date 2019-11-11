@@ -27,6 +27,7 @@ import XemBaiDang from '../screens/XemBaiDang';
 //import contianer 
 import {DangNhapContainer} from '../containers/DangNhapContainer';
 import {ManHinhChinhContainer} from '../containers/ManHinhChinhContainer';
+import {BaiDangContainer} from '../containers/BaiDangContainer';
 
 
 
@@ -83,7 +84,7 @@ const tabNavigation = createBottomTabNavigator({
         }
     },
     BaiDang: {
-        screen : BaiDang,
+        screen : BaiDangContainer,
         navigationOptions: {
             title : "Bài Đăng",
             labelStyle : {color : MAIN_COLOR},
