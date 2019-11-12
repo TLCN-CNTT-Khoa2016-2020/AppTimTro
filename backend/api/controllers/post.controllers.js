@@ -141,6 +141,7 @@ exports.get_posts_withID = (req, res, next) => {
                             "gender"        : result.gender,
                             "description"   : result.description,
                             "utilities"     : result.utilities,
+                            "room_image"    : result.room_image,
                             "user" : {
                                 "_id"       : result.userId.id,
                                 "fullname"  :result.userId.fullname

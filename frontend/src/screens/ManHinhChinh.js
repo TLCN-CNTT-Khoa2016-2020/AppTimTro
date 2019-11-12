@@ -110,7 +110,10 @@ export default class ManHinhChinh extends Component {
                             <CardPost 
                                 item={item} 
                                 index={index}
-                                onPress = {()=>this.props.navigation.navigate("XemBaiDang")} 
+                                onPress = {()=>this.props.navigation.navigate("XemBaiDang",
+                                {
+                                    post_id : item._id
+                                })} 
                                 />}
                         keyExtractor={(item, index) => String(index)}
                         numColumns={2}

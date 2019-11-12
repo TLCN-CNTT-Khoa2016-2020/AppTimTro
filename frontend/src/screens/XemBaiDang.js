@@ -11,7 +11,8 @@ import {
     ScrollView,
     KeyboardAvoidingView,
     TouchableOpacity,
-    ActivityIndicator
+    ActivityIndicator,
+    AsyncStorage
 } from 'react-native';
 import Constants from 'expo-constants';
 import ButtonComponent from '../components/ButtonComponent';
@@ -21,6 +22,7 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 import DateTimePicker from "react-native-modal-datetime-picker";
 import moment from 'moment';
 import { lstPost } from '../mockData';
+import {url} from '../ultils/index';
 
 
 const { height, width } = Dimensions.get('window');
@@ -38,16 +40,54 @@ export default class XemBaiDang extends Component {
             isFormModalVisible: false,
             isDateTimePickerVisible: false,
             indexImage: 0,
-            chosenDate : '',
-            postData: null
+            // appiontment state
+            fullname : null,
+            chosenDate : null,
+            // post state
+            postData: null,
+            postID : null,
+            postImage : null
         };
     }
 
-    componentDidMount = () => {
-        this.setState({
-            isLoading: false,
-            postData: lstPost[0]
-        })
+    componentDidMount = async() => {
+        const postID = await this.props.navigation.state.params.post_id;
+        let dataAuthToken = await AsyncStorage.getItem("authToken");
+        let authToken = await JSON.parse(dataAuthToken);
+        await this.getPostData(postID, authToken);
+    }
+    getPostData = async(postID, authToken) => {
+        return await fetch(`${url}`+ "/posts/" + `${postID}`,{
+            method : 'GET',
+            headers : { 
+                'Authorization' : 'Bearer '+`${authToken}`
+                
+            }
+        }).then(response => { 
+                // if request success
+                if(response.status === 200){
+                    response.json().then(data => {
+                        const postImage = data.result.room_image.map(item => {
+                            return {
+                                "url" : `${url}`+ "/"  + item
+                            }
+                        })
+                        this.setState({
+                            postData : data.result,
+                            postImage :postImage,
+                            isLoading : false
+                        })
+                        
+                    })
+                } else {
+                    
+                    console.log(" Response status another 200")
+                }
+            })
+            .catch(err => {
+
+                console.log(err);
+            })
     }
     componentWillMount = () => {
         this.showModalImage(false, 0);
@@ -81,10 +121,11 @@ export default class XemBaiDang extends Component {
 
     render() {
 
-        const { postData } = this.state
+        const { postData, postImage } = this.state
+        //console.log(postData)
         return (
             this.state.isLoading
-                ? <ActivityIndicator size='large' />
+                ? <ActivityIndicator size='large' style = {{flex :1}} />
                 : <KeyboardAvoidingView style={styles.container} behavior="padding" enable >
 
                     <ScrollView contentContainerStyle={{ marginTop: 0 }} >
@@ -97,7 +138,7 @@ export default class XemBaiDang extends Component {
                                     transparent={false}
                                     onRequestClose={() => this.showModalImage(false, 0)} >
                                     <ImageViewer
-                                        imageUrls={postData.image}
+                                        imageUrls={postImage}
                                         enableSwipeDown={true}
                                         index={this.state.indexImage}
                                         onSwipeDown={() => this.showModalImage(!this.state.isImageModalVisible)} />
@@ -172,11 +213,11 @@ export default class XemBaiDang extends Component {
                                 <View style={styles.detailImageDivice} >
                                     <TouchableOpacity
                                         onPress={() => this.showModalImage(!this.state.isImageModalVisible, 0)}  >
-                                        <Image style={styles.imageDivice2} source={{ uri: postData.image[0].url }} />
+                                        <Image style={styles.imageDivice2} source={{uri : `${url}`+ "/"  + postData.room_image[0] }} />
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         onPress={() => this.showModalImage(!this.state.isImageModalVisible, 1)}  >
-                                        <Image style={styles.imageDivice2} source={{ uri: postData.image[1].url }} />
+                                        <Image style={styles.imageDivice2} source={{uri : `${url}`+ "/"  + postData.room_image[1] }} />
                                     </TouchableOpacity>
 
 
@@ -184,15 +225,15 @@ export default class XemBaiDang extends Component {
                                 <View style={styles.detailImageDivice} >
                                     <TouchableOpacity
                                         onPress={() => this.showModalImage(!this.state.isImageModalVisible, 2)} >
-                                        <Image style={styles.imageDivice3} source={{ uri: postData.image[2].url }} />
+                                        <Image style={styles.imageDivice3} source={{uri : `${url}`+ "/"  + postData.room_image[2] }} />
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         onPress={() => this.showModalImage(!this.state.isImageModalVisible, 3)} >
-                                        <Image style={styles.imageDivice3} source={{ uri: postData.image[3].url }} />
+                                        <Image style={styles.imageDivice3} source={{uri : `${url}`+ "/"  + postData.room_image[3] }} />
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         onPress={() => this.showModalImage(!this.state.isImageModalVisible, 4)} >
-                                        <Image style={styles.imageDivice3} source={{ uri: postData.image[4].url }} />
+                                        <Image style={styles.imageDivice3} source={{uri : `${url}`+ "/"  + postData.room_image[4] }} />
                                     </TouchableOpacity>
 
 
@@ -203,74 +244,85 @@ export default class XemBaiDang extends Component {
                                 <View style={styles.cell}>
                                     <View style={styles.smallCell} >
                                         <Text style={styles.smallTitle} >Loại phòng</Text>
-                                        <Text style={styles.subSmallTitle} > {postData.roomInfor.kindOfRoom} </Text>
+                                        <Text style={styles.subSmallTitle} > {postData.kind_of_room} </Text>
                                     </View  >
                                     <View style={styles.smallCell} >
                                         <Text style={styles.smallTitle} >Giá phòng</Text>
-                                        <Text style={styles.subSmallTitle} >{postData.roomInfor.roomPrice}/tháng </Text>
+                                        <Text style={styles.subSmallTitle} >{postData.room_price}/tháng </Text>
                                     </View>
                                     <View style={styles.smallCell} >
                                         <Text style={styles.smallTitle} >Diện tích</Text>
-                                        <Text style={styles.subSmallTitle} > {postData.roomInfor.acreage} m2 </Text>
+                                        <Text style={styles.subSmallTitle} > {postData.room_area} m2 </Text>
                                     </View>
                                     <View style={styles.smallCell} >
                                         <Text style={styles.smallTitle} >Đặt cọc</Text>
-                                        <Text style={styles.subSmallTitle} > {postData.roomInfor.downPayment}đ </Text>
+                                        <Text style={styles.subSmallTitle} > {postData.room_deposi}đ </Text>
                                     </View>
                                 </View>
                                 <View style={styles.underLine} ></View>
                                 <View style={[styles.cell, { justifyContent: "space-around" }]}>
                                     <View style={styles.smallCell} >
                                         <Entypo name="light-bulb" size={32} color={TEXT_COLOR} />
-                                        <Text style={styles.subSmallTitle} > {postData.roomInfor.electricPrice} </Text>
+                                        <Text style={styles.subSmallTitle} > {postData.electric_price} </Text>
                                     </View  >
                                     <View style={styles.smallCell} >
                                         <Ionicons name="ios-water" size={32} color={TEXT_COLOR} />
-                                        <Text style={styles.subSmallTitle} >{postData.roomInfor.waterPrice} </Text>
+                                        <Text style={styles.subSmallTitle} >{postData.water_price} </Text>
                                     </View>
                                     <View style={styles.smallCell} >
                                         <FontAwesome name="motorcycle" size={32} color={TEXT_COLOR} />
-                                        <Text style={styles.subSmallTitle} > {postData.roomInfor.parking} </Text>
+                                        <Text style={styles.subSmallTitle} > {postData.parking_price} </Text>
                                     </View>
                                     <View style={styles.smallCell} >
                                         <FontAwesome name="wifi" size={32} color={TEXT_COLOR} />
-                                        <Text style={styles.subSmallTitle} > {postData.roomInfor.internetPrice} </Text>
+                                        <Text style={styles.subSmallTitle} > {postData.wifi_price} </Text>
                                     </View>
                                 </View>
-                                <Text style={{ fontSize: 18, fontFamily: 'roboto-medium' }} >Tiện ích</Text>
+                                <Text style={{
+                                    fontSize: 18,
+                                    fontFamily: 'roboto-medium', 
+                                    marginHorizontal :10 
+                                }}> Tiện ích </Text>
                                 <View style={[styles.cell, { justifyContent: "space-around" }]} >
                                     <View style={styles.smallCell} >
                                         <Ionicons name="md-checkmark-circle" size={32} color="green" />
-                                        <Text style={styles.subSmallTitle} > {postData.roomInfor.electricPrice} </Text>
+                                        <Text style={styles.subSmallTitle} > {postData.wifi_price} </Text>
                                     </View  >
                                     <View style={styles.smallCell} >
                                         <Ionicons name="md-checkmark-circle" size={32} color="green" />
-                                        <Text style={styles.subSmallTitle} >{postData.roomInfor.waterPrice} </Text>
+                                        <Text style={styles.subSmallTitle} >{postData.wifi_price} </Text>
                                     </View>
                                     <View style={styles.smallCell} >
                                         <Ionicons name="md-checkmark-circle" size={32} color="green" />
-                                        <Text style={styles.subSmallTitle} > {postData.roomInfor.parking} </Text>
+                                        <Text style={styles.subSmallTitle} > {postData.wifi_price} </Text>
                                     </View>
                                     <View style={styles.smallCell} >
                                         <Ionicons name="md-checkmark-circle" size={32} color="green" />
-                                        <Text style={styles.subSmallTitle} > {postData.roomInfor.internetPrice} </Text>
+                                        <Text style={styles.subSmallTitle} > {postData.wifi_price} </Text>
                                     </View>
                                 </View>
                                 <View style={styles.underLine} ></View>
-                                <Text style={{ fontSize: 18, fontFamily: 'roboto-medium' }} >Địa chỉ</Text>
+                                <Text style={{
+                                    fontSize: 18,
+                                    fontFamily: 'roboto-medium',
+                                    marginHorizontal : 10
+                                     }} >Địa chỉ</Text>
                                 <View style={[styles.cell, { justifyContent: "flex-start", marginLeft: 30 }]} >
                                     <Ionicons name="ios-pin" size={32} color={MAIN_COLOR} />
                                     <Text> {postData.address} </Text>
                                 </View>
                                 <View style={styles.underLine} ></View>
-                                <Text style={{ fontSize: 18, fontFamily: 'roboto-medium' }} >Ngày đăng</Text>
+                                <Text style={{ 
+                                    fontSize: 18, 
+                                    fontFamily: 'roboto-medium',
+                                    marginHorizontal : 10 }} >Ngày đăng</Text>
                                 <View style={[styles.cell, { justifyContent: "flex-start", marginLeft: 30 }]} >
                                     <Ionicons name="ios-calendar" size={32} color={MAIN_COLOR} />
-                                    <Text> {postData.postingDate} </Text>
+                                    <Text> {postData.day_submit} </Text>
                                 </View>
                                 <View style={styles.underLine} ></View>
                             </View>
-                            <View style={styles.comment} >
+                            <View style={styles.description} >
 
                             </View>
                         </View>
@@ -344,6 +396,7 @@ const styles = StyleSheet.create({
     },
     cell: {
         marginVertical: 10,
+        marginHorizontal : 10,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center"
@@ -358,7 +411,8 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontFamily: 'roboto-medium',
-        marginVertical: 5
+        marginVertical: 5,
+        marginHorizontal : 5
     },
     smallTitle: {
         fontSize: 16
