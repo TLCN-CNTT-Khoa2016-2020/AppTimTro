@@ -11,11 +11,11 @@ const Appointment = require('../models/appointment.model');
 
 // MISSiON : CREATE APPOINTMENT
 exports.create_appointment = (req, res, next) => {
-    console.log(req.body.appointmentDate)
+    //console.log(req.body.appointmentDate)
     // create new appointment
     const appointment = new Appointment({
         _id                 : new mongoose.Types.ObjectId(),
-        appointmentDate      : req.body.appointmentDate,
+        appointmentDate      : req.body.appointmentDate, 
         roomMaster          : req.body.roomMaster,
         peopleBooking       : {
             _id         : req.body.peopleBooking._id,

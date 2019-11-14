@@ -41,8 +41,9 @@ export default class XemBaiDang extends Component {
             isDateTimePickerVisible: false,
             indexImage: 0,
             // appiontment state
-            fullname : null,
-            chosenDate : null,
+            fullname    : null,
+            SDT         : null,
+            choosenDate  : '',
             // post state
             postData: null,
             postID : null,
@@ -114,10 +115,57 @@ export default class XemBaiDang extends Component {
 
     handleDatePicked = date => {
         this.setState({
-            chosenDate : moment(date).format('DD-MM-YYYY')
+            choosenDate : moment.utc(date).format()//'DD-MM-YYYY'
         });
         this.hideDateTimePicker();
     };
+
+    handleModalSubmit = async() => {
+        const postID        = await this.props.navigation.state.params.post_id;
+        let dataUserID      = await AsyncStorage.getItem("userID");
+        let userID          = await JSON.parse(dataUserID);
+        let dataAuthToken   = await AsyncStorage.getItem("authToken");
+        let authToken       = await JSON.parse(dataAuthToken);
+        //
+        const appointment = {
+            appointmentDate : this.state.choosenDate, // 2018-01-30 10:26:2 -0500
+            roomMaster      : this.state.postData.user._id,
+            postID          : postID,
+            peopleBooking   : {
+                _id         : userID,
+                fullname    : this.state.fullname,
+                SDT         : this.state.SDT
+            }
+        }
+        console.log(appointment)
+        // post data
+        fetch(`${url}`+ "/appointment",{
+            method : 'POST',
+            headers : { 
+                'Authorization' : 'Bearer '+`${authToken}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Origin': '',   
+            },
+            body : JSON.stringify(appointment)
+        }).then(response => {
+            if(response.status === 201){
+                response.json().then(result => {
+                    console.log(result.message)
+                })
+            } else {
+                response.json().then(data => {
+                    console.log(data.error)
+                })
+                //console.log("Create appointment fail" + response.error)
+            }
+        }).catch(error => {
+            console.log(error)
+        })
+        
+
+        this.showModalForm(false);
+    }
 
     render() {
 
@@ -160,7 +208,8 @@ export default class XemBaiDang extends Component {
                                                     placeholderTextColor='gray'
                                                     fontSize={16}
                                                     fontFamily='roboto-regular'
-                                                    style={styles.textInputStyle} />
+                                                    style={styles.textInputStyle}
+                                                    onChangeText = {fullname => this.setState({fullname}) } />
                                                 <View style={[styles.underLine, { width: width * 0.5 }]} ></View>
                                             </View>
                                             <View style={{ flexDirection: "column" }} >
@@ -170,7 +219,8 @@ export default class XemBaiDang extends Component {
                                                     placeholderTextColor='gray'
                                                     fontSize={16}
                                                     fontFamily='roboto-regular'
-                                                    style={styles.textInputStyle} />
+                                                    style={styles.textInputStyle} 
+                                                    onChangeText = {SDT => this.setState({SDT})}/>
                                                 <View style={[styles.underLine, { width: width * 0.5 }]} ></View>
                                             </View>
                                             <View style={{ flexDirection: "column" }} >
@@ -179,13 +229,13 @@ export default class XemBaiDang extends Component {
                                                     onPress = {this.showDateTimePicker}
                                                     style = {styles.textInputStyle} >
                                                     <Text style = {
-                                                        this.state.chosenDate != ""
+                                                        this.state.choosenDate != ""
                                                         ? {color : TEXT_COLOR, fontFamily : 'roboto-regular',fontSize : 16}
                                                         : {color : 'gray',fontFamily : 'roboto-regular',fontSize : 16}
                                                     } >
                                                         {
-                                                            this.state.chosenDate != ""
-                                                            ? this.state.chosenDate
+                                                            this.state.choosenDate != ""
+                                                            ?  moment(this.state.choosenDate).format('DD-MM-YYYY')//'DD-MM-YYYY'
                                                             : "Nhấn để chọn ngày"
                                                             
                                                         }
@@ -204,7 +254,7 @@ export default class XemBaiDang extends Component {
                                                 justifyContent: 'space-between',
                                                 marginTop: 10
                                             }} >
-                                                <ButtonComponent title="Xác nhận" />
+                                                <ButtonComponent title="Xác nhận" onPress = {()=> this.handleModalSubmit()} />
                                                 <ButtonComponent title="Hủy" onPress={() => this.showModalForm(false)} />
                                             </View>
                                         </View>
