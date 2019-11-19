@@ -7,7 +7,8 @@ import {
     Image,
     TextInput,
     ScrollView,
-    KeyboardAvoidingView
+    KeyboardAvoidingView,
+    ActivityIndicator
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
@@ -16,28 +17,30 @@ import ButtonComponent from '../components/ButtonComponent';
 import StepIndicator from '../components/StepIndicator';
 import { MAIN_COLOR, BORDER_COLOR, TEXT_COLOR } from '../../assets/color';
 import { CheckBox } from 'react-native-elements'
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 
 const { height, width } = Dimensions.get('window');
 export default class DangPhong3 extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            listImage: [],
-            tienIch : {
-                wcRieng : false,
-                choDeXe : false,
-                cuaSo : false,
-                anNinh : false,
-                wifi : false,
-                tudo : false,
-                chuRieng : false,
-                mayLanh : false,
-                nhaBep : false,
-                tuLanh: false,
-                mayGiat : false,
-                thuCung : false
-            }
+            isLoading : true,
+            post : null,
+            utilities : {
+                wc_rieng    : false,
+                an_ninh     : false,
+                chu_rieng   : false,
+                tu_do       : false,
+                cua_so      : false,
+                chode_xe    : false,
+                wifi        : false,
+                may_lanh    : false,
+                tu_lanh     : false,
+                may_giat    : false,
+                nha_bep     : false,
+                thu_cung    : false
+            },
+            room_image : []
         };
     }
     getPermissionAsync = async () => {
@@ -49,7 +52,12 @@ export default class DangPhong3 extends Component {
         }
     }
     componentDidMount() {
+        const post = this.props.navigation.state.params.post;
         this.getPermissionAsync();
+        this.setState({
+            isLoading : false,
+            post
+        })
     }
     _pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -61,14 +69,25 @@ export default class DangPhong3 extends Component {
         //console.log(result);
 
         if (!result.cancelled) {
-            this.setState({ listImage: [...this.state.listImage, result.uri] });
+            console.log(this.state.room_image)
+            this.setState({ room_image: [...this.state.room_image, result] });
         }
     };
- 
+
+    handleButtonTiepThep = () => {
+        const post = this.state.post;
+        post["utilities"]    = this.state.utilities;
+        post["room_image"]   = this.state.room_image;
+        this.props.navigation.navigate("DangPhong4",{post : post});
+       
+    }
+
 
     render() {
         return (
-            <KeyboardAvoidingView style={styles.container} behavior="padding" enable >
+            this.isLoading 
+                ? <ActivityIndicator size = 'large' style={{flex:1}} />
+                : <KeyboardAvoidingView style={styles.container} behavior="padding" enable >
                 <StepIndicator step={3} />
                 <ScrollView contentContainerStyle={{ marginTop: 0 }} >
                     {/* body */}
@@ -76,20 +95,26 @@ export default class DangPhong3 extends Component {
                         <Text style={styles.title} >Thông tin hình ảnh</Text>
                         <Text style={styles.smallTitle} >Hình ảnh</Text>
                         <View style={styles.listImage} >
-                            <ButtonComponent
-                                style={styles.btnDangAnh}
-                                title="Đăng hình"
-                                onPress={this._pickImage}
-                                icon={<Ionicons name="md-checkmark-circle" size={32} color="green" />} />
-                            {this.state.listImage.map((uri, index) => {
-                                return (
-                                    <Image
-                                        key={index.toString()}
-                                        style={styles.image}
-                                        source={{ uri: uri }} />
-                                );
-                            })}
+                            {
+                                this.state.room_image.length < 1 
+                                    ?   <Text 
+                                            style = {styles.textHinhAnh}>
+                                            Chưa có ảnh nào được chọn
+                                        </Text>
+                                    : this.state.room_image.map((uri, index) => {
+                                        return (
+                                            <Image
+                                                key={index.toString()}
+                                                style={styles.image}
+                                                source={{ uri: uri.uri }} />
+                                            );
+                                    })
+                            }
                         </View>
+                        <ButtonComponent
+                                style={styles.btnDangAnh}
+                                title="Nhấn để chọn ảnh"
+                                onPress={this._pickImage} />   
                         <Text style={styles.smallTitle} >Tiện ích</Text>
                         <View style={styles.tienIch} >
                             <View style={styles.columnCheckBox} >
@@ -98,14 +123,14 @@ export default class DangPhong3 extends Component {
                                     center
                                     containerStyle={{ backgroundColor: 'rgba(52, 52, 52, 0)', borderColor: '#fff', }}
                                     textStyle={{ fontFamily: 'roboto-regular' }}
-                                    checkedIcon={<Ionicons name="md-checkmark-circle" size={32} color={MAIN_COLOR} />}
-                                    uncheckedIcon={<Ionicons name="md-checkmark-circle" size={32} color="gray" />}
-                                    checked={this.state.tienIch.wcRieng}
+                                    checkedIcon={<MaterialCommunityIcons name="toilet" size={32} color={MAIN_COLOR} />}
+                                    uncheckedIcon={<MaterialCommunityIcons name="toilet" size={32} color="gray" />}
+                                    checked={this.state.utilities.wc_rieng}
                                     onPress={() =>
                                         this.setState({
-                                            tienIch : {
-                                                ...this.state.tienIch,
-                                                wcRieng : !this.state.tienIch.wcRieng
+                                            utilities: {
+                                                ...this.state.utilities,
+                                                wc_rieng: !this.state.utilities.wc_rieng
                                             }
                                         })
                                     }
@@ -115,14 +140,14 @@ export default class DangPhong3 extends Component {
                                     center
                                     containerStyle={{ backgroundColor: 'rgba(52, 52, 52, 0)', borderColor: '#fff', }}
                                     textStyle={{ fontFamily: 'roboto-regular' }}
-                                    checkedIcon={<Ionicons name="md-checkmark-circle" size={32} color={MAIN_COLOR} />}
-                                    uncheckedIcon={<Ionicons name="md-checkmark-circle" size={32} color="gray" />}
-                                    checked={this.state.tienIch.cuaSo}
+                                    checkedIcon={<MaterialCommunityIcons name="aspect-ratio" size={32} color={MAIN_COLOR} />}
+                                    uncheckedIcon={<MaterialCommunityIcons name="aspect-ratio" size={32} color="gray" />}
+                                    checked={this.state.utilities.cua_so}
                                     onPress={() =>
                                         this.setState({
-                                            tienIch : {
-                                                ...this.state.tienIch,
-                                                cuaSo : !this.state.tienIch.cuaSo
+                                            utilities: {
+                                                ...this.state.utilities,
+                                                cua_so: !this.state.utilities.cua_so
                                             }
                                         })
                                     }
@@ -132,14 +157,14 @@ export default class DangPhong3 extends Component {
                                     center
                                     containerStyle={{ backgroundColor: 'rgba(52, 52, 52, 0)', borderColor: '#fff', }}
                                     textStyle={{ fontFamily: 'roboto-regular' }}
-                                    checkedIcon={<Ionicons name="md-checkmark-circle" size={32} color={MAIN_COLOR} />}
-                                    uncheckedIcon={<Ionicons name="md-checkmark-circle" size={32} color="gray" />}
-                                    checked={this.state.tienIch.wifi}
+                                    checkedIcon={<MaterialCommunityIcons name="wifi" size={32} color={MAIN_COLOR} />}
+                                    uncheckedIcon={<MaterialCommunityIcons name="wifi" size={32} color="gray" />}
+                                    checked={this.state.utilities.wifi}
                                     onPress={() =>
                                         this.setState({
-                                            tienIch : {
-                                                ...this.state.tienIch,
-                                                wifi : !this.state.tienIch.wifi
+                                            utilities: {
+                                                ...this.state.utilities,
+                                                wifi: !this.state.utilities.wifi
                                             }
                                         })
                                     }
@@ -151,12 +176,12 @@ export default class DangPhong3 extends Component {
                                     textStyle={{ fontFamily: 'roboto-regular' }}
                                     checkedIcon={<Ionicons name="md-checkmark-circle" size={32} color={MAIN_COLOR} />}
                                     uncheckedIcon={<Ionicons name="md-checkmark-circle" size={32} color="gray" />}
-                                    checked={this.state.tienIch.chuRieng}
+                                    checked={this.state.utilities.chu_rieng}
                                     onPress={() =>
                                         this.setState({
-                                            tienIch : {
-                                                ...this.state.tienIch,
-                                                chuRieng : !this.state.tienIch.chuRieng
+                                            utilities: {
+                                                ...this.state.utilities,
+                                                chu_rieng: !this.state.utilities.chu_rieng
                                             }
                                         })
                                     }
@@ -166,14 +191,14 @@ export default class DangPhong3 extends Component {
                                     center
                                     containerStyle={{ backgroundColor: 'rgba(52, 52, 52, 0)', borderColor: '#fff', }}
                                     textStyle={{ fontFamily: 'roboto-regular' }}
-                                    checkedIcon={<Ionicons name="md-checkmark-circle" size={32} color={MAIN_COLOR} />}
-                                    uncheckedIcon={<Ionicons name="md-checkmark-circle" size={32} color="gray" />}
-                                    checked={this.state.tienIch.nhaBep}
+                                    checkedIcon={<MaterialCommunityIcons name="silverware-fork-knife" size={32} color={MAIN_COLOR} />}
+                                    uncheckedIcon={<MaterialCommunityIcons name="silverware-fork-knife" size={32} color="gray" />}
+                                    checked={this.state.utilities.nha_bep}
                                     onPress={() =>
                                         this.setState({
-                                            tienIch : {
-                                                ...this.state.tienIch,
-                                                nhaBep : !this.state.tienIch.nhaBep
+                                            utilities: {
+                                                ...this.state.utilities,
+                                                nha_bep: !this.state.utilities.nha_bep
                                             }
                                         })
                                     }
@@ -183,14 +208,14 @@ export default class DangPhong3 extends Component {
                                     center
                                     containerStyle={{ backgroundColor: 'rgba(52, 52, 52, 0)', borderColor: '#fff', }}
                                     textStyle={{ fontFamily: 'roboto-regular' }}
-                                    checkedIcon={<Ionicons name="md-checkmark-circle" size={32} color={MAIN_COLOR} />}
-                                    uncheckedIcon={<Ionicons name="md-checkmark-circle" size={32} color="gray" />}
-                                    checked={this.state.tienIch.mayGiat}
+                                    checkedIcon={<MaterialCommunityIcons name="washing-machine" size={32} color={MAIN_COLOR} />}
+                                    uncheckedIcon={<MaterialCommunityIcons name="washing-machine" size={32} color="gray" />}
+                                    checked={this.state.utilities.may_giat}
                                     onPress={() =>
                                         this.setState({
-                                            tienIch : {
-                                                ...this.state.tienIch,
-                                                mayGiat : !this.state.tienIch.mayGiat
+                                            utilities: {
+                                                ...this.state.utilities,
+                                                may_giat: !this.state.utilities.may_giat
                                             }
                                         })
                                     }
@@ -202,14 +227,14 @@ export default class DangPhong3 extends Component {
                                     center
                                     containerStyle={{ backgroundColor: 'rgba(52, 52, 52, 0)', borderColor: '#fff', }}
                                     textStyle={{ fontFamily: 'roboto-regular' }}
-                                    checkedIcon={<Ionicons name="md-checkmark-circle" size={32} color={MAIN_COLOR} />}
-                                    uncheckedIcon={<Ionicons name="md-checkmark-circle" size={32} color="gray" />}
-                                    checked={this.state.tienIch.choDeXe}
+                                    checkedIcon={<MaterialCommunityIcons name="bike" size={32} color={MAIN_COLOR} />}
+                                    uncheckedIcon={<MaterialCommunityIcons name="bike" size={32} color="gray" />}
+                                    checked={this.state.utilities.chode_xe}
                                     onPress={() =>
                                         this.setState({
-                                            tienIch : {
-                                                ...this.state.tienIch,
-                                                choDeXe : !this.state.tienIch.choDeXe
+                                            utilities: {
+                                                ...this.state.utilities,
+                                                chode_xe: !this.state.utilities.chode_xe
                                             }
                                         })
                                     }
@@ -219,14 +244,14 @@ export default class DangPhong3 extends Component {
                                     center
                                     containerStyle={{ backgroundColor: 'rgba(52, 52, 52, 0)', borderColor: '#fff', }}
                                     textStyle={{ fontFamily: 'roboto-regular' }}
-                                    checkedIcon={<Ionicons name="md-checkmark-circle" size={32} color={MAIN_COLOR} />}
-                                    uncheckedIcon={<Ionicons name="md-checkmark-circle" size={32} color="gray" />}
-                                    checked={this.state.tienIch.anNinh}
+                                    checkedIcon={<MaterialCommunityIcons name="security" size={32} color={MAIN_COLOR} />}
+                                    uncheckedIcon={<MaterialCommunityIcons name="security" size={32} color="gray" />}
+                                    checked={this.state.utilities.an_ninh}
                                     onPress={() =>
                                         this.setState({
-                                            tienIch : {
-                                                ...this.state.tienIch,
-                                                anNinh : !this.state.tienIch.anNinh
+                                            utilities: {
+                                                ...this.state.utilities,
+                                                an_ninh: !this.state.utilities.an_ninh
                                             }
                                         })
                                     }
@@ -236,14 +261,14 @@ export default class DangPhong3 extends Component {
                                     center
                                     containerStyle={{ backgroundColor: 'rgba(52, 52, 52, 0)', borderColor: '#fff', }}
                                     textStyle={{ fontFamily: 'roboto-regular' }}
-                                    checkedIcon={<Ionicons name="md-checkmark-circle" size={32} color={MAIN_COLOR} />}
-                                    uncheckedIcon={<Ionicons name="md-checkmark-circle" size={32} color="gray" />}
-                                    checked={this.state.tienIch.tudo}
+                                    checkedIcon={<MaterialCommunityIcons name="hand-peace" size={32} color={MAIN_COLOR} />}
+                                    uncheckedIcon={<MaterialCommunityIcons name="hand-peace" size={32} color="gray" />}
+                                    checked={this.state.utilities.tu_do}
                                     onPress={() =>
                                         this.setState({
-                                            tienIch : {
-                                                ...this.state.tienIch,
-                                                tudo : !this.state.tienIch.tudo
+                                            utilities: {
+                                                ...this.state.utilities,
+                                                tu_do: !this.state.utilities.tu_do
                                             }
                                         })
                                     }
@@ -253,14 +278,14 @@ export default class DangPhong3 extends Component {
                                     center
                                     containerStyle={{ backgroundColor: 'rgba(52, 52, 52, 0)', borderColor: '#fff', }}
                                     textStyle={{ fontFamily: 'roboto-regular' }}
-                                    checkedIcon={<Ionicons name="md-checkmark-circle" size={32} color={MAIN_COLOR} />}
-                                    uncheckedIcon={<Ionicons name="md-checkmark-circle" size={32} color="gray" />}
-                                    checked={this.state.tienIch.mayLanh}
+                                    checkedIcon={<MaterialCommunityIcons name="air-conditioner" size={32} color={MAIN_COLOR} />}
+                                    uncheckedIcon={<MaterialCommunityIcons name="air-conditioner" size={32} color="gray" />}
+                                    checked={this.state.utilities.may_lanh}
                                     onPress={() =>
                                         this.setState({
-                                            tienIch : {
-                                                ...this.state.tienIch,
-                                                mayLanh : !this.state.tienIch.mayLanh
+                                            utilities: {
+                                                ...this.state.utilities,
+                                                may_lanh: !this.state.utilities.may_lanh
                                             }
                                         })
                                     }
@@ -270,14 +295,14 @@ export default class DangPhong3 extends Component {
                                     center
                                     containerStyle={{ backgroundColor: 'rgba(52, 52, 52, 0)', borderColor: '#fff', }}
                                     textStyle={{ fontFamily: 'roboto-regular' }}
-                                    checkedIcon={<Ionicons name="md-checkmark-circle" size={32} color={MAIN_COLOR} />}
-                                    uncheckedIcon={<Ionicons name="md-checkmark-circle" size={32} color="gray" />}
-                                    checked={this.state.tienIch.tuLanh}
+                                    checkedIcon={<MaterialCommunityIcons name="fridge" size={32} color={MAIN_COLOR} />}
+                                    uncheckedIcon={<MaterialCommunityIcons name="fridge" size={32} color="gray" />}
+                                    checked={this.state.utilities.tu_lanh}
                                     onPress={() =>
                                         this.setState({
-                                            tienIch : {
-                                                ...this.state.tienIch,
-                                                tuLanh : !this.state.tienIch.tuLanh
+                                            utilities: {
+                                                ...this.state.utilities,
+                                                tu_lanh: !this.state.utilities.tu_lanh
                                             }
                                         })
                                     }
@@ -287,14 +312,14 @@ export default class DangPhong3 extends Component {
                                     center
                                     containerStyle={{ backgroundColor: 'rgba(52, 52, 52, 0)', borderColor: '#fff', }}
                                     textStyle={{ fontFamily: 'roboto-regular' }}
-                                    checkedIcon={<Ionicons name="md-checkmark-circle" size={32} color={MAIN_COLOR} />}
-                                    uncheckedIcon={<Ionicons name="md-checkmark-circle" size={32} color="gray" />}
-                                    checked={this.state.tienIch.thuCung}
+                                    checkedIcon={<MaterialCommunityIcons name="dog-service" size={32} color={MAIN_COLOR} />}
+                                    uncheckedIcon={<MaterialCommunityIcons name="dog-service" size={32} color="gray" />}
+                                    checked={this.state.utilities.thu_cung}
                                     onPress={() =>
                                         this.setState({
-                                            tienIch : {
-                                                ...this.state.tienIch,
-                                                thuCung : !this.state.tienIch.thuCung
+                                            utilities: {
+                                                ...this.state.utilities,
+                                                thu_cung: !this.state.utilities.thu_cung
                                             }
                                         })
                                     }
@@ -307,7 +332,7 @@ export default class DangPhong3 extends Component {
                 <View style={styles.bottomBar} >
                     <ButtonComponent
                         title="Tiếp theo"
-                        onPress={() => this.props.navigation.navigate("DangPhong4")} />
+                        onPress={() => this.handleButtonTiepThep()} />
                 </View>
             </KeyboardAvoidingView >
         );
@@ -348,7 +373,7 @@ const styles = StyleSheet.create({
     smallTitle: {
         fontSize: 14,
         fontFamily: 'roboto-medium',
-        marginVertical : 10
+        marginVertical: 10
     },
     underLine: {
         height: 2,
@@ -366,16 +391,23 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         padding: 10,
         position: 'relative',
-        borderRadius : 20,
+        borderRadius: 20,
 
+    },
+    textHinhAnh: {
+        fontSize : 14,
+        fontFamily : 'roboto-medium',
+        alignSelf : "center",
+        alignContent : "center",
+        color : 'gray'
     },
     image: {
         width: 130,
         height: 80
     },
     btnDangAnh: {
-        position: 'absolute',
-        zIndex: 100,
+        // position: 'absolute',
+        // zIndex: 100,
         flex: 1,
         flexDirection: "column",
         justifyContent: "center",
@@ -383,14 +415,14 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0)'
 
     },
-    tienIch : {
-        flexDirection : "row",
+    tienIch: {
+        flexDirection: "row",
         justifyContent: 'center',
 
     },
-    columnCheckBox : {
-        flexDirection : "column",
-        justifyContent : "center",
-        alignItems : "flex-start"
+    columnCheckBox: {
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "flex-start"
     }
 });

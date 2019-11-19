@@ -51,7 +51,7 @@ export default class XemBaiDang extends Component {
         };
     }
 
-    componentDidMount = async() => {
+    componentDidMount = async() => { 
         const postID = await this.props.navigation.state.params.post_id;
         let dataAuthToken = await AsyncStorage.getItem("authToken");
         let authToken = await JSON.parse(dataAuthToken);

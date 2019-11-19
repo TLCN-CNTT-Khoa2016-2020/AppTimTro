@@ -7,7 +7,8 @@ import {
     Picker,
     TextInput,
     ScrollView,
-    KeyboardAvoidingView
+    KeyboardAvoidingView,
+    ActivityIndicator
 } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import RadioForm from 'react-native-simple-radio-button';
@@ -17,30 +18,67 @@ import { MAIN_COLOR, BORDER_COLOR, TEXT_COLOR } from '../../assets/color';
 
 
 const kindOfRoom = [
-    { label: "Phòng cho thuê", value: 0 },
-    { label: "Phòng ở ghép", value: 1 },
-    { label: "Nhà nguyên căn", value: 2 },
-    { label: "Căn hộ", value: 3 }
+    { label: "Phòng cho thuê", value: 'Phòng cho thuê' },
+    { label: "Phòng ở ghép", value: "Phòng ở ghép" },
+    { label: "Nhà nguyên căn", value: "Nhà nguyên căn" },
+    { label: "Căn hộ", value: "Căn hộ" }
 ];
 const sex = [
-    { label: "Tất cả", value: 0 },
-    { label: "Nam", value: 1 },
-    { label: "Nữ", value: 2 },
+    { label: "Nam", value: "Nam" },
+    { label: "Nữ", value: "Nữ" },
 ];
 const { height, width } = Dimensions.get('window');
 export default class DangPhong2 extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            kindOfRoom: 0,
-            sex: 0,
-            checked: true
+            isLoading       : true,
+            kind_of_room    : "Phòng cho thuê",
+            room_area       : null,
+            gender          : "Nam",
+            room_price      : null,
+            room_deposi     : null,
+            electric_price  : null,
+            water_price     : null,
+            wifi_price      : null,
+            parking_price   : null,   
+            address         : null,
+            coordinates     : null
         };
     }
 
+    componentDidMount = () => {
+        const address = this.props.navigation.state.params.address;
+        const coordinates = this.props.navigation.state.params.coordinates
+        this.setState({
+            isLoading : false,
+            address,
+            coordinates
+        })
+    }
+    handleButtonTiepTheo = () => {
+        const post = {
+            kind_of_room    : this.state.kind_of_room,
+            room_area       : this.state.room_area,
+            gender          : this.state.gender,
+            room_price      : this.state.room_price,
+            room_deposi     : this.state.room_deposi,
+            electric_price  : this.state.electric_price,
+            water_price     : this.state.water_price,
+            wifi_price      : this.state.wifi_price,
+            parking_price   : this.state.parking_price,
+            address         : this.state.address,
+            coordinates     : this.state.coordinates
+        }
+        console.log(post)
+        //navigate to DangPhong3
+        this.props.navigation.navigate('DangPhong3',{post : post});
+    }
     render() {
         return (
-            <KeyboardAvoidingView style={styles.container} behavior="padding" enable >
+            this.state.isLoading
+                ? <ActivityIndicator size = "large" style = {{flex: 1}} />
+                :<KeyboardAvoidingView style={styles.container} behavior="padding" enable >
                 <StepIndicator step={2} />
                 <ScrollView contentContainerStyle={{ marginTop: 0 }} >
                     {/* body */}
@@ -58,17 +96,7 @@ export default class DangPhong2 extends Component {
                                 labelStyle={{ fontSize: 20, fontFamily: 'roboto-regular' }}
                                 // style={{ marginVertical: 10 }}
                                 radioStyle={{ marginVertical: 10 }}
-                                onPress={(value) => { this.setState({ kindOfRoom: value }) }} />
-                        </View>
-                        <View style={styles.cell} >
-                            <Text style={styles.smallTitle} >Sức chứa</Text>
-                            <TextInput
-                                placeholder='người/phòng'
-                                placeholderTextColor='gray'
-                                fontSize={16}
-                                fontFamily='roboto-regular'
-                                style={styles.textInputStyle} />
-                            <View style={styles.underLine} ></View>
+                                onPress={(value) => { this.setState({ kind_of_room: value }) }} />
                         </View>
                         <View style={styles.cell} >
                             <Text style={styles.smallTitle} >Giới tính</Text>
@@ -82,7 +110,7 @@ export default class DangPhong2 extends Component {
                                 labelStyle={{ fontSize: 20, fontFamily: 'roboto-regular' }}
                                 // style={{ marginVertical: 10 }}
                                 radioStyle={{ marginVertical: 10 }}
-                                onPress={(value) => { this.setState({ sex: value }) }} />
+                                onPress={(value) => { this.setState({ gender: value }) }} />
                         </View>
                         <View style={styles.cell} >
                             <Text style={styles.smallTitle} >Diện tích</Text>
@@ -91,7 +119,8 @@ export default class DangPhong2 extends Component {
                                 placeholderTextColor='gray'
                                 fontSize={16}
                                 fontFamily='roboto-regular'
-                                style={styles.textInputStyle} />
+                                style={styles.textInputStyle}
+                                onChangeText = {room_area => this.setState({room_area})} />
                             <View style={styles.underLine} ></View>
                         </View>
                         <Text style={styles.title} >Chi phí</Text>
@@ -102,7 +131,8 @@ export default class DangPhong2 extends Component {
                                 placeholderTextColor='gray'
                                 fontSize={16}
                                 fontFamily='roboto-regular'
-                                style={styles.textInputStyle} />
+                                style={styles.textInputStyle}
+                                onChangeText = {room_price => this.setState({room_price})} />
                             <View style={styles.underLine} ></View>
                         </View>
                         <View style={styles.cell} >
@@ -112,7 +142,8 @@ export default class DangPhong2 extends Component {
                                 placeholderTextColor='gray'
                                 fontSize={16}
                                 fontFamily='roboto-regular'
-                                style={styles.textInputStyle} />
+                                style={styles.textInputStyle}
+                                onChangeText = {room_deposi => this.setState({room_deposi})} />
                             <View style={styles.underLine} ></View>
                         </View>
                         <View style={styles.cell} >
@@ -122,7 +153,8 @@ export default class DangPhong2 extends Component {
                                 placeholderTextColor='gray'
                                 fontSize={16}
                                 fontFamily='roboto-regular'
-                                style={styles.textInputStyle} />
+                                style={styles.textInputStyle}
+                                onChangeText = {electric_price => this.setState({electric_price})} />
                             <View style={styles.underLine} ></View>
                         </View>
                         <View style={styles.cell} >
@@ -132,7 +164,8 @@ export default class DangPhong2 extends Component {
                                 placeholderTextColor='gray'
                                 fontSize={16}
                                 fontFamily='roboto-regular'
-                                style={styles.textInputStyle} />
+                                style={styles.textInputStyle}
+                                onChangeText = {water_price => this.setState({water_price})} />
                             <View style={styles.underLine} ></View>
                         </View>
                         <View style={styles.cell} >
@@ -142,27 +175,28 @@ export default class DangPhong2 extends Component {
                                 placeholderTextColor='gray'
                                 fontSize={16}
                                 fontFamily='roboto-regular'
-                                style={styles.textInputStyle} />
+                                style={styles.textInputStyle}
+                                onChangeText = {wifi_price => this.setState({wifi_price})} />
                             <View style={styles.underLine} ></View>
                         </View>
                         <View style={styles.cell} >
-                        <CheckBox
-                            center
-                            title='Có chỗ để xe'
-                            containerStyle = {{backgroundColor : 'rgba(52, 52, 52, 0)', borderColor: '#fff',}}
-                            checked={this.state.checked}
-                            checkedColor = {MAIN_COLOR}
-                            textStyle = {{fontFamily : 'roboto-regular'}}
-                            onPress={() => this.setState({ checked: !this.state.checked })}
-                        />
-                    </View>
+                            <Text style={styles.smallTitle} >Chỗ để xe</Text>
+                            <TextInput
+                                placeholder='đồng/tháng'
+                                placeholderTextColor='gray'
+                                fontSize={16}
+                                fontFamily='roboto-regular'
+                                style={styles.textInputStyle}
+                                onChangeText = {parking_price => this.setState({parking_price})} />
+                            <View style={styles.underLine} ></View>
+                        </View>
                     </View>
                     
                 </ScrollView>
                 <View style={styles.bottomBar} >
                     <ButtonComponent
                         title="Tiếp theo"
-                        onPress={() => this.props.navigation.navigate("DangPhong3")} />
+                        onPress={() => this.handleButtonTiepTheo()} />
                 </View>
             </KeyboardAvoidingView>
         );

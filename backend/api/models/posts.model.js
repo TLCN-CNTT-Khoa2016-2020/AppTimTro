@@ -22,7 +22,7 @@ const postSchema = new Schema({
          default : 0},                                  // giá giữ xe
     wifi_price : {type : Number, required : true,
          default : 0},                                  // giá wifi
-    gender : { type : Boolean, required : true},        // giới tính 
+    gender : { type : String, required : true},        // giới tính 
     description : { type : String, required : false},   // mô tả về phòng
     utilities : {                                       // các tiện ích 
         wc_rieng    : {type: Boolean, default : false},

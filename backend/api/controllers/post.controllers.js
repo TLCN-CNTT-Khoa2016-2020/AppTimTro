@@ -51,6 +51,7 @@ exports.get_all_posts =  (req, res, next) => {
 exports.create_posts = (req, res, next) => {
 
     console.log(req.files);
+    console.log('xo day')
     //create new Post
     const post = new Post({
         _id : new mongoose.Types.ObjectId(),
@@ -90,6 +91,8 @@ exports.create_posts = (req, res, next) => {
         },
         userId : req.body.userId
     });
+    console.log(post )
+    //console.log(r eq.body.utilities.wc_rieng)
     //save post to database
     post.save()
         .then(result => {
