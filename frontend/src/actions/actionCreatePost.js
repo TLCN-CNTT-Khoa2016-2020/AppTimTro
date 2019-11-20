@@ -25,7 +25,7 @@ const createPostError = (error) => {
 }
 //thunk
 
-export const createPost = (authToken, post) => dispatch => {
+export const createPost = (authToken, post, handleNavigateToMainScreen) => dispatch => {
     dispatch(createPostRequest());     
     //fetch data
     fetch(`${url}` + "/posts/",{
@@ -40,6 +40,7 @@ export const createPost = (authToken, post) => dispatch => {
         if(response.status === 201){
             console.log("Create Successfull !")
             dispatch(createPostSuccess());
+            handleNavigateToMainScreen()
         } else{
             
             console.log("Create Fail!")

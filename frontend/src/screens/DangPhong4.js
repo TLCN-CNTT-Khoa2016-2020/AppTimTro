@@ -84,29 +84,23 @@ export default class DangPhong4 extends Component {
         //
         post.room_image.map((item,index) => {
             let fileType = item.uri.substring(item.uri.lastIndexOf(".") + 1);
-            //let fileName = item.uri.substring(item.uri.lastIndexOf(".") + 1);
             return formData.append("room_image",{
                 uri : item.uri,
                 name :  item.uri ,
                 type: `image/${fileType}`
             });
         })//
-        // //  
-        //let fileType = post.room_image[0].substring(post.room_image[0].lastIndexOf(".") + 1);
-        // formData.append("room_image",{
-        //     uri : post.room_image[0].uri,
-        //     name :  "imagetest" ,
-        //     type: "image/jpg"
-        // })
-        // //
-
         formData.append("coordinates[latitude]",JSON.stringify(post.coordinates.latitude));
         formData.append("coordinates[longitude]", JSON.stringify(post.coordinates.longitude))
 
         console.log(formData)
-        await this.props.createPost(authToken,formData)
+        await this.props.createPost(authToken,formData, this.handleNavigateToMainScreen)
 
         
+    }
+
+    handleNavigateToMainScreen = () => {
+        this.props.navigation.navigate('ManHinhChinh')
     }
 
     render() {

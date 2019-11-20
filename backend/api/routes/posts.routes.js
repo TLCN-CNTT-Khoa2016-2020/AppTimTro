@@ -33,6 +33,8 @@ const upload = multer({
 /*<--------------------- IMPORT CONTROLLERS --------------------->*/
 const PostsController = require('../controllers/post.controllers');
 const subPostRouter   = require('../routes/subposts.routes');
+/*<--------------------- IMPORT MIDDLEWARE --------------------->*/
+const resizeImage = require('../middleware/resizeImage')
 /*<--------------------- ROUTES --------------------->*/
 
 
@@ -42,7 +44,7 @@ router.get('/',checkAuth, PostsController.get_all_posts);
 
 /*<--------- POST / ---------> */ 
 /* MISSION : CREATE POSTS  */
-router.post('/',checkAuth,upload, PostsController.create_posts);
+router.post('/',checkAuth,upload,resizeImage, PostsController.create_posts);
 
 /*<--------- GET /:postID ---------> */ 
 /* MISSION : GET POST WITH ID  */

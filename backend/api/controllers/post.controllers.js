@@ -1,5 +1,8 @@
 /*<--------------------- CALL THE PACKAGE --------------------->*/
 const mongoose   = require('mongoose');
+const sharp = require('sharp');
+const path = require('path');
+const fs = require('fs');
 
 
 
@@ -51,7 +54,7 @@ exports.get_all_posts =  (req, res, next) => {
 exports.create_posts = (req, res, next) => {
 
     console.log(req.files);
-    console.log('xo day')
+    console.log(req.body.images)
     //create new Post
     const post = new Post({
         _id : new mongoose.Types.ObjectId(),
@@ -82,8 +85,18 @@ exports.create_posts = (req, res, next) => {
             nha_bep : req.body.utilities.nha_bep,
             thu_cung : req.body.utilities.thu_cung
         },
-        room_image : req.files.map(item => {
+        room_image :  req.files.map((item) => {
             return item.path;
+            //  sharp(item.path)
+            //         .resize(500,500)
+            //         .toFile(path.resolve(item.destination, 'resize', item.filename))
+            //         .then(data => {
+            //             console.log(data)
+            //         })
+            //         .catch(err => {
+            //             console.log(err)
+            //         })
+            //await fs.unlinkSync(item.path)
         }),
         coordinates : {
             latitude : req.body.coordinates.latitude,

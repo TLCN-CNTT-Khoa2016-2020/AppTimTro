@@ -15,8 +15,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        createPost : (authToken, post) => {
-            return dispatch(createPost(authToken, post))
+        createPost : (authToken, post, handleNavigateToMainScreen) => {
+            return dispatch(createPost(authToken, post, handleNavigateToMainScreen))
         }
     }
 };
