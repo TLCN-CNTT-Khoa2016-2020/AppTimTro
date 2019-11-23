@@ -29,6 +29,7 @@ import {DangNhapContainer} from '../containers/DangNhapContainer';
 import {ManHinhChinhContainer} from '../containers/ManHinhChinhContainer';
 import {BaiDangContainer} from '../containers/BaiDangContainer';
 import {DangPhong4Container} from '../containers/DangPhong4Container';
+import {DangKyContainer} from '../containers/DangKyContainer';
 
 
 // create stackTaiKhoan
@@ -124,7 +125,7 @@ const stackAuth = createStackNavigator({
         }
     },
     DangKi : {
-        screen : DangKi,
+        screen : DangKyContainer,
         navigationOptions : {
             header : null
         }

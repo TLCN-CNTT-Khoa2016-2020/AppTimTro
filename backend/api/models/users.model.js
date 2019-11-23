@@ -8,7 +8,7 @@ const userSchema = new Schema({
     _id : mongoose.Schema.Types.ObjectId,
     username : { 
         type : String,  
-        index: {unique : true},
+        //index: {unique : true},
         //match : /^[a-z][^\W_]{7,14}$/
         /*
             [a-z]    the first letter

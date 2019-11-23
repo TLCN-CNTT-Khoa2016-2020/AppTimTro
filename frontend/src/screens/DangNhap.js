@@ -166,7 +166,7 @@ export default class DangNhap extends Component {
         }
     }
 
-    handleSubmit = () => {
+    handleSubmit = () => { 
         this.props.loginUser(this.state.username, this.state.password , this.navigateToMainScreen);
     }
     navigateToMainScreen = async (data) => {

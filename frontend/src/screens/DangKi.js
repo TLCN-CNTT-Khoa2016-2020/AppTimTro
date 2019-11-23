@@ -7,7 +7,8 @@ import {
     Dimensions,
     TextInput,
     KeyboardAvoidingView,
-    TouchableOpacity
+    TouchableOpacity,
+    
 } from 'react-native';
 import Svg, { Image, Circle, ClipPath } from 'react-native-svg';
 import { SocialIcon, Icon } from 'react-native-elements'
@@ -125,7 +126,9 @@ export default class DangKi extends Component {
         });
 
         this.state = {
-            isLogin: false,
+            username : null,
+            password : null,
+            fullname : null,
 
         };
     }
@@ -139,7 +142,7 @@ export default class DangKi extends Component {
         }
     };
 
-    signInWithGoogleAsync = async () => {
+    signInWithGoogleAsync = async () => { 
         try {
             const result = await Google.logInAsync({
                 androidClientId: OauthKey,
@@ -149,11 +152,8 @@ export default class DangKi extends Component {
             console.log(result)
 
             if (result.type === 'success') {
-                //store key to recognize isLogin
-                this.setState({ isLogin: true });
-                this.storeLogin(result.user, this.state.isLogin);
-                //if success redirect to APP
-                this.props.navigation.navigate('tabNavigation');
+                //
+                this.props.registerUserWithGG(result.user.id, result.user.name, result.user.photoUrl)
             } else {
                 // return { cancelled: true };
                 console.log("cancel")
@@ -161,6 +161,22 @@ export default class DangKi extends Component {
         } catch (e) {
             //   return { error: true };
             console.log(e)
+        }
+    }
+
+    handleSubmitSignUpButton = () => {
+        this.props.registerUser(this.state.username, this.state.password, this.state.fullname, this.loginUser)
+    }
+    loginUser = () => { 
+        this.props.loginUser(this.state.username, this.state.password , this.navigateToMainScreen);
+    }
+    navigateToMainScreen = async (data) => {
+        try {
+            await AsyncStorage.setItem('userID', JSON.stringify(data.userID));
+            await AsyncStorage.setItem('authToken', JSON.stringify(data.token));
+            await this.props.navigation.navigate('tabNavigation');
+        } catch(error) {
+            console.log("Something went wrong", error);
         }
     }
 
@@ -246,7 +262,7 @@ export default class DangKi extends Component {
                             zIndex: this.textInputZindex,
                             opacity: this.textInputOpacity,
                             transform: [{ translateY: this.textInputY }],
-                            height: height / 3,
+                            height: height / 2.2,
                             ...StyleSheet.absoluteFill,
                             top: null,
                             justifyContent: "center"
@@ -264,24 +280,42 @@ export default class DangKi extends Component {
                         </TapGestureHandler>
                         <View style={styles.wrapTextInput} >
                             <TextInput
-                                placeholder="EMAIL"
+                                placeholder="USERNAME"
                                 style={styles.textInput}
-                                placeholderTextColor='gray' />
+                                placeholderTextColor='gray'
+                                onChangeText = {username => {
+                                    this.setState({username})
+                                }} />
                         </View>
                         <View style={styles.wrapTextInput} >
                             <TextInput
                                 secureTextEntry={true}
                                 placeholder="PASSWORD"
                                 style={styles.textInput}
-                                placeholderTextColor='gray' />
+                                placeholderTextColor='gray'
+                                onChangeText = {password => {
+                                    this.setState({password})
+                                }} />
+                        </View>
+                        <View style={styles.wrapTextInput} >
+                            <TextInput
+                                placeholder="FULLNAME"
+                                style={styles.textInput}
+                                placeholderTextColor='gray'
+                                onChangeText = {fullname => {
+                                    this.setState({fullname})
+                                }} />
                         </View>
 
 
                         <Animated.View style={styles.button} >
-                            <Text
-                                style={{ color: '#F56619', fontSize: 20, fontWeight: 'bold' }} >
-                                SIGN UP
-                            </Text>
+                            <TouchableOpacity onPress = {this.handleSubmitSignUpButton} >
+                                <Text
+                                    style={{ color: '#F56619', fontSize: 20, fontWeight: 'bold' }} >
+                                    SIGN UP
+                                </Text>
+                            </TouchableOpacity>
+                            
                         </Animated.View>
                     </Animated.View>
                 </View>
