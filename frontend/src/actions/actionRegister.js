@@ -55,7 +55,7 @@ export const registerUser = (username, password, fullname, loginUser) => dispath
     })
 
 }
-export const registerUserWithGG = (googleID, fullname, avatarUrl) => dispath => {
+export const registerUserWithGG = (googleID, fullname, avatarUrl, loginUserWithGG) => dispath => {
     dispath(requestRegister());
     fetch( `${url}`+'/users/signupwithgoogle', {
         method: 'POST',
@@ -72,6 +72,7 @@ export const registerUserWithGG = (googleID, fullname, avatarUrl) => dispath => 
         if(response.status === 201){ // if create success
             dispath(registerSuccess());
             console.log("Register Success !")
+            loginUserWithGG() 
             // then login
             //loginUser()
         }

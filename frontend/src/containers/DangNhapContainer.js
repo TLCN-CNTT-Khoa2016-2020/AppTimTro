@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {loginUser} from '../actions/actionLogin';
+import {loginUser, loginUserWithGG} from '../actions/actionLogin';
 import DangNhap from '../screens/DangNhap';
  
 
@@ -18,6 +18,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         loginUser : (username, password, navigateToMainScreen) => {
             return dispatch(loginUser(username, password, navigateToMainScreen));
+        },
+        loginUserWithGG : (googleID, accessToken, navigateToMainScreen) => {
+            return dispatch(loginUserWithGG(googleID, accessToken, navigateToMainScreen))
         }
     }
 }

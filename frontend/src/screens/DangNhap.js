@@ -151,11 +151,7 @@ export default class DangNhap extends Component {
             console.log(result)
 
             if (result.type === 'success') {
-                //store key to recognize isLogin
-                this.setState({ isLogin: true });
-                this.storeLogin(result.user, this.state.isLogin);
-                //if success redirect to APP
-                this.props.navigation.navigate('tabNavigation');
+                this.props.loginUserWithGG(result.user.id,result.accessToken, this.navigateToMainScreen)
             } else {
                 // return { cancelled: true };
                 console.log("cancel")

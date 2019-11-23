@@ -28,7 +28,7 @@ export const loginUser = (username, password, navigateToMainScreen) => dispatch 
     fetch( `${url}`+'/users/login', {
         method: 'POST',
         headers: {
-            Accept: 'application/json',
+            Accept: 'application/json', 
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -47,12 +47,43 @@ export const loginUser = (username, password, navigateToMainScreen) => dispatch 
                 })
             })
 
-        }
-        
+        }   
     }).catch(err => {
         dispatch(loginError())
         console.log(err)
     })
-   
+}
+export const loginUserWithGG = (googleID, accessToken, navigateToMainScreen) => dispatch => {
+    dispatch(requestLogin())
+    fetch( `${url}`+'/users/signinwithgoogle', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json', 
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            googleID: googleID,
+            accessToken: accessToken,
+        }),
+    }).then(response => {
+        if(response.status === 200){
+            dispatch(loginSuccess());
+            //storage to asyncStorage
+            response.json().then(data => {
+                navigateToMainScreen(data);
+                console.log({
+                    status      : response.status,
+                    message     : data.message,
+                })
+            })
+        }
+        if(response.status === 500){
+            response.json().then(data => {
+                dispatch(loginError(data.error))
+                console.log(data.error)
+            })
+            
+        }
+    })
 
 }

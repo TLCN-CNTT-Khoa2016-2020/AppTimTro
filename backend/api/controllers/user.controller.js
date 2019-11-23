@@ -54,7 +54,7 @@ exports.update_setting_timtro = (req, res, next) => {
                 error : err
             })
         })
-    console.log(timtroSettings);
+    console.log(timtroSettings); 
 }
 
 // MISSON : CHANGE TIMTRO STATUS

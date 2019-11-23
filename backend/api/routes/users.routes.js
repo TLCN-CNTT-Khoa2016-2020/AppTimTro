@@ -119,6 +119,62 @@ router.post('/signupwithgoogle', (req, res, next) => {
         })
         .catch()
 });
+/*<--------- POST /signinwithgoogle ---------> */ 
+/* MISSION : SIGN IN WITH GOOGLE */ 
+router.post('/signinwithgoogle', (req, res, next) => {
+    User.findOne({"google.googleID" : req.body.googleID})
+        .exec()
+        .then(user => {
+            //console.log(user)
+            if(!user){
+                return res.status(401).json({
+                    message : "Login Failed",
+                })
+            } else {
+                // save accessToken to database
+                User.findOneAndUpdate(
+                        {"google.googleID" : req.body.googleID},
+                        {$set : {"google.accessToken": req.body.accessToken}}
+                    )
+                    .exec()
+                    .then(result => {
+                        //if result === null => cant find
+                        if(result === null){
+                            res.status(500).json({
+                                message : "Can't find users"
+                            })
+                        }
+                        console.log(result)
+                        //json web token, create token
+                        const token = jwt.sign(
+                            {
+                                userId   : user._id,
+                                fullname : user.fullname
+                            },
+                            process.env.JWT_KEY,
+                            {
+                                expiresIn : process.env.JWT_KEY_TIME_LIFE
+                            }  
+                        );
+                        return res.status(200).json({
+                            message : "Login success !",
+                            userID  : user._id,
+                            token   : token 
+                        });
+                    })
+                    .catch(error => {
+                        res.status(500).json({
+                            error : error
+                        })
+                    })
+                
+            }
+        }).catch(error => {
+            res.status(500).json({
+                error : error
+            })
+        })
+})
 
 /*<--------- POST /login ---------> */ 
 /* MISSION : USER LOGIN  */
@@ -152,7 +208,7 @@ router.post('/login', (req,res,next) => {
                             },
                             process.env.JWT_KEY,
                             {
-                                expiresIn : "36000"
+                                expiresIn : process.env.JWT_KEY_TIME_LIFE
                             }  
                         );
                         return res.status(200).json({

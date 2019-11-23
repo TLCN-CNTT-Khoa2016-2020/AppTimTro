@@ -129,6 +129,7 @@ export default class DangKi extends Component {
             username : null,
             password : null,
             fullname : null,
+            result   : null
 
         };
     }
@@ -152,8 +153,10 @@ export default class DangKi extends Component {
             console.log(result)
 
             if (result.type === 'success') {
-                //
-                this.props.registerUserWithGG(result.user.id, result.user.name, result.user.photoUrl)
+                
+                await this.setState({result})
+                await this.props.registerUserWithGG(result.user.id, result.user.name, result.user.photoUrl, this.loginUserWithGG);
+                
             } else {
                 // return { cancelled: true };
                 console.log("cancel")
@@ -169,6 +172,9 @@ export default class DangKi extends Component {
     }
     loginUser = () => { 
         this.props.loginUser(this.state.username, this.state.password , this.navigateToMainScreen);
+    }
+    loginUserWithGG = () => {
+        this.props.loginUserWithGG(this.state.result.user.id,this.state.result.accessToken, this.navigateToMainScreen)
     }
     navigateToMainScreen = async (data) => {
         try {

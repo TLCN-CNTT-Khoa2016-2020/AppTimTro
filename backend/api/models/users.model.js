@@ -28,16 +28,15 @@ const userSchema = new Schema({
     fullname : { type : String, required : true },
     avatarUrl : { type : String},
     SDT : {type : Number},
-    //avatar : {type : ImageBitmap},
     google : {
         googleID : {type : String},
-        acesssToken : { type : String},
+        accessToken : { type : String},
         idToken : { type : String},
         refreshToken : { type : String }
     },
     facebook : {
         googleID : {type : String},
-        acesssToken : { type : String},
+        accessToken : { type : String},
         idToken : { type : String},
         refreshToken : { type : String }
     },
