@@ -3,7 +3,7 @@ import {getPostApproved} from '../actions/actionGetPostApproved';
 import {getPostUnApproved} from '../actions/actionGetPostUnApproved';
 import BaiDang from '../screens/BaiDang';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state) => { 
     return {
         dataGetPostApproved     : state.getPostApprovedReducer.data,
         errorGetPostApproved    : state.getPostApprovedReducer.error,
@@ -15,11 +15,11 @@ const mapStateToProps = (state) => {
 }
 const  mapDispatchToProps = (dispatch) => {
     return {
-        getPostApproved : (authToken, page, userID) => {
-            return dispatch(getPostApproved(authToken, page, userID))
+        getPostApproved : (authToken, page, userID, navigateToLoginScreen) => {
+            return dispatch(getPostApproved(authToken, page, userID, navigateToLoginScreen))
         },
-        getPostUnApproved : (authToken, page, userID) => {
-            return dispatch(getPostUnApproved(authToken, page, userID))
+        getPostUnApproved : (authToken, page, userID, navigateToLoginScreen) => {
+            return dispatch(getPostUnApproved(authToken, page, userID, navigateToLoginScreen))
         }
     }
 }

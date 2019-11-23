@@ -3,7 +3,7 @@ const express    = require('express');
 const router     = express.Router();
 const checkAuth  = require('../middleware/check-auth');
 const multer     = require('multer');
-const storage    = multer.diskStorage({
+const storage    = multer.memoryStorage({
     destination : function (req, file ,cb){
         cb(null,'./uploads/');
     },
@@ -11,6 +11,7 @@ const storage    = multer.diskStorage({
         cb(null,  Date.now()  + file.originalname);
     }
 });
+//const storage = multer.memoryStorage();
 const fileFilter = (req, file, cb) =>{
     //reject a file
     if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg'  ){

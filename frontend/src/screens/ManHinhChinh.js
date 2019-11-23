@@ -80,13 +80,18 @@ export default class ManHinhChinh extends Component {
     getPostForMainScreen = async() => {
         let authToken = await AsyncStorage.getItem("authToken");
         let data = await JSON.parse(authToken);
-        await this.props.getPostForMainScreen(data, this.state.page);
+        await this.props.getPostForMainScreen(data, this.state.page, this.navigateToLoginScreen);
+    }
+    navigateToLoginScreen = async() => {
+        await AsyncStorage.removeItem('authToken');
+        await AsyncStorage.removeItem('userID');
+        await this.props.navigation.navigate('DangNhap');
     }
     loadMore = async() => {
         console.log('Loading more data....')
         let authToken = await AsyncStorage.getItem("authToken");
         let data = await JSON.parse(authToken);
-        await this.props.getPostForMainScreen(data, this.state.page + 1);
+        await this.props.getPostForMainScreen(data, this.state.page + 1, this.navigateToLoginScreen);
         this.setState({page : this.state.page + 1})
     };
     componentDidMount = async() => {

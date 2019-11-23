@@ -1,7 +1,7 @@
 const sharp = require("sharp");
 
 module.exports = async(req, res, next) => {
-    console.log(req.files)
+    //console.log(req.files)
     if (!req.files) return next();
 
     req.body.images = [];
@@ -9,14 +9,14 @@ module.exports = async(req, res, next) => {
         await Promise.all(
             req.files.map(async file => {
               const filename = file.originalname.replace(/\..+$/, "");
-              const newFilename = `bezkoder-${filename}-${Date.now()}.jpeg`;
+              const newFilename = `apptimtro-${filename}-${Date.now()}.jpeg`;
         
-              await sharp(file.path)
-                .resize(640, 320)
+              await sharp(file.buffer)
+                .resize(500, 500)
                 .toFormat("jpeg")
                 .jpeg({ quality: 90 })
                 .toFile(`./uploads/${newFilename}`);
-              console.log(newFilename)
+              //console.log(newFilename)
               req.body.images.push(newFilename);
             })
           );

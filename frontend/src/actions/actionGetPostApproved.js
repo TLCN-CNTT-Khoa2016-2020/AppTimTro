@@ -26,7 +26,7 @@ const getPostApprovedError = (error) => {
     }
 }
 //thunk
-export const getPostApproved = (authToken, page, userID) => dispatch => {
+export const getPostApproved = (authToken, page, userID, navigateToLoginScreen) => dispatch => {
     dispatch(getPostApprovedRequest());
     //fetch data
     fetch(`${url}` + "/posts/approvedpost/" + userID + "?page=" + page +"&limit=10",{
@@ -44,9 +44,11 @@ export const getPostApproved = (authToken, page, userID) => dispatch => {
                     dispatch(getPostApprovedSuccess(data.result, false))
                 }
             })
-        } else {
-            dispatch(getPostApprovedError())
-            console.log(" Response status another 200")
+        } 
+        if(response.status === 401){
+            dispatch(getPostUnApprovedError())
+            console.log("Token expert")
+            navigateToLoginScreen()
         }
     }).catch(error => {
         dispatch(getPostApprovedError());

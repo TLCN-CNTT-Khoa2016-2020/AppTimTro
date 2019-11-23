@@ -25,7 +25,7 @@ const createPostError = (error) => {
 }
 //thunk
 
-export const createPost = (authToken, post, handleNavigateToMainScreen) => dispatch => {
+export const createPost = (authToken, post, handleNavigateToMainScreen, navigateToLoginScreen) => dispatch => {
     dispatch(createPostRequest());     
     //fetch data
     fetch(`${url}` + "/posts/",{
@@ -42,11 +42,15 @@ export const createPost = (authToken, post, handleNavigateToMainScreen) => dispa
             dispatch(createPostSuccess());
             handleNavigateToMainScreen()
         } else{
-            
             console.log("Create Fail!")
             response.json().then(data => {
                 console.log(data.error)
             })
+        }
+        if(response.status === 401){
+            dispatch(getPostUnApprovedError())
+            console.log("Token expert")
+            navigateToLoginScreen()
         }
         
     }).catch(error => {

@@ -8,7 +8,7 @@ const initialState = {
     data    : [],
     error   : {},
     isInTheEnd : false,
-    isGetPostForMainScreenSuccess : false,
+    isGetPostForMainScreenSuccess : false, 
     isGetPostForMainScreenRequest  : false,
     isGetPostForMainScreenError    : false
 }   

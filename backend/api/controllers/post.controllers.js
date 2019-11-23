@@ -53,8 +53,8 @@ exports.get_all_posts =  (req, res, next) => {
 // MISSION : CREATE NEW POST
 exports.create_posts = (req, res, next) => {
 
-    console.log(req.files);
-    console.log(req.body.images)
+    // console.log(req.files);
+    // console.log(req.body.images)
     //create new Post
     const post = new Post({
         _id : new mongoose.Types.ObjectId(),
@@ -85,18 +85,8 @@ exports.create_posts = (req, res, next) => {
             nha_bep : req.body.utilities.nha_bep,
             thu_cung : req.body.utilities.thu_cung
         },
-        room_image :  req.files.map((item) => {
-            return item.path;
-            //  sharp(item.path)
-            //         .resize(500,500)
-            //         .toFile(path.resolve(item.destination, 'resize', item.filename))
-            //         .then(data => {
-            //             console.log(data)
-            //         })
-            //         .catch(err => {
-            //             console.log(err)
-            //         })
-            //await fs.unlinkSync(item.path)
+        room_image :  req.body.images.map((item) => {
+            return `uploads/${item}`;
         }),
         coordinates : {
             latitude : req.body.coordinates.latitude,
@@ -105,7 +95,6 @@ exports.create_posts = (req, res, next) => {
         userId : req.body.userId
     });
     console.log(post )
-    //console.log(r eq.body.utilities.wc_rieng)
     //save post to database
     post.save()
         .then(result => {

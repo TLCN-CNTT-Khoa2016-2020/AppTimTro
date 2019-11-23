@@ -80,15 +80,22 @@ export default class XemBaiDang extends Component {
                         })
                         
                     })
-                } else {
-                    
-                    console.log(" Response status another 200")
+                }
+                if(response.status === 401){
+                    //dispatch(getPostUnApprovedError())
+                    console.log("Token expert")
+                    this.navigateToLoginScreen()
                 }
             })
             .catch(err => {
 
                 console.log(err);
             })
+    }
+    navigateToLoginScreen = async() => {
+        await AsyncStorage.removeItem('authToken');
+        await AsyncStorage.removeItem('userID');
+        await this.props.navigation.navigate('DangNhap');
     }
     componentWillMount = () => {
         this.showModalImage(false, 0);

@@ -5,7 +5,7 @@ import { View,
          Dimensions,
          FlatList,
          ActivityIndicator,
-         AsyncStorage
+         AsyncStorage 
           } from 'react-native';
 import Constants from 'expo-constants';
 import ButtonComponent from '../components/ButtonComponent';
@@ -67,7 +67,7 @@ export default class BaiDang extends Component {
         let authToken       = await JSON.parse(dataAuthToken);
         let dataUserID      = await AsyncStorage.getItem("userID")
         let userID          = await JSON.parse(dataUserID);
-        await this.props.getPostApproved(authToken, this.state.baiDaDuyetPage, userID);
+        await this.props.getPostApproved(authToken, this.state.baiDaDuyetPage, userID, this.navigateToLoginScreen);
         this.setState({
             baiDaDuyetPage : this.state.baiDaDuyetPage + 1,
             dataBaiDaDuyetIsLoading : false
@@ -78,13 +78,17 @@ export default class BaiDang extends Component {
         let authToken       = await JSON.parse(dataAuthToken);
         let dataUserID      = await AsyncStorage.getItem("userID")
         let userID          = await JSON.parse(dataUserID);
-        await this.props.getPostUnApproved(authToken, this.state.baiChuaDuyetPage, userID);
+        await this.props.getPostUnApproved(authToken, this.state.baiChuaDuyetPage, userID, this.navigateToLoginScreen);
         this.setState({
             baiChuaDuyetPage : this.state.baiChuaDuyetPage + 1,
             dataBaiChuaDuyetIsLoading : false
         })
     }
-
+    navigateToLoginScreen = async() => {
+        await AsyncStorage.removeItem('authToken');
+        await AsyncStorage.removeItem('userID');
+        await this.props.navigation.navigate('DangNhap');
+    }
     componentDidMount = async() => {
          await this.loadBaiDaDuyet();
          await this.loadBaiChuaDuyet();

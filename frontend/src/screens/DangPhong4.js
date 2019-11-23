@@ -94,13 +94,18 @@ export default class DangPhong4 extends Component {
         formData.append("coordinates[longitude]", JSON.stringify(post.coordinates.longitude))
 
         console.log(formData)
-        await this.props.createPost(authToken,formData, this.handleNavigateToMainScreen)
+        await this.props.createPost(authToken,formData, this.handleNavigateToMainScreen, this.navigateToLoginScreen)
 
         
     }
 
     handleNavigateToMainScreen = () => {
         this.props.navigation.navigate('ManHinhChinh')
+    } 
+    navigateToLoginScreen = async() => {
+        await AsyncStorage.removeItem('authToken');
+        await AsyncStorage.removeItem('userID');
+        await this.props.navigation.navigate('DangNhap');
     }
 
     render() {

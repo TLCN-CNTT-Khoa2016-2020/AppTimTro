@@ -4,7 +4,7 @@ import {getPostForMainScreen} from '../actions/actionGetPostForMainScreen';
 
 const mapStateToProps = (state) => {
     return {
-        data    : state.getPostForMainScreenReducer.data,
+        data    : state.getPostForMainScreenReducer.data, 
         error   : state.getPostForMainScreenReducer.error,
         isInTheEnd : state.getPostForMainScreenReducer.isInTheEnd,
         isGetPostForMainScreenSuccess : state.getPostForMainScreenReducer.isGetPostForMainScreenSuccess,
@@ -13,9 +13,9 @@ const mapStateToProps = (state) => {
     }
 }
 const mapDispatchToProps = (dispatch) => {
-    return {
-        getPostForMainScreen : (authToken, page) => {
-            return dispatch(getPostForMainScreen(authToken, page))
+    return { 
+        getPostForMainScreen : (authToken, page,navigateToLoginScreen) => {
+            return dispatch(getPostForMainScreen(authToken, page, navigateToLoginScreen))
         }
     }
 } 

@@ -26,7 +26,7 @@ const getPostUnApprovedError = (error) => {
     }
 }
 //thunk
-export const getPostUnApproved = (authToken, page, userID) => dispatch => {
+export const getPostUnApproved = (authToken, page, userID, navigateToLoginScreen) => dispatch => {
     dispatch(getPostUnApprovedRequest());
     //fetch data
     fetch(`${url}` + "/posts/unapprovedpost/" + userID + "?page=" + page +"&limit=10",{
@@ -44,9 +44,11 @@ export const getPostUnApproved = (authToken, page, userID) => dispatch => {
                     dispatch(getPostUnApprovedSuccess(data.result, false))
                 }
             })
-        } else {
+        }
+        if(response.status === 401){
             dispatch(getPostUnApprovedError())
-            console.log(" Response status another 200")
+            console.log("Token expert")
+            navigateToLoginScreen()
         }
     }).catch(error => {
         dispatch(getPostUnApprovedError());

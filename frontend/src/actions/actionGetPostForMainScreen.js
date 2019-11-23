@@ -27,7 +27,7 @@ const getPostForMainScreenError = (err) => {
     }
 };
 //thunk
-export const getPostForMainScreen = (authToken, page) => dispatch => {
+export const getPostForMainScreen = (authToken, page, navigateToLoginScreen) => dispatch => {
     dispatch(getPostForMainScreenRequest());
     //fetch data
     fetch(`${url}`+ "/posts/mainscreen/getpost?page="+page+"&limit=10",{
@@ -38,6 +38,7 @@ export const getPostForMainScreen = (authToken, page) => dispatch => {
         }
     }).then(response => { 
             // if request success
+            console.log(response.status)
             if(response.status === 200){
                 response.json().then(data => {
                     if(data.result.length < 1 ){
@@ -46,10 +47,12 @@ export const getPostForMainScreen = (authToken, page) => dispatch => {
                         dispatch(getPostForMainScreenSuccess(data.result, false));
                     }
                 })
-            } else {
-                dispatch(getPostForMainScreenError());
-                console.log(" Response status another 200")
             }
+            if(response.status === 401){ // token expert
+                dispatch(getPostForMainScreenError());
+                console.log(" Token expire")
+                navigateToLoginScreen();
+            } 
         })
         .catch(err => {
             dispatch(getPostForMainScreenError());
