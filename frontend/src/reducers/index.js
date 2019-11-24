@@ -9,6 +9,9 @@ import {getPostApprovedReducer} from './getPostApprovedReducer';
 import {getPostUnApprovedReducer} from './getPostUnApprovedReducer';
 import {createPostReducer} from './createPostReducer';
 
+//redux form
+import {reducer as formReducer} from 'redux-form'
+
 
 
 
@@ -20,5 +23,7 @@ export const rootReducer = combineReducers({
     getPostForMainScreenReducer,
     getPostApprovedReducer,
     getPostUnApprovedReducer,
-    createPostReducer
+    createPostReducer,
+    //
+    form : formReducer
 });

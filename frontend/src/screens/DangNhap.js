@@ -151,7 +151,7 @@ export default class DangNhap extends Component {
             console.log(result)
 
             if (result.type === 'success') {
-                this.props.loginUserWithGG(result.user.id,result.accessToken, this.navigateToMainScreen)
+                 await this.props.loginUserWithGG(result.user.id,result.accessToken, this.navigateToMainScreen)
             } else {
                 // return { cancelled: true };
                 console.log("cancel")
@@ -291,7 +291,7 @@ export default class DangNhap extends Component {
                         </TapGestureHandler>
                         <View style={styles.wrapTextInput} >
                             <TextInput
-                                placeholder="EMAIL"
+                                placeholder="USERNAME"
                                 style={styles.textInput}
                                 placeholderTextColor='gray'
                                 onChangeText = {(username) => this.setState({username})} />

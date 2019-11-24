@@ -128,6 +128,7 @@ export default class DangKi extends Component {
         this.state = {
             username : null,
             password : null,
+            confirmPassword : null,
             fullname : null,
             result   : null
 
@@ -268,7 +269,7 @@ export default class DangKi extends Component {
                             zIndex: this.textInputZindex,
                             opacity: this.textInputOpacity,
                             transform: [{ translateY: this.textInputY }],
-                            height: height / 2.2,
+                            height: height / 1.8,
                             ...StyleSheet.absoluteFill,
                             top: null,
                             justifyContent: "center"
@@ -301,6 +302,16 @@ export default class DangKi extends Component {
                                 placeholderTextColor='gray'
                                 onChangeText = {password => {
                                     this.setState({password})
+                                }} />
+                        </View>
+                        <View style={styles.wrapTextInput} >
+                            <TextInput
+                                secureTextEntry={true}
+                                placeholder="CONFIRM PASSWORD"
+                                style={styles.textInput}
+                                placeholderTextColor='gray'
+                                onChangeText = {confirmPassword => {
+                                    this.setState({confirmPassword})
                                 }} />
                         </View>
                         <View style={styles.wrapTextInput} >

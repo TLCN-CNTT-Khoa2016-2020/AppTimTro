@@ -61,7 +61,7 @@ export const loginUserWithGG = (googleID, accessToken, navigateToMainScreen) => 
             Accept: 'application/json', 
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
+        body: JSON.stringify({ 
             googleID: googleID,
             accessToken: accessToken,
         }),

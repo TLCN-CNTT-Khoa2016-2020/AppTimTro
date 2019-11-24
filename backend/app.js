@@ -38,11 +38,12 @@ app.use(morgan('dev'));
 
 //<--------------------- ROUTES FOR API --------------------->
 //IMPORT ROUTERS
-const usersRouters = require('./api/routes/users.routes');
-const postsRouters = require('./api/routes/posts.routes');
-const approvedPostRouter = require('./api/routes/subposts.routes');
-const appointmentRouter = require('./api/routes/appointment.routes');
-const adminRouter = require('./api/routes/admin.routes');
+const usersRouters          = require('./api/routes/users.routes');
+const postsRouters          = require('./api/routes/posts.routes');
+const approvedPostRouter    = require('./api/routes/subposts.routes');
+const appointmentRouter     = require('./api/routes/appointment.routes');
+const adminRouter           = require('./api/routes/admin.routes');
+const mapRouter             = require('./api/routes/map.routes');
 
 //ROUTES
 app.use('/users', usersRouters);
@@ -50,6 +51,7 @@ app.use('/posts', postsRouters);
 app.use('/approvedpost', approvedPostRouter);
 app.use('/appointment', appointmentRouter);
 app.use('/admin', adminRouter);
+app.use('/maps', mapRouter)
 
 
 //handling error

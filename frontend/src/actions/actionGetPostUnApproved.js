@@ -34,10 +34,11 @@ export const getPostUnApproved = (authToken, page, userID, navigateToLoginScreen
         headers : {
             'Authorization' : 'Bearer '+`${authToken}`
         }
-    }).then(response => {
+    }).then(response => {     
         //if request success 
         if(response.status === 200){
             response.json().then(data => {
+                //console.log(data)
                 if(data.result.length < 1){
                     dispatch(getPostUnApprovedSuccess(data.result, true));
                 } else {
