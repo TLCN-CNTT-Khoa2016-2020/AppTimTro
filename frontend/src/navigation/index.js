@@ -30,6 +30,7 @@ import {ManHinhChinhContainer} from '../containers/ManHinhChinhContainer';
 import {BaiDangContainer} from '../containers/BaiDangContainer';
 import {DangPhong4Container} from '../containers/DangPhong4Container';
 import {DangKyContainer} from '../containers/DangKyContainer';
+import {TimKiemContainer} from '../containers/TimKiemContainer';
 
 
 // create stackTaiKhoan
@@ -77,7 +78,7 @@ const tabNavigation = createBottomTabNavigator({
         }
     },
     TimKiem: {
-        screen : TimKiem,
+        screen : TimKiemContainer,
         navigationOptions: {
             title : "Tìm Kiếm",
             labelStyle : {color : MAIN_COLOR},

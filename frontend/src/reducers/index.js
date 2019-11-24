@@ -8,6 +8,7 @@ import {getPostForMainScreenReducer} from './getPostForMainScreenReducer';
 import {getPostApprovedReducer} from './getPostApprovedReducer';
 import {getPostUnApprovedReducer} from './getPostUnApprovedReducer';
 import {createPostReducer} from './createPostReducer';
+import {getLocationInTheCircleReducer} from './getLocationInTheCircleReducer';
 
 //redux form
 import {reducer as formReducer} from 'redux-form'
@@ -24,6 +25,7 @@ export const rootReducer = combineReducers({
     getPostApprovedReducer,
     getPostUnApprovedReducer,
     createPostReducer,
+    getLocationInTheCircleReducer,
     //
     form : formReducer
 });

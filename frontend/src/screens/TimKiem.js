@@ -34,7 +34,6 @@ import { mockData } from '../mockData';
 const { height, width } = Dimensions.get('window');
 
 export default class TimKiem extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -132,7 +131,6 @@ export default class TimKiem extends Component {
                         customMapStyle={mapStyle}
                         loadingEnabled={true}
                         clustering={true}
-
                     >
 
                         <Marker
