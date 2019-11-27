@@ -350,7 +350,8 @@ router.get('/:userID', checkAuth, (req, res, next) => {
                     "userID"    : result._id,
                     "fullname"  : result.fullname,
                     "SDT"       : result.SDT,
-                    "timtroStatus" : result.timtroStatus
+                    "timtroStatus" : result.timtroStatus,
+                    "avatarUrl"     : result.avatarUrl
                 }
             })
             

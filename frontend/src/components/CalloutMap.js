@@ -6,13 +6,19 @@ import {
     Image,
     Dimensions
 } from 'react-native';
+import NumberFormat from 'react-number-format';
 
 const {height, width} = Dimensions.get('window');
 const CalloutMap = ({
     item,
-}) => (
+}) => ( 
         <View style = {styles.container} >
-            <Text style = {styles.text} >{item.price}</Text>
+                <NumberFormat 
+                    value={item.room_price}
+                    thousandSeparator={true} 
+                    displayType = 'text' 
+                    suffix = {' VND'}
+                    renderText={value => <Text style = {styles.text}>{value}</Text>} />
          </View>
     );
 

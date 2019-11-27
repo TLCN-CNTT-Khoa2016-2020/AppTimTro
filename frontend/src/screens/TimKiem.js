@@ -9,7 +9,8 @@ import {
     Dimensions,
     ScrollView,
     TouchableOpacity,
-    ActivityIndicator
+    ActivityIndicator,
+    AsyncStorage
 } from 'react-native';
 import { MAIN_COLOR } from '../../assets/color';
 import CalloutMap from '../components/CalloutMap';
@@ -23,6 +24,8 @@ import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import FilterBar from '../components/FilterBar';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import ButtonComponent from '../components/ButtonComponent';
+import isEqual from 'lodash.isequal';
+
 
 import { mockData } from '../mockData';
 
@@ -32,6 +35,9 @@ import { mockData } from '../mockData';
 
 
 const { height, width } = Dimensions.get('window');
+const ASPECT_RATIO = width / height;
+const LATITUDE_DELTA = 0.014241;
+const LONGITUDE_DELTA = ASPECT_RATIO * LATITUDE_DELTA
 
 export default class TimKiem extends Component {
     constructor(props) {
@@ -41,6 +47,7 @@ export default class TimKiem extends Component {
             isLoading: true,
             errorMessage: null,
             markers: [],
+            region: null,
             //
             tracksViewChanges: true,
             //modal Filter
@@ -62,9 +69,11 @@ export default class TimKiem extends Component {
 
     }
     componentWillReceiveProps(nextProps) {
+        //console.log(this.props.data)
         if (!isEqual(this.props, nextProps)) {
             this.setState(() => ({
                 tracksViewChanges: true,
+                markers : this.props.data
             }))
         }
     }
@@ -72,14 +81,20 @@ export default class TimKiem extends Component {
         if (this.state.tracksViewChanges) {
             this.setState(() => ({
                 tracksViewChanges: false,
+                //markers : this.props.data
             }))
         }
     }
+    componentWillMount = async () => {
+        //await this.getMarker()
+    }
     componentDidMount = async () => {
         await this._getLocationAsync();
-        this.setState({
+        await this.getMarker()
+        //console.log(this.props.data)
+        await this.setState({
             isLoading: false,
-            markers: mockData
+            markers: this.props.data
         });
     }
 
@@ -95,11 +110,12 @@ export default class TimKiem extends Component {
         const currentLocation = {
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
-            latitudeDelta: 0.008,
-            longitudeDelta: 0.008,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA,
         };
         this.setState({
             currentLocation,
+            region: currentLocation
         });
     };
 
@@ -117,6 +133,28 @@ export default class TimKiem extends Component {
     enableScroll = () => this.setState({ scrollEnabled: true });
     disableScroll = () => this.setState({ scrollEnabled: false });
 
+    onRegionChange = async (region) => {
+        //console.log(region)
+        await this.setState({region})
+        await this.getMarker()
+        //console.log(this.props.data)
+    }
+    getMarker = async () => {
+        let dataAuthToken = await AsyncStorage.getItem("authToken");
+        let authToken = await JSON.parse(dataAuthToken);
+        //clone region state
+        let latitude = this.state.region.latitude
+        let longitude = this.state.region.longitude
+        // create centerPoint
+        let centerPoint = { latitude, longitude }
+
+        this.props.getLocationInTheCircle(authToken, centerPoint, "2", this.navigateToLoginScreen)
+    }
+    navigateToLoginScreen = async () => {
+        await AsyncStorage.removeItem('authToken');
+        await AsyncStorage.removeItem('userID');
+        await this.props.navigation.navigate('DangNhap');
+    }
 
 
     render() {
@@ -127,38 +165,58 @@ export default class TimKiem extends Component {
                     <MapView
                         style={styles.mapStyle}
                         provider={PROVIDER_GOOGLE}
-                        region={this.state.currentLocation}
+                        initialRegion={this.state.currentLocation}
+                        //region = {this.state.currentLocation}
                         customMapStyle={mapStyle}
                         loadingEnabled={true}
+                        onRegionChangeComplete={this.onRegionChange}
                         clustering={true}
+                        moveOnMarkerPress = {false} // prevent map move when marker is press
+
                     >
 
                         <Marker
                             coordinate={this.state.currentLocation}
                             cluster={false}
                         ></Marker>
+                        <Marker
+                            coordinate={{
+                                latitude: 10.85621,
+                                longitude: 106.767725
+                            }}
+                            cluster={false}
+                        ></Marker>
 
-                        {this.state.markers.map((item, index) => {
-                            return (
-                                <Marker
-                                    key={index.toString()}
-                                    coordinate={{
-                                        latitude: item.latitude,
-                                        longitude: item.longitude
-                                    }}
-                                    tracksViewChanges={this.state.tracksViewChanges}
 
-                                //onCalloutPress = {()=>this.navigation.navigate("XemBaiDang")}
-                                >
-                                    <MaterialCommunityIcons name="home-circle" size={28} color={MAIN_COLOR} />
-                                    <Callout
-                                        onPress={() => console.log('press')}
+                        {   this.props.isGetLocationInTheCircleSuccess ?
+                            this.state.markers.map((item, index) => {
+                                return (
+
+                                    <Marker
+                                        key={index.toString()}
+                                        coordinate={{
+                                            latitude: item.coordinates.latitude,
+                                            longitude: item.coordinates.longitude
+                                        }}
+                                        cluster  = {false}
+                                        tracksViewChanges={this.state.tracksViewChanges}
+
+                                    //onCalloutPress = {()=>this.navigation.navigate("XemBaiDang")}
                                     >
-                                        <CalloutMap item={item} />
-                                    </Callout>
-                                </Marker>
-                            );
-                        })}
+                                        <MaterialCommunityIcons name="home-circle" size={28} color={MAIN_COLOR} />
+                                        <Callout
+                                            onPress={() => this.props.navigation.navigate('XemBaiDang',
+                                            {
+                                                post_id : item._id
+                                            })}
+                                        >
+                                            <CalloutMap item={item} />
+                                        </Callout> 
+                                    </Marker>
+                                );
+                            })
+                            : null
+                        }
 
 
                     </MapView>
@@ -330,10 +388,10 @@ export default class TimKiem extends Component {
                                 <View style={{
                                     flexDirection: "row",
                                     justifyContent: "space-between",
-                                    marginHorizontal : 15
+                                    marginHorizontal: 15
                                 }} >
                                     <ButtonComponent title="Hủy" onPress={() => this.setFilterModalVisible(false)} />
-                                    <ButtonComponent title="Xác nhận" onPress = {()=> console.log(this.state.filterCondition)} />
+                                    <ButtonComponent title="Xác nhận" onPress={() => console.log(this.state.filterCondition)} />
                                 </View>
 
                             </View>
@@ -369,7 +427,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center"
     },
-    btnContainer: { 
+    btnContainer: {
         position: 'absolute',
         top: 0,
         right: 0,
@@ -397,7 +455,7 @@ const styles = StyleSheet.create({
     scrollModal: {
         flexDirection: "column",
         justifyContent: "center",
-        padding : 10
+        padding: 10
 
     },
     modalCell: {

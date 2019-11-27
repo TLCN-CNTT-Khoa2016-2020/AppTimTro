@@ -22,13 +22,14 @@ export const getLocationInTheCircleReducer = (prevState = initialState, action) 
 
             };
         case GET_LOCATION_INTHECIRCLE_SUCCESS : 
-            return {
-                ...prevState,
-                data : action.data,
-                isGetLocationInTheCircleSuccess : true,
-                isGetLocationInTheCircleRequest : false,
-                isGetLocationInTheCircleError : false
-            };
+                return {
+                    ...prevState,
+                    data : action.data ,
+                    isGetLocationInTheCircleSuccess : true,
+                    isGetLocationInTheCircleRequest : false,
+                    isGetLocationInTheCircleError : false
+                };
+            
         case GET_LOCATION_INTHECIRCLE_ERROR : 
             return {
                 ...prevState,

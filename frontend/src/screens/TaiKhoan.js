@@ -7,16 +7,21 @@ import {
 	TouchableOpacity,
 	StyleSheet,
 	AsyncStorage,
+	ActivityIndicator
 } from 'react-native';
 import { Button } from 'react-native-elements';
 import Constants from 'expo-constants';
 import { MAIN_COLOR, TEXT_COLOR } from '../../assets/color';
 import { Ionicons, Entypo } from '@expo/vector-icons';
+import {url} from '../ultils/index';
 
 export default class TaiKhoan extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			isLoading : true,
+			userID : null,
+			fullname : null,
 			timTroStatus : false
 		};
 	}
@@ -26,16 +31,57 @@ export default class TaiKhoan extends Component {
 		await AsyncStorage.removeItem('authToken');
 		await this.props.navigation.navigate('DangNhap');
 	}
+	componentDidMount = async() => {
+		// get userID and authToken from asyncStorege
+        let dataUserID      = await AsyncStorage.getItem("userID");
+        let userID          = await JSON.parse(dataUserID);
+        let dataAuthToken   = await AsyncStorage.getItem("authToken");
+		let authToken       = await JSON.parse(dataAuthToken);
+		await this.getUserInfor(authToken, userID, this.navigateToLoginScreen)
+
+	}
+	getUserInfor = (authToken, userID, navigateToLoginScreen) => {
+		fetch(`${url}`+ "/users/" + userID,{
+			method : 'GET',
+			headers : {
+				'Authorization' : 'Bearer '+`${authToken}`
+			}
+		}).then(response => {
+			console.log(response.status)
+			if(response.status === 200){
+				response.json().then(data => {
+					this.setState({
+						userID 		: data.result.userID,
+						fullname 	: data.result.fullname,
+						timTroStatus: data.result.timTroStatus,
+						isLoading : false	 
+					})
+				})
+			}
+			if(response.status === 401){ // token expire
+				console.log("Token expire")
+				navigateToLoginScreen();
+			}
+		}).catch(error => {
+			console.log(error)
+		})
+	} 
+	navigateToLoginScreen = async() => {
+        await AsyncStorage.removeItem('authToken');
+        await AsyncStorage.removeItem('userID');
+        await this.props.navigation.navigate('DangNhap');
+    }
 	render() {
 		return (
-			<View style={styles.container} >
-				<View style={styles.head} >
+			this.state.isLoading 
+				? <ActivityIndicator size = 'large' style = {{flex : 1}} />
+				:<View style={styles.container} >
+				<View style={styles.head} > 
 					<Image
 						source={require('../../assets/bg.jpg')}
 						style={styles.image} />
 					<View style={styles.infor} >
-						<Text style = {styles.text} > Tên : Võ Thị Sơn</Text>
-						<Text style = {styles.text} > SĐT :  01927727338</Text>
+						<Text style = {styles.text} > Tên : {this.state.fullname}</Text>
 						<View style={styles.timTroStatus} >
 							<Text style = {styles.text} > Trạng thái tìm trọ  </Text>
 							<Switch 

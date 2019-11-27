@@ -24,7 +24,7 @@ const getLocationInTheCircleError = (error) => {
 }
 
 // thunk
-export const getLocationInTheCircle = (authToken, centerPoint, raduis, navigateToLoginScreen) => dispatch => {
+export const getLocationInTheCircle = (authToken, centerPoint, radius, navigateToLoginScreen) => dispatch => {
     dispatch(getLocationInTheCircleRequest());
     //fetch data
     fetch(`${url}`+ "/maps/getlocationwithradius",{
@@ -33,12 +33,15 @@ export const getLocationInTheCircle = (authToken, centerPoint, raduis, navigateT
             Accept: 'application/json', 
             'Content-Type': 'application/json',
             'Authorization' : 'Bearer '+`${authToken}`
-        }
+        },
+        body : JSON.stringify({
+            centerPoint : centerPoint,
+            radius      : radius
+        })
     }).then(response => {
         //if resquest success
         if(response.status === 200){
             response.json().then(data => {
-                
                 dispatch(getLocationInTheCircleSuccess(data.result))
             })
         }

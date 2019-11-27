@@ -14,7 +14,7 @@ const initialState = {
 }   
 
 export const getPostForMainScreenReducer = (prevState = initialState, action) => {
-    switch(action.type) {
+    switch(action.type) { 
         case GETPOSTFORMAINSCREEN_REQUEST : 
             return {
                 ...prevState,
