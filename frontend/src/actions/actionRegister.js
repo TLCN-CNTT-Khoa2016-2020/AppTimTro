@@ -74,7 +74,7 @@ export const registerUserWithGG = (googleID, fullname, avatarUrl, loginUserWithG
             console.log("Register Success !")
             loginUserWithGG() 
             // then login
-            //loginUser()
+            //`loginUser`()
         }
         if(response.status === 409){ // if username already exist
             console.log("Username already exist")

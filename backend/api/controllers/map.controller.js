@@ -13,6 +13,8 @@ const User = require('../models/users.model');
 exports.getLocationWithRadius = (req, res, next) => {
     const centerPoint = req.body.centerPoint;
     const radius      = req.body.radius;
+    const conditions  = req.body.conditions;
+    console.log(conditions)
     Post.find()
         .select("_id room_price coordinates")
         .exec()

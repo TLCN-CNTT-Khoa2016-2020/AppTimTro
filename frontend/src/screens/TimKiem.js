@@ -60,10 +60,10 @@ export default class TimKiem extends Component {
                 canHo: false,
                 gioiTinhNam: false,
                 gioiTinhNu: false,
-                giaPhong: [500000, 8000000]
+                duoi_3m : false,
+                tu_3m_den_7m : false,
+                tren_7m : false
             },
-            //scroll for multislider
-            scrollEnabled: true
 
         };
 
@@ -122,16 +122,7 @@ export default class TimKiem extends Component {
     setFilterModalVisible = (visible) => {
         this.setState({ isFilterModalVisible: visible })
     }
-    multiSliderValuesChange = (values) => {
-        this.setState({
-            filterCondition: {
-                ...this.state.filterCondition,
-                giaPhong: values
-            }
-        });
-    }
-    enableScroll = () => this.setState({ scrollEnabled: true });
-    disableScroll = () => this.setState({ scrollEnabled: false });
+    
 
     onRegionChange = async (region) => {
         //console.log(region)
@@ -359,29 +350,58 @@ export default class TimKiem extends Component {
                                             flexDirection: "column",
 
                                         }} >
+                                            <CheckBox
+                                                title="Dưới 3.000.000"
+                                                center
+                                                containerStyle={{ backgroundColor: 'rgba(52, 52, 52, 0)', borderColor: '#fff', }}
+                                                textStyle={{ fontFamily: 'roboto-regular' }}
+                                                checkedIcon={<Ionicons name="md-checkmark-circle" size={32} color={MAIN_COLOR} />}
+                                                uncheckedIcon={<Ionicons name="md-checkmark-circle" size={32} color="gray" />}
+                                                checked={this.state.filterCondition.duoi_3m}
+                                                onPress={() =>
+                                                    this.setState({
+                                                        filterCondition: {
+                                                            ...this.state.filterCondition,
+                                                            duoi_3m: !this.state.filterCondition.duoi_3m
+                                                        }
+                                                    })
+                                                }
+                                            />
+                                            <CheckBox
+                                                title="Từ 3.000.000 đến 7.000.000"
+                                                center
+                                                containerStyle={{ backgroundColor: 'rgba(52, 52, 52, 0)', borderColor: '#fff', }}
+                                                textStyle={{ fontFamily: 'roboto-regular' }}
+                                                checkedIcon={<Ionicons name="md-checkmark-circle" size={32} color={MAIN_COLOR} />}
+                                                uncheckedIcon={<Ionicons name="md-checkmark-circle" size={32} color="gray" />}
+                                                checked={this.state.filterCondition.tu_3m_den_7m}
+                                                onPress={() =>
+                                                    this.setState({
+                                                        filterCondition: {
+                                                            ...this.state.filterCondition,
+                                                            tu_3m_den_7m: !this.state.filterCondition.tu_3m_den_7m
+                                                        }
+                                                    })
+                                                }
+                                            />
+                                            <CheckBox
+                                                title="Trên 7.000.000"
+                                                center
+                                                containerStyle={{ backgroundColor: 'rgba(52, 52, 52, 0)', borderColor: '#fff', }}
+                                                textStyle={{ fontFamily: 'roboto-regular' }}
+                                                checkedIcon={<Ionicons name="md-checkmark-circle" size={32} color={MAIN_COLOR} />}
+                                                uncheckedIcon={<Ionicons name="md-checkmark-circle" size={32} color="gray" />}
+                                                checked={this.state.filterCondition.tren_7m}
+                                                onPress={() =>
+                                                    this.setState({
+                                                        filterCondition: {
+                                                            ...this.state.filterCondition,
+                                                            tren_7m: !this.state.filterCondition.tren_7m
+                                                        }
+                                                    })
+                                                }
+                                            />
 
-                                            <ScrollView
-                                                contentContainerStyle={{ alignSelf: "center", paddingHorizontal: 20 }}
-                                                scrollEnabled={this.state.scrollEnabled}>
-                                                <MultiSlider
-                                                    values={[this.state.filterCondition.giaPhong[0], this.state.filterCondition.giaPhong[1]]}
-                                                    sliderLength={240}
-                                                    onValuesChange={this.multiSliderValuesChange}
-                                                    onValuesChangeStart={this.disableScroll}
-                                                    onValuesChangeFinish={this.enableScroll}
-                                                    min={500000}
-                                                    max={8000000}
-                                                    step={100000}
-
-                                                />
-                                            </ScrollView>
-                                            <View style={{
-                                                flexDirection: "row",
-                                                justifyContent: "space-between"
-                                            }} >
-                                                <Text>{this.state.filterCondition.giaPhong[0]}</Text>
-                                                <Text>{this.state.filterCondition.giaPhong[1]}</Text>
-                                            </View>
                                         </View>
                                     </View>
                                 </ScrollView>
