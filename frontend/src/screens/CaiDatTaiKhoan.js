@@ -6,7 +6,8 @@ import {
     Dimensions,
     ScrollView,
     ActivityIndicator,
-    TouchableOpacity
+    TouchableOpacity,
+    AsyncStorage
 } from 'react-native';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
@@ -16,6 +17,8 @@ import ButtonComponent from '../components/ButtonComponent';
 import { CheckBox } from 'react-native-elements';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { MAIN_COLOR } from '../../assets/color';
+import { url } from '../ultils/index'
+import RadioForm from 'react-native-simple-radio-button';
 
 
 
@@ -25,6 +28,13 @@ const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 let id = 0;
+// declare for radio form
+const rangePrice = [
+    { label: "Dưới 3 triệu", value: { minPrice: 0, maxPrice: 3000000 } },
+    { label: "Từ 3 triệu đến 7 triệu", value: { minPrice: 3000000, maxPrice: 7000000 } },
+    { label: "Trên 7 triệu", value: { minPrice: 7000000, maxPrice: 900000000 } },
+]
+
 export default class CaiDatTaiKhoan extends Component {
     static navigationOptions = {
         title: "Cài Đặt Trạng Thái"
@@ -32,18 +42,18 @@ export default class CaiDatTaiKhoan extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            coordinates: [
-                { latitude: 10.828824, longitude: 106.771327 },
-                { latitude: 10.828024, longitude: 106.768102 },
-                { latitude: 10.825748, longitude: 106.774089 }
-            ],
-            region : null,
+            region: null,
             currentLocation: null,
             isLoading: true,
             errorMessage: null,
             duoi_3m: false,
             tu_3m_den_7m: false,
             tren_7m: false,
+            rangePrice: {
+                minPrice: 0,
+                maxPrice: 3000000
+            },
+            initialRadioForm : 0,
             // polygon
             polygons: [],
             editing: null,
@@ -51,16 +61,20 @@ export default class CaiDatTaiKhoan extends Component {
 
         };
     }
-    finish = async() => {
+    finish = async () => {
         const { polygons, editing } = this.state;
         await this.setState({
             polygons: [...polygons, editing],
             editing: null,
             creatingHole: false,
         });
-        await console.log(this.state.polygons)
+        // await console.log(this.state.polygons)
+        // await console.log(this.state.polygons.map(item => {
+        //     return item.coordinates
+        // }))
+        // await console.log(this.state.rangePrice)
     }
-    cancel = () =>{
+    cancel = () => {
         //const { polygons, editing } = this.state;
         this.setState({
             //polygons: [...polygons, editing],
@@ -68,7 +82,7 @@ export default class CaiDatTaiKhoan extends Component {
             creatingHole: false,
         });
     }
-   
+
     onPress = (e) => {
         const { editing, creatingHole } = this.state;
         if (!editing) {
@@ -105,6 +119,8 @@ export default class CaiDatTaiKhoan extends Component {
 
     componentDidMount = async () => {
         await this._getLocationAsync();
+        await this.getTimTroSetting();
+        await console.log(this.state.initialRadioForm)
         this.setState({
             isLoading: false,
         });
@@ -131,7 +147,120 @@ export default class CaiDatTaiKhoan extends Component {
             region: currentLocation
         });
     };
+
+
+    updateTimTroSetting = async () => {
+        let dataUserID = await AsyncStorage.getItem("userID");
+        let userID = await JSON.parse(dataUserID);
+        let dataAuthToken = await AsyncStorage.getItem("authToken");
+        let authToken = await JSON.parse(dataAuthToken);
+
+        try {
+            fetch(`${url}` + "/users/updatetimtrosetting/" + userID, {
+                method: 'PUT',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + `${authToken}`
+                },
+                body: JSON.stringify({
+                    area: this.state.polygons.map(item => {
+                        return item.coordinates
+                    }),
+                    rangePrice: {
+                        maxPrice: this.state.rangePrice.maxPrice,
+                        minPrice: this.state.rangePrice.minPrice
+                    }
+                })
+            }).then(response => {
+                // if request success
+                if (response.status === 200) {
+                    response.json().then(data => {
+                        console.log(data.message);
+                    })
+                } else if (response.status === 401) { // token expire
+                    console.log(" Token expire")
+                    this.navigateToLoginScreen();
+                } else {
+                    console.log("Request fail. Status code : "+ response.status)
+                }
+            }).catch(error => {
+                console.log(error)
+            })
+        } catch (error) {
+            console.log(error)
+        }
+
+
+    }
+    getTimTroSetting = async() => {
+        let dataUserID = await AsyncStorage.getItem("userID");
+        let userID = await JSON.parse(dataUserID);
+        let dataAuthToken = await AsyncStorage.getItem("authToken");
+        let authToken = await JSON.parse(dataAuthToken);
+
+        //
+        fetch(`${url}`+ "/users/timtrosetting/" + userID,{
+            method : 'GET',
+            headers : { 
+                Accept: 'application/json', 
+                'Content-Type': 'application/json',
+                'Authorization' : 'Bearer '+`${authToken}`
+            }
+        }).then(response => {
+            //if success
+            let id = 0;
+            if(response.status === 200){
+                response.json().then(data => {
+                    const polygons = data.result.timtroSetting.area.map(item => {
+                        return { 
+                            "coordinates" : item,
+                            "id"          : id++,
+                            "holes"       : []
+                        }
+                    })
+                    const rangePrice = data.result.timtroSetting.rangePrice;
+                    //let initialRadioForm = 0;
+                    console.log(rangePrice)
+                    if(rangePrice.minPrice === 0){
+                        this.setState({
+                            polygons,
+                            rangePrice,
+                            initialRadioForm : 0
+                        })
+                    } else if(rangePrice.minPrice === 3000000){
+                        this.setState({
+                            polygons,
+                            rangePrice,
+                            initialRadioForm : 1
+                        })
+                    } else {
+                        this.setState({
+                            polygons,
+                            rangePrice,
+                            initialRadioForm: 2
+                        })
+                    }
+                   
+                })
+            } else if (response.status === 401) { // token expire
+                console.log(" Token expire")
+                this.navigateToLoginScreen();
+            } else {
+                console.log("Request fail. Status code : "+ response.status)
+            }
+
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+    navigateToLoginScreen = async () => {
+        await AsyncStorage.removeItem('authToken');
+        await AsyncStorage.removeItem('userID');
+        await this.props.navigation.navigate('DangNhap');
+    }
     render() {
+        console.log(this.state.initialRadioForm)
         const mapOptions = {
             scrollEnabled: true,
         };
@@ -186,7 +315,7 @@ export default class CaiDatTaiKhoan extends Component {
                             {
                                 this.state.editing && (
                                     <TouchableOpacity
-                                        onPress = {()=> this.cancel()}
+                                        onPress={() => this.cancel()}
                                         style={[styles.bubble, styles.button]} >
                                         <Text>Cancel</Text>
                                     </TouchableOpacity>
@@ -199,48 +328,21 @@ export default class CaiDatTaiKhoan extends Component {
                             alignItems: "flex-start"
 
                         }} >
-                            <CheckBox
-                                title="Dưới 3.000.000"
-                                center
-                                containerStyle={{ backgroundColor: 'rgba(52, 52, 52, 0)', borderColor: '#fff', }}
-                                textStyle={{ fontFamily: 'roboto-regular' }}
-                                checkedIcon={<Ionicons name="md-checkmark-circle" size={32} color={MAIN_COLOR} />}
-                                uncheckedIcon={<Ionicons name="md-checkmark-circle" size={32} color="gray" />}
-                                checked={this.state.duoi_3m}
-                                onPress={() =>
-                                    this.setState({
-                                        duoi_3m: !this.state.duoi_3m
-                                    })
-                                }
-                            />
-                            <CheckBox
-                                title="Từ 3.000.000 đến 7.000.000"
-                                center
-                                containerStyle={{ backgroundColor: 'rgba(52, 52, 52, 0)', borderColor: '#fff', }}
-                                textStyle={{ fontFamily: 'roboto-regular' }}
-                                checkedIcon={<Ionicons name="md-checkmark-circle" size={32} color={MAIN_COLOR} />}
-                                uncheckedIcon={<Ionicons name="md-checkmark-circle" size={32} color="gray" />}
-                                checked={this.state.tu_3m_den_7m}
-                                onPress={() =>
-                                    this.setState({
-                                        tu_3m_den_7m: !this.state.tu_3m_den_7m
-                                    })
-                                }
-                            />
-                            <CheckBox
-                                title="Trên 7.000.000"
-                                center
-                                containerStyle={{ backgroundColor: 'rgba(52, 52, 52, 0)', borderColor: '#fff', }}
-                                textStyle={{ fontFamily: 'roboto-regular' }}
-                                checkedIcon={<Ionicons name="md-checkmark-circle" size={32} color={MAIN_COLOR} />}
-                                uncheckedIcon={<Ionicons name="md-checkmark-circle" size={32} color="gray" />}
-                                checked={this.state.tren_7m}
-                                onPress={() =>
-                                    this.setState({
-                                        tren_7m: !this.state.tren_7m
-                                    })
-                                }
-                            />
+                            <RadioForm
+                                key = {Date.now.toString()}
+                                //isSelected = {this.state.initialRadioForm}
+                                radio_props={rangePrice}
+                                initial={this.state.initialRadioForm}
+                                buttonColor={MAIN_COLOR}
+                                selectedButtonColor={MAIN_COLOR}
+                                buttonSize={12}
+                                buttonOuterSize={24}
+                                labelStyle={{ fontSize: 20, fontFamily: 'roboto-regular' }}
+                                // style={{ marginVertical: 10 }}
+                                radioStyle={{ marginVertical: 10 }}
+                                onPress={(value) => { this.setState({ 
+                                    rangePrice: value 
+                                }) }} />
 
                         </View>
                         <View style={{
@@ -248,6 +350,7 @@ export default class CaiDatTaiKhoan extends Component {
                             justifyContent: "flex-end"
                         }} >
                             <ButtonComponent
+                                onPress={() => this.updateTimTroSetting()}
                                 title="Xác Nhận"
                                 style={{
                                     marginVertical: 20,

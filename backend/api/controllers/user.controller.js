@@ -66,7 +66,7 @@ exports.change_timtro_status = (req, res, next) => {
             //if result === null => no post
             if(result === null){
                 res.status(500).json({
-                    message : "Can't find users"
+                    message : "Can't find users" 
                 })
             }
             res.status(200).json({

@@ -37,4 +37,4 @@ exports.getLocationWithRadius = (req, res, next) => {
                 error : error
             })
         })
-}
+};

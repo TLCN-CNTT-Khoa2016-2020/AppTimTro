@@ -42,10 +42,12 @@ const userSchema = new Schema({
     },
     timtroStatus : { type : Boolean, default : false },
     timtroSettings : {
-        area : [{
-            latitude : { type : Number},
-            longitude : {type: Number}
-        }],
+        area : [
+            [{
+                latitude : { type : Number},
+                longitude : {type: Number}
+            }]
+        ],
         rangePrice : {
             maxPrice  : { type : Number},
             minPrice  : { type : Number}
