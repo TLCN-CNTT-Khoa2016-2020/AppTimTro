@@ -66,11 +66,44 @@ export default class TaiKhoan extends Component {
 			console.log(error)
 		})
 	} 
+	changeTimTroStatus = (authToken, userID, navigateToLoginScreen) => {
+		fetch(`${url}`+ "/users/changetimtrostatus/" + userID,{
+			method : 'PUT',
+			headers : {
+				'Authorization' : 'Bearer '+`${authToken}`
+			},
+			body : JSON.stringify({
+				"status" : this.state.timTroStatus
+			})
+		}).then(response => {
+			if(response.status === 200){
+				response.json().then(data => {
+					console.log(data.message)
+				})
+			}
+			if(response.status === 401){ // token expire
+				console.log("Token expire")
+				navigateToLoginScreen();
+			}
+		}).catch(error => {
+			console.log(error)
+		})
+	}
 	navigateToLoginScreen = async() => {
         await AsyncStorage.removeItem('authToken');
         await AsyncStorage.removeItem('userID');
         await this.props.navigation.navigate('DangNhap');
-    }
+	}
+	handleChangeSwitchButton = async() => {
+		// get userID and authToken from asyncStorege
+        let dataUserID      = await AsyncStorage.getItem("userID");
+        let userID          = await JSON.parse(dataUserID);
+        let dataAuthToken   = await AsyncStorage.getItem("authToken");
+		let authToken       = await JSON.parse(dataAuthToken);
+		//
+		await this.setState({timTroStatus : !this.state.timTroStatus})
+		await this.changeTimTroStatus(authToken, userID, this.navigateToLoginScreen)
+	}
 	render() {
 		return (
 			this.state.isLoading 
@@ -86,7 +119,7 @@ export default class TaiKhoan extends Component {
 							<Text style = {styles.text} > Trạng thái tìm trọ  </Text>
 							<Switch 
 								value = {this.state.timTroStatus}
-								onValueChange = {()=>this.setState({timTroStatus : !this.state.timTroStatus})}
+								onValueChange = {this.handleChangeSwitchButton}
 								thumbColor  = {MAIN_COLOR}
 								trackColor = {{true : 'rgba(245, 102, 25, 0.3)'}}
 								ios_backgroundColor = {MAIN_COLOR} 

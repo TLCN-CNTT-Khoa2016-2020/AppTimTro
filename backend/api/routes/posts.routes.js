@@ -36,6 +36,7 @@ const PostsController = require('../controllers/post.controllers');
 const subPostRouter   = require('../routes/subposts.routes');
 /*<--------------------- IMPORT MIDDLEWARE --------------------->*/
 const resizeImage = require('../middleware/resizeImage')
+const checkArea   = require('../middleware/checkArea');
 /*<--------------------- ROUTES --------------------->*/
 
 

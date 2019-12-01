@@ -29,7 +29,7 @@ export const getLocationInTheCircle = (authToken, centerPoint, radius, navigateT
     //fetch data
     fetch(`${url}`+ "/maps/getlocationwithradius",{
         method :'POST',
-        headers : {
+        headers : { 
             Accept: 'application/json', 
             'Content-Type': 'application/json',
             'Authorization' : 'Bearer '+`${authToken}`
@@ -46,7 +46,7 @@ export const getLocationInTheCircle = (authToken, centerPoint, radius, navigateT
             })
         }
 
-        if(response.status === 401){ // token expert
+        if(response.status === 401){ // token expire
             dispatch(getPostForMainScreenError());
             console.log(" Token expire")
             navigateToLoginScreen();

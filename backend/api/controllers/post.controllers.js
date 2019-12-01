@@ -1,5 +1,6 @@
 /*<--------------------- CALL THE PACKAGE --------------------->*/
 const mongoose   = require('mongoose');
+const checkArea  = require('../middleware/checkArea');
 
 
 
@@ -95,7 +96,7 @@ exports.create_posts = (req, res, next) => {
     console.log(post )
     //save post to database
     post.save()
-        .then(result => {
+        .then(result => { 
             // save postsID to userShema
             User.findByIdAndUpdate({_id : req.body.userId},{$push: {posts : post._id}})
                 .exec()
@@ -103,6 +104,7 @@ exports.create_posts = (req, res, next) => {
                     res.status(201).json({
                         message : "Posts created !",
                     })
+                    checkArea(post._id,post.coordinates,post.room_price);
                 })
                 .catch(err => {
                     res.status(500).json({
