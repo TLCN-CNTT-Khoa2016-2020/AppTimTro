@@ -1,4 +1,4 @@
-import React, { Component, createRef } from 'react';
+import React, { Component, createRef,PureComponent  } from 'react';
 import {
     View,
     Text,
@@ -17,14 +17,15 @@ import CalloutMap from '../components/CalloutMap';
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
-import { PROVIDER_GOOGLE, Marker, Callout } from "react-native-maps";
-import MapView from 'react-native-map-clustering';
+import MapView,{ PROVIDER_GOOGLE, Marker, Callout } from "react-native-maps";
+//import MapView from 'react-native-map-clustering';
 import { CheckBox } from 'react-native-elements';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import FilterBar from '../components/FilterBar';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import ButtonComponent from '../components/ButtonComponent';
 import isEqual from 'lodash.isequal';
+import debounce from 'lodash.debounce';
 
 
 import { mockData } from '../mockData';
@@ -39,7 +40,7 @@ const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.014241;
 const LONGITUDE_DELTA = ASPECT_RATIO * LATITUDE_DELTA
 
-export default class TimKiem extends Component {
+export default class TimKiem extends PureComponent{
     constructor(props) {
         super(props);
         this.state = {
@@ -65,36 +66,31 @@ export default class TimKiem extends Component {
                 tren_7m : false
             },
 
-        };
+        }
+
 
     }
+    
     componentWillReceiveProps(nextProps) {
-        //console.log(this.props.data)
         if (!isEqual(this.props, nextProps)) {
-            this.setState(() => ({
+            this.setState(() => ({ 
                 tracksViewChanges: true,
-                markers : this.props.data
             }))
         }
     }
-    componentDidUpdate() {
+    componentDidUpdate(prevProps) {
         if (this.state.tracksViewChanges) {
             this.setState(() => ({
                 tracksViewChanges: false,
-                //markers : this.props.data
+                markers : this.props.data
             }))
-        }
-    }
-    componentWillMount = async () => {
-        //await this.getMarker()
+        } 
     }
     componentDidMount = async () => {
         await this._getLocationAsync();
-        await this.getMarker()
-        //console.log(this.props.data)
+        await this.getMarker(this.state.region)
         await this.setState({
             isLoading: false,
-            markers: this.props.data
         });
     }
 
@@ -125,17 +121,14 @@ export default class TimKiem extends Component {
     
 
     onRegionChange = async (region) => {
-        //console.log(region)
-        await this.setState({region})
-        await this.getMarker()
-        //console.log(this.props.data)
+        await this.getMarker(region)
     }
-    getMarker = async () => {
+    getMarker = async (region) => {
         let dataAuthToken = await AsyncStorage.getItem("authToken");
         let authToken = await JSON.parse(dataAuthToken);
         //clone region state
-        let latitude = this.state.region.latitude
-        let longitude = this.state.region.longitude
+        let latitude = region.latitude
+        let longitude = region.longitude
         // create centerPoint
         let centerPoint = { latitude, longitude }
 
@@ -160,7 +153,7 @@ export default class TimKiem extends Component {
                         //region = {this.state.currentLocation}
                         customMapStyle={mapStyle}
                         loadingEnabled={true}
-                        onRegionChangeComplete={this.onRegionChange}
+                        onRegionChangeComplete={debounce(this.onRegionChange,1000)}// debounce technical
                         clustering={true}
                         moveOnMarkerPress = {false} // prevent map move when marker is press
 
@@ -170,29 +163,20 @@ export default class TimKiem extends Component {
                             coordinate={this.state.currentLocation}
                             cluster={false}
                         ></Marker>
-                        <Marker
-                            coordinate={{
-                                latitude: 10.85621,
-                                longitude: 106.767725
-                            }}
-                            cluster={false}
-                        ></Marker>
+                        
 
 
                         {   this.props.isGetLocationInTheCircleSuccess ?
                             this.state.markers.map((item, index) => {
                                 return (
-
                                     <Marker
-                                        key={index.toString()}
+                                        key={item._id.toString()}
                                         coordinate={{
                                             latitude: item.coordinates.latitude,
                                             longitude: item.coordinates.longitude
                                         }}
                                         cluster  = {false}
-                                        tracksViewChanges={this.state.tracksViewChanges}
-
-                                    //onCalloutPress = {()=>this.navigation.navigate("XemBaiDang")}
+                                        tracksViewChanges=  {this.state.tracksViewChanges}
                                     >
                                         <MaterialCommunityIcons name="home-circle" size={28} color={MAIN_COLOR} />
                                         <Callout

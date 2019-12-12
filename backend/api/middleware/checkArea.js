@@ -21,11 +21,6 @@ module.exports = (_id_post, coordinates_post, roomPrice) => {
                     let polygons = item.map(itemPolygon => {
                         return [itemPolygon.latitude, itemPolygon.longitude]
                     })
-                    // console.log(polygons)
-                    // console.log(coordinates)
-                    // console.log(inside(coordinates, polygons))
-                    //console.log(roomPrice)
-                    //console.log(itemResult.timtroSettings.rangePrice.minPrice)
                     if (inside(coordinates, polygons) && ((roomPrice >= itemResult.timtroSettings.rangePrice.minPrice) && (roomPrice <= itemResult.timtroSettings.rangePrice.maxPrice)) ){
                         
                         console.log("Thông báo cho user có ID :" + `${itemResult._id}` + " đã có phòng thích hợp với mã bài đăng: " + `${_id_post}`)
