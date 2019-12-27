@@ -59,30 +59,51 @@ export default class DangPhong1 extends Component {
     }
     handleUpdatePhuong = async (itemPhuong) => {
         await this.setState({ codePhuong: itemPhuong });
-        await console.log(JSON.stringify(this.state.codeQuan.name_with_type)
-            + ', ' + JSON.stringify(this.state.codePhuong.name_with_type)
-            + ',' + this.state.tenDuong + ',' + this.state.soNha);
+        // await console.log(JSON.stringify(this.state.codeQuan.name_with_type)
+        //     + ', ' + JSON.stringify(this.state.codePhuong.name_with_type)
+        //     + ',' + this.state.tenDuong + ',' + this.state.soNha);
     }
-    handleButtonTiepTheo = () => {
+    handleButtonTiepTheo = async() => {
         //convert address
         const address = this.state.soNha
             + ', ' + this.state.tenDuong + ', '
             + this.state.codePhuong.name_with_type
             + ', ' + this.state.codeQuan.name_with_type
             + ', TP.Hồ Chí Minh';
-        const coordinates = {
-            latitude    : this.state.currentLocation.latitude,
-            longitude   : this.state.currentLocation.longitude
-        }
+        console.log(JSON.stringify(address))
         if(this.state.choPhepSuDungViTri){
             //navigate to DangPhong2
+            const coordinates = {
+                latitude    : this.state.currentLocation.latitude,
+                longitude   : this.state.currentLocation.longitude
+            }
             this.props.navigation.navigate('DangPhong2', { address: address, coordinates : coordinates })
         } else {
             // 
+            await fetch('https://maps.googleapis.com/maps/api/geocode/json?address='+`${JSON.stringify(address)}`+'&key=AIzaSyBbFPxzg65lQMjE4Jjv8D4aEgW3cSfTQLo')
+                .then(response => {
+                    if(response.status === 200){
+                        response.json().then(data => {
+                            const coordinates = {
+                                latitude    : data.results[0].geometry.location.lat,
+                                longitude   : data.results[0].geometry.location.lng
+                            }
+                            this.props.navigation.navigate('DangPhong2', { address: address, coordinates : coordinates })
+                        })
+                    } else {
+                        console.log("geocodingAPI return != 200")
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
+                })
         }
         
         
 
+    }
+    geocodingAPI = () => {
+        
     }
     componentDidMount = async() => {
         await this.handleUpdateQuan(this.state.codeQuan);

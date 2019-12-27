@@ -40,7 +40,7 @@ const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.014241;
 const LONGITUDE_DELTA = ASPECT_RATIO * LATITUDE_DELTA
 
-export default class TimKiem extends PureComponent{
+export default class TimKiem extends Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -75,14 +75,18 @@ export default class TimKiem extends PureComponent{
         if (!isEqual(this.props, nextProps)) {
             this.setState(() => ({ 
                 tracksViewChanges: true,
+                
             }))
         }
     }
+    // shouldComponentUpdate(nextProps, nextState){
+        
+    // }
     componentDidUpdate(prevProps) {
         if (this.state.tracksViewChanges) {
             this.setState(() => ({
                 tracksViewChanges: false,
-                markers : this.props.data
+                markers : this.props.data,
             }))
         } 
     }
@@ -121,7 +125,7 @@ export default class TimKiem extends PureComponent{
     
 
     onRegionChange = async (region) => {
-        await this.getMarker(region)
+        //await this.getMarker(region)
     }
     getMarker = async (region) => {
         let dataAuthToken = await AsyncStorage.getItem("authToken");
@@ -132,7 +136,7 @@ export default class TimKiem extends PureComponent{
         // create centerPoint
         let centerPoint = { latitude, longitude }
 
-        this.props.getLocationInTheCircle(authToken, centerPoint, "2", this.navigateToLoginScreen)
+        this.props.getLocationInTheCircle(authToken, centerPoint, "100", this.navigateToLoginScreen)
     }
     navigateToLoginScreen = async () => {
         await AsyncStorage.removeItem('authToken');
@@ -142,6 +146,7 @@ export default class TimKiem extends PureComponent{
 
 
     render() {
+        console.log("render")
         return (
             this.state.isLoading
                 ? <ActivityIndicator size='large' style={styles.container} />
@@ -156,7 +161,7 @@ export default class TimKiem extends PureComponent{
                         onRegionChangeComplete={debounce(this.onRegionChange,1000)}// debounce technical
                         clustering={true}
                         moveOnMarkerPress = {false} // prevent map move when marker is press
-
+                        tracksViewChanges={false}
                     >
 
                         <Marker
@@ -169,7 +174,7 @@ export default class TimKiem extends PureComponent{
                         {   this.props.isGetLocationInTheCircleSuccess ?
                             this.state.markers.map((item, index) => {
                                 return (
-                                    <Marker
+                                    <Marker.Animated
                                         key={item._id.toString()}
                                         coordinate={{
                                             latitude: item.coordinates.latitude,
@@ -187,7 +192,7 @@ export default class TimKiem extends PureComponent{
                                         >
                                             <CalloutMap item={item} />
                                         </Callout> 
-                                    </Marker>
+                                    </Marker.Animated> 
                                 );
                             })
                             : null

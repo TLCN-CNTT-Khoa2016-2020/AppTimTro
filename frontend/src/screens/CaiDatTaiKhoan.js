@@ -254,6 +254,9 @@ export default class CaiDatTaiKhoan extends Component {
             console.log(error)
         })
     }
+    removePolygon = () => {
+        console.log("cc")
+    }
     navigateToLoginScreen = async () => {
         await AsyncStorage.removeItem('authToken');
         await AsyncStorage.removeItem('userID');
@@ -279,6 +282,7 @@ export default class CaiDatTaiKhoan extends Component {
                             initialRegion={this.state.region}
                             customMapStyle={mapStyle}
                             onPress={e => this.onPress(e)}
+                            onLongPress = {()=>this.removePolygon}
                             {...mapOptions} >
                             <Marker
                                 coordinate={this.state.currentLocation} />
@@ -290,6 +294,7 @@ export default class CaiDatTaiKhoan extends Component {
                                     strokeColor="#F00"
                                     fillColor="rgba(200,200,280,0.3)"
                                     strokeWidth={1}
+                                    //onPress = {()=>this.removePolygon}
                                 />
                             ))}
                             {this.state.editing && (
@@ -300,6 +305,7 @@ export default class CaiDatTaiKhoan extends Component {
                                     strokeColor="#000"
                                     fillColor="rgba(200,200,800,0.3)"
                                     strokeWidth={1}
+                                    //onPress = {()=>this.removePolygon}
                                 />
                             )}
                         </MapView>
