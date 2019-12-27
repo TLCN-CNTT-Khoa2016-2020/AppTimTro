@@ -18,6 +18,7 @@ import { CheckBox } from 'react-native-elements'
 import { Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 import { MAIN_COLOR, BORDER_COLOR, TEXT_COLOR } from '../../assets/color';
 import { quanHuyen, xaPhuong } from '../dataPlace';
+import {GEOCODINGAPI} from 'react-native-dotenv'
 
 const { height, width } = Dimensions.get('window');
 export default class DangPhong1 extends Component {
@@ -80,14 +81,16 @@ export default class DangPhong1 extends Component {
             this.props.navigation.navigate('DangPhong2', { address: address, coordinates : coordinates })
         } else {
             // 
-            await fetch('https://maps.googleapis.com/maps/api/geocode/json?address='+`${JSON.stringify(address)}`+'&key=AIzaSyBbFPxzg65lQMjE4Jjv8D4aEgW3cSfTQLo')
+            await fetch('https://maps.googleapis.com/maps/api/geocode/json?address='+`${JSON.stringify(address)}`+'&key=' + `${GEOCODINGAPI}`)
                 .then(response => {
                     if(response.status === 200){
                         response.json().then(data => {
+                            
                             const coordinates = {
                                 latitude    : data.results[0].geometry.location.lat,
                                 longitude   : data.results[0].geometry.location.lng
                             }
+                            console.log(coordinates)
                             this.props.navigation.navigate('DangPhong2', { address: address, coordinates : coordinates })
                         })
                     } else {

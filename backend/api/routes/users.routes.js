@@ -13,7 +13,7 @@ const subRoutes =  require('../routes/subusers.routes');
 /*<--------------------- ROUTES --------------------->*/
 
 /*<--------- GET / ---------> */ 
-/* MISSION : GET ALL USER  */
+/* MISSION : GET ALL USER  */ 
 router.get('/',checkAuth, (req, res, next)=> {  
     User.find()
         .select(" _id fullname username")
