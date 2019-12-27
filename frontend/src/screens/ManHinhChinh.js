@@ -16,6 +16,10 @@ import ButtonComponent from '../components/ButtonComponent';
 import { Ionicons } from '@expo/vector-icons';
 import { MAIN_COLOR, TEXT_COLOR } from '../../assets/color';
 import CardPost from '../components/CardPost';
+//push notification
+import { Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
+import {url} from '../ultils/index';
 
 
 import { mockData } from '../mockData';
@@ -29,10 +33,24 @@ export default class ManHinhChinh extends Component {
         super(props);
         this.state = {
             isLoading : true,
+            notification: {},
             page : 0,
             dataRecommend : null
         };
     }
+    _handleNotification = async(notification) => {
+        await this.setState({notification: notification});
+        await console.log(this.state.notification.origin);
+        if(this.state.notification.origin === 'selected'){
+            this.props.navigation.navigate("XemBaiDang",
+                                {
+                                    post_id : this.state.notification.data.postID
+                                })
+        }
+        await console.log(this.state.notification.data)
+        await console.log(this.state.notification.remote)
+        
+    };
     headerComponent = () => {
         return (
             <View style = {styles.header} >
@@ -94,7 +112,51 @@ export default class ManHinhChinh extends Component {
         await this.props.getPostForMainScreen(data, this.state.page + 1, this.navigateToLoginScreen);
         this.setState({page : this.state.page + 1})
     };
+    registerForPushNotificationsAsync = async() => {
+        const { status: existingStatus } = await Permissions.getAsync(
+          Permissions.NOTIFICATIONS
+        );
+        let finalStatus = existingStatus;
+      
+        // only ask if permissions have not already been determined, because
+        // iOS won't necessarily prompt the user a second time.
+        if (existingStatus !== 'granted') {
+          // Android remote notification permissions are granted during the app
+          // install, so this will only ask on iOS
+          const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+          finalStatus = status;
+        }
+      
+        // Stop here if the user did not grant permissions
+        if (finalStatus !== 'granted') {
+          return;
+        }
+      
+        // Get the token that uniquely identifies this device
+        let token = await Notifications.getExpoPushTokenAsync();
+        console.log(token)
+        let dataAuthToken = await AsyncStorage.getItem("authToken");
+        let authToken = await JSON.parse(dataAuthToken);
+        let dataUserID = await AsyncStorage.getItem("userID");
+        let userID = await JSON.parse(dataUserID);
+      
+        // POST the token to your backend server from where you can retrieve it to send push notifications.
+        return fetch(`${url}` + "/users/updateexpopushtoken", {
+          method: 'PUT',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization' : 'Bearer '+`${authToken}`,
+          },
+          body: JSON.stringify({
+            token : token,
+            userID : userID
+          }),
+        });
+      }
     componentDidMount = async() => {
+        await this.registerForPushNotificationsAsync()
+        this._notificationSubscription = Notifications.addListener(this._handleNotification);
         await this.getPostForMainScreen();
         await this.setState({
             isLoading : false,

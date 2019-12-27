@@ -80,3 +80,27 @@ exports.change_timtro_status = (req, res, next) => {
             })
         })
 }
+// MISSON : POST EXPOPUSHTOKEN
+exports.change_expo_pushToken = (req, res, next) => {
+    const expoPushToken = req.body.token;
+    const userID        = req.body.userID;
+    User.findByIdAndUpdate({_id : userID},{$set : {expoPushToken : expoPushToken}})
+        .exec()
+        .then( result => {
+            //if result === null => no post
+            if(result === null){
+                res.status(500).json({
+                    message : "Can't find users" 
+                })
+            }
+            res.status(200).json({
+                message : "Update Successful !",
+                result : result
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                error : err
+            })
+        })
+}
