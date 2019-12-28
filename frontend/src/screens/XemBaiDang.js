@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 import Constants from 'expo-constants';
 import ButtonComponent from '../components/ButtonComponent';
-import { Ionicons, Entypo, FontAwesome } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Ionicons, Entypo, FontAwesome } from '@expo/vector-icons';
 import { MAIN_COLOR, BORDER_COLOR, TEXT_COLOR } from '../../assets/color';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import DateTimePicker from "react-native-modal-datetime-picker";
@@ -329,42 +329,68 @@ export default class XemBaiDang extends Component {
                                 <View style={[styles.cell, { justifyContent: "space-around" }]}>
                                     <View style={styles.smallCell} >
                                         <Entypo name="light-bulb" size={32} color={TEXT_COLOR} />
-                                        <Text style={styles.subSmallTitle} > {postData.electric_price} </Text>
+                                        <NumberFormat
+                                            value={postData.electric_price}
+                                            thousandSeparator={true}
+                                            displayType='text'
+                                            renderText={value => <Text style={styles.subSmallTitle} >{value}</Text> } />
                                     </View  >
                                     <View style={styles.smallCell} >
                                         <Ionicons name="ios-water" size={32} color={TEXT_COLOR} />
-                                        <Text style={styles.subSmallTitle} >{postData.water_price} </Text>
+                                        <NumberFormat
+                                            value={postData.water_price}
+                                            thousandSeparator={true}
+                                            displayType='text'
+                                            renderText={value => <Text style={styles.subSmallTitle} >{value}</Text> } />
                                     </View>
                                     <View style={styles.smallCell} >
                                         <FontAwesome name="motorcycle" size={32} color={TEXT_COLOR} />
-                                        <Text style={styles.subSmallTitle} > {postData.parking_price} </Text>
+                                        <NumberFormat
+                                            value={postData.parking_price}
+                                            thousandSeparator={true}
+                                            displayType='text'
+                                            renderText={value => <Text style={styles.subSmallTitle} >{value}</Text> } />
                                     </View>
                                     <View style={styles.smallCell} >
                                         <FontAwesome name="wifi" size={32} color={TEXT_COLOR} />
-                                        <Text style={styles.subSmallTitle} > {postData.wifi_price} </Text>
+                                        <NumberFormat
+                                            value={postData.wifi_price}
+                                            thousandSeparator={true}
+                                            displayType='text'
+                                            renderText={value => <Text style={styles.subSmallTitle} >{value}</Text> } />
                                     </View>
                                 </View>
                                 <Text style={{
                                     fontSize: 18,
-                                    fontFamily: 'roboto-medium',
+                                    fontFamily: 'roboto-medium', 
                                     marginHorizontal: 10
                                 }}> Tiện ích </Text>
                                 <View style={[styles.cell, { justifyContent: "space-around" }]} >
                                     <View style={styles.smallCell} >
-                                        <Ionicons name="md-checkmark-circle" size={32} color="green" />
-                                        <Text style={styles.subSmallTitle} > {postData.wifi_price} </Text>
+                                        <MaterialCommunityIcons name="toilet" size={32} color={TEXT_COLOR} />   
                                     </View  >
                                     <View style={styles.smallCell} >
-                                        <Ionicons name="md-checkmark-circle" size={32} color="green" />
-                                        <Text style={styles.subSmallTitle} >{postData.wifi_price} </Text>
+                                        <MaterialCommunityIcons name="washing-machine" size={32} color={TEXT_COLOR} />
                                     </View>
                                     <View style={styles.smallCell} >
-                                        <Ionicons name="md-checkmark-circle" size={32} color="green" />
-                                        <Text style={styles.subSmallTitle} > {postData.wifi_price} </Text>
+                                        <MaterialCommunityIcons name="silverware-fork-knife" size={32} color={TEXT_COLOR} />
                                     </View>
                                     <View style={styles.smallCell} >
-                                        <Ionicons name="md-checkmark-circle" size={32} color="green" />
-                                        <Text style={styles.subSmallTitle} > {postData.wifi_price} </Text>
+                                        <MaterialCommunityIcons name="dog-service" size={32} color={TEXT_COLOR} />
+                                    </View>
+                                </View>
+                                <View style={[styles.cell, { justifyContent: "space-around" }]} >
+                                    <View style={styles.smallCell} >
+                                        <MaterialCommunityIcons name="security" size={32} color={TEXT_COLOR} />   
+                                    </View  >
+                                    <View style={styles.smallCell} >
+                                        <MaterialCommunityIcons name="hand-peace" size={32} color={TEXT_COLOR} />
+                                    </View>
+                                    <View style={styles.smallCell} >
+                                        <MaterialCommunityIcons name="air-conditioner" size={32} color={TEXT_COLOR} />
+                                    </View>
+                                    <View style={styles.smallCell} >
+                                        <MaterialCommunityIcons name="fridge" size={32} color={TEXT_COLOR} />
                                     </View>
                                 </View>
                                 <View style={styles.underLine} ></View>
@@ -375,7 +401,7 @@ export default class XemBaiDang extends Component {
                                 }} >Địa chỉ</Text>
                                 <View style={[styles.cell, { justifyContent: "flex-start", marginLeft: 30 }]} >
                                     <Ionicons name="ios-pin" size={32} color={MAIN_COLOR} />
-                                    <Text> {postData.address} </Text>
+                                    <Text style ={{marginLeft :5}} > {postData.address} </Text>
                                 </View>
                                 <View style={styles.underLine} ></View>
                                 <Text style={{
@@ -385,7 +411,7 @@ export default class XemBaiDang extends Component {
                                 }} >Ngày đăng</Text>
                                 <View style={[styles.cell, { justifyContent: "flex-start", marginLeft: 30 }]} >
                                     <Ionicons name="ios-calendar" size={32} color={MAIN_COLOR} />
-                                    <Text> {postData.day_submit} </Text>
+                                    <Text style ={{marginLeft :5}} >{moment.utc(postData.day_submit).format('DD-MM-YYYY')}  </Text>
                                 </View>
                                 <View style={styles.underLine} ></View>
                             </View>

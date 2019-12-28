@@ -8,14 +8,18 @@ import {
 } from 'react-native';
 import { MAIN_COLOR, TEXT_COLOR } from '../../assets/color';
 import { Foundation } from '@expo/vector-icons';
+import NumberFormat from 'react-number-format';
 import {url} from '../ultils/index'
 
 const CardPostHorizontal = ({
     item,
-    index
+    index,
+    onPress
 }) => (
         <View style={styles.container} >
-            <TouchableOpacity style={styles.post} >
+            <TouchableOpacity 
+                style={styles.post}
+                onPress = {()=>onPress()} >
                 <Image
                     style={styles.image}
                     source={{uri : `${url}`+ "/"  + item.room_image }} />
@@ -29,14 +33,16 @@ const CardPostHorizontal = ({
                             ? `${item.title}`
                             : `${item.title.substring(0, 20)}...`}
                     </Text>
-                    <Text
-                        style={{
-                            color: MAIN_COLOR,
-                            fontFamily: 'roboto-regular',
-                            fontSize: 14
-                        }} >
-                        {item.room_price}
-                    </Text>
+                    <NumberFormat 
+                    value={item.room_price}
+                    thousandSeparator={true} 
+                    displayType = 'text' 
+                    suffix = {' VND'}
+                    renderText={value => <Text style={{
+                        color: MAIN_COLOR,
+                        fontFamily: 'roboto-regular',
+                        fontSize: 14 
+                    }}>{value}</Text>} />
                     <Text
                         style={{
                             fontFamily: 'roboto-regular',

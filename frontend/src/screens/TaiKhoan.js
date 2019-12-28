@@ -111,7 +111,7 @@ export default class TaiKhoan extends Component {
 				:<View style={styles.container} >
 				<View style={styles.head} > 
 					<Image
-						source={require('../../assets/bg.jpg')}
+						source={require('../../assets/bg.png')}
 						style={styles.image} />
 					<View style={styles.infor} >
 						<Text style = {styles.text} > Tên : {this.state.fullname}</Text>

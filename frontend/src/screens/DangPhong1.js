@@ -213,7 +213,7 @@ export default class DangPhong1 extends Component {
                         </View>
                         <View style={styles.cell} >
                             <CheckBox
-                                title="Cho phép sử dụng vị trí hiện tại"
+                                title="Sử dụng vị trí hiện tại cho địa chỉ này"
                                 center
                                 containerStyle={{ backgroundColor: 'rgba(52, 52, 52, 0)', borderColor: '#fff', }}
                                 textStyle={{ fontFamily: 'roboto-regular', fontSize : 16  }}

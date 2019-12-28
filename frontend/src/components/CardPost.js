@@ -27,7 +27,7 @@ const CardPost = ({
                 numberOfLines={1}
                 style = {{fontFamily : 'roboto-medium'}} > 
                 {item.title.length < 23
-                    ? `${item.title}`
+                    ? `${item.title}` 
                     : `${item.title.substring(0,20)}...` } 
             </Text>
             <NumberFormat 

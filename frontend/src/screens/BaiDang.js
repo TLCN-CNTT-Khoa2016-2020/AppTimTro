@@ -35,7 +35,13 @@ export default class BaiDang extends Component {
             : (<FlatList
                 data={this.props.dataGetPostApproved}
                 renderItem={({ item, index }) =>
-                    <CardPostHorizontal item={item} index={index} />}
+                    <CardPostHorizontal 
+                        item={item} 
+                        index={index}
+                        onPress = {()=>this.props.navigation.navigate("XemBaiDang",
+                                {
+                                    post_id : item._id
+                                })}  />}
                 keyExtractor={(item, index) => String(index)}
                 onEndReached = {
                     this.props.isPostApprovedEnd    ? console.log("No more for loading !")
@@ -52,7 +58,13 @@ export default class BaiDang extends Component {
             : (<FlatList
                 data={this.props.dataGetPostUnApproved}
                 renderItem={({ item, index }) =>
-                    <CardPostHorizontal item={item} index={index} />}
+                    <CardPostHorizontal 
+                        item={item} 
+                        index={index}
+                        onPress = {()=>this.props.navigation.navigate("XemBaiDang",
+                                {
+                                    post_id : item._id
+                                })}  />}
                 keyExtractor={(item, index) => String(index)}
                 onEndReached = {
                     this.props.isPostUnApprovedEnd    ? console.log("No more for loading !")
