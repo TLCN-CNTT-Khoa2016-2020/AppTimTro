@@ -9,6 +9,7 @@ import { Text,
          } from 'react-native';
 import {url} from '../ultils';
 import  { ParallaxImage } from 'react-native-snap-carousel';
+import NumberFormat from 'react-number-format';
 
 const { width, height } = Dimensions.get('window')
 const CardPost = ({
@@ -29,7 +30,12 @@ const CardPost = ({
                     ? `${item.title}`
                     : `${item.title.substring(0,20)}...` } 
             </Text>
-            <Text numberOfLines={1}> {item.room_price} </Text>
+            <NumberFormat 
+                    value={item.room_price}
+                    thousandSeparator={true} 
+                    displayType = 'text' 
+                    suffix = {' VND'}
+                    renderText={value => <Text style = {styles.text}>{value}</Text>} />
     </TouchableOpacity>
 );
 const styles = StyleSheet.create({

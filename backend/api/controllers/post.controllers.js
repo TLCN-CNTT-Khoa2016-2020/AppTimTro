@@ -18,7 +18,7 @@ exports.get_all_posts =  (req, res, next) => {
         //.select("_id title address day_submit kind_of_room room_price room_area room_deposi electric_price water_price parking_price wifi_price gender description utilities userId")
         .exec()
         .then(result => {
-            res.status(200).json({
+            res.status(200).json({ 
                 count : result.length,
                 result : result.map(item => {
                     return {
@@ -32,12 +32,13 @@ exports.get_all_posts =  (req, res, next) => {
                         "room_deposi"   : item.room_deposi,
                         "electric_price": item.electric_price,
                         "water_price"   : item.water_price,
-                        "parking_price" : item.parking_price,
+                        "parking_price" : item.parking_price, 
                         "wifi_price"    : item.wifi_price,
                         "gender"        : item.gender,
                         "description"   : item.description,
                         "utilities"     : item.utilities,
                         "room_image"    : item.room_image,
+                        "is_approved"   : item.is_approved,
                         "user" : {
                             "_id"       : item.userId.id,
                             "fullname"  :item.userId.fullname

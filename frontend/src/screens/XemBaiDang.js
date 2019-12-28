@@ -21,15 +21,16 @@ import { MAIN_COLOR, BORDER_COLOR, TEXT_COLOR } from '../../assets/color';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import DateTimePicker from "react-native-modal-datetime-picker";
 import moment from 'moment';
+import NumberFormat from 'react-number-format';
 import { lstPost } from '../mockData';
-import {url} from '../ultils/index';
+import { url } from '../ultils/index';
 
 
 const { height, width } = Dimensions.get('window');
 export default class XemBaiDang extends Component {
     static navigationOptions = {
-        title : "Chi Tiết",
-        
+        title: "Chi Tiết",
+
     }
 
     constructor(props) {
@@ -41,58 +42,58 @@ export default class XemBaiDang extends Component {
             isDateTimePickerVisible: false,
             indexImage: 0,
             // appiontment state
-            fullname    : null,
-            SDT         : null,
-            choosenDate  : '',
+            fullname: null,
+            SDT: null,
+            choosenDate: '',
             // post state
             postData: null,
-            postID : null,
-            postImage : null
+            postID: null,
+            postImage: null
         };
     }
 
-    componentDidMount = async() => { 
+    componentDidMount = async () => {
         const postID = await this.props.navigation.state.params.post_id;
         let dataAuthToken = await AsyncStorage.getItem("authToken");
         let authToken = await JSON.parse(dataAuthToken);
         await this.getPostData(postID, authToken);
     }
-    getPostData = async(postID, authToken) => {
-        return await fetch(`${url}`+ "/posts/" + `${postID}`,{
-            method : 'GET',
-            headers : { 
-                'Authorization' : 'Bearer '+`${authToken}`
-                
+    getPostData = async (postID, authToken) => {
+        return await fetch(`${url}` + "/posts/" + `${postID}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + `${authToken}`
+
             }
-        }).then(response => { 
-                // if request success
-                if(response.status === 200){
-                    response.json().then(data => {
-                        const postImage = data.result.room_image.map(item => {
-                            return {
-                                "url" : `${url}`+ "/"  + item
-                            }
-                        })
-                        this.setState({
-                            postData : data.result,
-                            postImage :postImage,
-                            isLoading : false
-                        })
-                        
+        }).then(response => {
+            // if request success
+            if (response.status === 200) {
+                response.json().then(data => {
+                    const postImage = data.result.room_image.map(item => {
+                        return {
+                            "url": `${url}` + "/" + item
+                        }
                     })
-                }
-                if(response.status === 401){
-                    //dispatch(getPostUnApprovedError())
-                    console.log("Token expert")
-                    this.navigateToLoginScreen()
-                }
-            })
+                    this.setState({
+                        postData: data.result,
+                        postImage: postImage,
+                        isLoading: false
+                    })
+
+                })
+            }
+            if (response.status === 401) {
+                //dispatch(getPostUnApprovedError())
+                console.log("Token expert")
+                this.navigateToLoginScreen()
+            }
+        })
             .catch(err => {
 
                 console.log(err);
             })
     }
-    navigateToLoginScreen = async() => {
+    navigateToLoginScreen = async () => {
         await AsyncStorage.removeItem('authToken');
         await AsyncStorage.removeItem('userID');
         await this.props.navigation.navigate('DangNhap');
@@ -122,41 +123,41 @@ export default class XemBaiDang extends Component {
 
     handleDatePicked = date => {
         this.setState({
-            choosenDate : moment.utc(date).format()//'DD-MM-YYYY'
+            choosenDate: moment.utc(date).format()//'DD-MM-YYYY'
         });
         this.hideDateTimePicker();
     };
 
-    handleModalSubmit = async() => {
-        const postID        = await this.props.navigation.state.params.post_id;
-        let dataUserID      = await AsyncStorage.getItem("userID");
-        let userID          = await JSON.parse(dataUserID);
-        let dataAuthToken   = await AsyncStorage.getItem("authToken");
-        let authToken       = await JSON.parse(dataAuthToken);
+    handleModalSubmit = async () => {
+        const postID = await this.props.navigation.state.params.post_id;
+        let dataUserID = await AsyncStorage.getItem("userID");
+        let userID = await JSON.parse(dataUserID);
+        let dataAuthToken = await AsyncStorage.getItem("authToken");
+        let authToken = await JSON.parse(dataAuthToken);
         //
         const appointment = {
-            appointmentDate : this.state.choosenDate, // 2018-01-30 10:26:2 -0500
-            roomMaster      : this.state.postData.user._id,
-            postID          : postID,
-            peopleBooking   : {
-                _id         : userID,
-                fullname    : this.state.fullname,
-                SDT         : this.state.SDT
+            appointmentDate: this.state.choosenDate, // 2018-01-30 10:26:2 -0500
+            roomMaster: this.state.postData.user._id,
+            postID: postID,
+            peopleBooking: {
+                _id: userID,
+                fullname: this.state.fullname,
+                SDT: this.state.SDT
             }
         }
         console.log(appointment)
         // post data
-        fetch(`${url}`+ "/appointment",{
-            method : 'POST',
-            headers : { 
-                'Authorization' : 'Bearer '+`${authToken}`,
+        fetch(`${url}` + "/appointment", {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + `${authToken}`,
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Origin': '',   
+                'Origin': '',
             },
-            body : JSON.stringify(appointment)
+            body: JSON.stringify(appointment)
         }).then(response => {
-            if(response.status === 201){
+            if (response.status === 201) {
                 response.json().then(result => {
                     console.log(result.message)
                 })
@@ -169,7 +170,7 @@ export default class XemBaiDang extends Component {
         }).catch(error => {
             console.log(error)
         })
-        
+
 
         this.showModalForm(false);
     }
@@ -180,7 +181,7 @@ export default class XemBaiDang extends Component {
         //console.log(postData)
         return (
             this.state.isLoading
-                ? <ActivityIndicator size='large' style = {{flex :1}} />
+                ? <ActivityIndicator size='large' style={{ flex: 1 }} />
                 : <KeyboardAvoidingView style={styles.container} behavior="padding" enable >
 
                     <ScrollView contentContainerStyle={{ marginTop: 0 }} >
@@ -216,7 +217,7 @@ export default class XemBaiDang extends Component {
                                                     fontSize={16}
                                                     fontFamily='roboto-regular'
                                                     style={styles.textInputStyle}
-                                                    onChangeText = {fullname => this.setState({fullname}) } />
+                                                    onChangeText={fullname => this.setState({ fullname })} />
                                                 <View style={[styles.underLine, { width: width * 0.5 }]} ></View>
                                             </View>
                                             <View style={{ flexDirection: "column" }} >
@@ -226,25 +227,25 @@ export default class XemBaiDang extends Component {
                                                     placeholderTextColor='gray'
                                                     fontSize={16}
                                                     fontFamily='roboto-regular'
-                                                    style={styles.textInputStyle} 
-                                                    onChangeText = {SDT => this.setState({SDT})}/>
+                                                    style={styles.textInputStyle}
+                                                    onChangeText={SDT => this.setState({ SDT })} />
                                                 <View style={[styles.underLine, { width: width * 0.5 }]} ></View>
                                             </View>
                                             <View style={{ flexDirection: "column" }} >
                                                 <Text style={styles.smallTitle} >Ngày giờ đặt lịch</Text>
-                                                <TouchableOpacity 
-                                                    onPress = {this.showDateTimePicker}
-                                                    style = {styles.textInputStyle} >
-                                                    <Text style = {
+                                                <TouchableOpacity
+                                                    onPress={this.showDateTimePicker}
+                                                    style={styles.textInputStyle} >
+                                                    <Text style={
                                                         this.state.choosenDate != ""
-                                                        ? {color : TEXT_COLOR, fontFamily : 'roboto-regular',fontSize : 16}
-                                                        : {color : 'gray',fontFamily : 'roboto-regular',fontSize : 16}
+                                                            ? { color: TEXT_COLOR, fontFamily: 'roboto-regular', fontSize: 16 }
+                                                            : { color: 'gray', fontFamily: 'roboto-regular', fontSize: 16 }
                                                     } >
                                                         {
                                                             this.state.choosenDate != ""
-                                                            ?  moment(this.state.choosenDate).format('DD-MM-YYYY')//'DD-MM-YYYY'
-                                                            : "Nhấn để chọn ngày"
-                                                            
+                                                                ? moment(this.state.choosenDate).format('DD-MM-YYYY')//'DD-MM-YYYY'
+                                                                : "Nhấn để chọn ngày"
+
                                                         }
                                                     </Text>
                                                 </TouchableOpacity>
@@ -252,8 +253,8 @@ export default class XemBaiDang extends Component {
                                                     isVisible={this.state.isDateTimePickerVisible}
                                                     onConfirm={this.handleDatePicked}
                                                     onCancel={this.hideDateTimePicker}
-                                                    mode = {'date'}
-                                                    datePickerModeAndroid = {'calendar'}
+                                                    mode={'date'}
+                                                    datePickerModeAndroid={'calendar'}
                                                 />
                                             </View>
                                             <View style={{
@@ -261,7 +262,7 @@ export default class XemBaiDang extends Component {
                                                 justifyContent: 'space-between',
                                                 marginTop: 10
                                             }} >
-                                                <ButtonComponent title="Xác nhận" onPress = {()=> this.handleModalSubmit()} />
+                                                <ButtonComponent title="Xác nhận" onPress={() => this.handleModalSubmit()} />
                                                 <ButtonComponent title="Hủy" onPress={() => this.showModalForm(false)} />
                                             </View>
                                         </View>
@@ -270,11 +271,11 @@ export default class XemBaiDang extends Component {
                                 <View style={styles.detailImageDivice} >
                                     <TouchableOpacity
                                         onPress={() => this.showModalImage(!this.state.isImageModalVisible, 0)}  >
-                                        <Image style={styles.imageDivice2} source={{uri : `${url}`+ "/"  + postData.room_image[0] }} />
+                                        <Image style={styles.imageDivice2} source={{ uri: `${url}` + "/" + postData.room_image[0] }} />
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         onPress={() => this.showModalImage(!this.state.isImageModalVisible, 1)}  >
-                                        <Image style={styles.imageDivice2} source={{uri : `${url}`+ "/"  + postData.room_image[1] }} />
+                                        <Image style={styles.imageDivice2} source={{ uri: `${url}` + "/" + postData.room_image[1] }} />
                                     </TouchableOpacity>
 
 
@@ -282,15 +283,15 @@ export default class XemBaiDang extends Component {
                                 <View style={styles.detailImageDivice} >
                                     <TouchableOpacity
                                         onPress={() => this.showModalImage(!this.state.isImageModalVisible, 2)} >
-                                        <Image style={styles.imageDivice3} source={{uri : `${url}`+ "/"  + postData.room_image[2] }} />
+                                        <Image style={styles.imageDivice3} source={{ uri: `${url}` + "/" + postData.room_image[2] }} />
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         onPress={() => this.showModalImage(!this.state.isImageModalVisible, 3)} >
-                                        <Image style={styles.imageDivice3} source={{uri : `${url}`+ "/"  + postData.room_image[3] }} />
+                                        <Image style={styles.imageDivice3} source={{ uri: `${url}` + "/" + postData.room_image[3] }} />
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         onPress={() => this.showModalImage(!this.state.isImageModalVisible, 4)} >
-                                        <Image style={styles.imageDivice3} source={{uri : `${url}`+ "/"  + postData.room_image[4] }} />
+                                        <Image style={styles.imageDivice3} source={{ uri: `${url}` + "/" + postData.room_image[4] }} />
                                     </TouchableOpacity>
 
 
@@ -305,7 +306,11 @@ export default class XemBaiDang extends Component {
                                     </View  >
                                     <View style={styles.smallCell} >
                                         <Text style={styles.smallTitle} >Giá phòng</Text>
-                                        <Text style={styles.subSmallTitle} >{postData.room_price}/tháng </Text>
+                                        <NumberFormat
+                                            value={postData.room_price}
+                                            thousandSeparator={true}
+                                            displayType='text'
+                                        renderText={value => <Text style={styles.subSmallTitle} >{value}/tháng </Text> } />
                                     </View>
                                     <View style={styles.smallCell} >
                                         <Text style={styles.smallTitle} >Diện tích</Text>
@@ -313,7 +318,11 @@ export default class XemBaiDang extends Component {
                                     </View>
                                     <View style={styles.smallCell} >
                                         <Text style={styles.smallTitle} >Đặt cọc</Text>
-                                        <Text style={styles.subSmallTitle} > {postData.room_deposi}đ </Text>
+                                        <NumberFormat
+                                            value={postData.room_deposi}
+                                            thousandSeparator={true}
+                                            displayType='text'
+                                            renderText={value => <Text style={styles.subSmallTitle} >{value} đ </Text> } />
                                     </View>
                                 </View>
                                 <View style={styles.underLine} ></View>
@@ -337,8 +346,8 @@ export default class XemBaiDang extends Component {
                                 </View>
                                 <Text style={{
                                     fontSize: 18,
-                                    fontFamily: 'roboto-medium', 
-                                    marginHorizontal :10 
+                                    fontFamily: 'roboto-medium',
+                                    marginHorizontal: 10
                                 }}> Tiện ích </Text>
                                 <View style={[styles.cell, { justifyContent: "space-around" }]} >
                                     <View style={styles.smallCell} >
@@ -362,17 +371,18 @@ export default class XemBaiDang extends Component {
                                 <Text style={{
                                     fontSize: 18,
                                     fontFamily: 'roboto-medium',
-                                    marginHorizontal : 10
-                                     }} >Địa chỉ</Text>
+                                    marginHorizontal: 10
+                                }} >Địa chỉ</Text>
                                 <View style={[styles.cell, { justifyContent: "flex-start", marginLeft: 30 }]} >
                                     <Ionicons name="ios-pin" size={32} color={MAIN_COLOR} />
                                     <Text> {postData.address} </Text>
                                 </View>
                                 <View style={styles.underLine} ></View>
-                                <Text style={{ 
-                                    fontSize: 18, 
+                                <Text style={{
+                                    fontSize: 18,
                                     fontFamily: 'roboto-medium',
-                                    marginHorizontal : 10 }} >Ngày đăng</Text>
+                                    marginHorizontal: 10
+                                }} >Ngày đăng</Text>
                                 <View style={[styles.cell, { justifyContent: "flex-start", marginLeft: 30 }]} >
                                     <Ionicons name="ios-calendar" size={32} color={MAIN_COLOR} />
                                     <Text> {postData.day_submit} </Text>
@@ -453,7 +463,7 @@ const styles = StyleSheet.create({
     },
     cell: {
         marginVertical: 10,
-        marginHorizontal : 10,
+        marginHorizontal: 10,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center"
@@ -469,7 +479,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontFamily: 'roboto-medium',
         marginVertical: 5,
-        marginHorizontal : 5
+        marginHorizontal: 5
     },
     smallTitle: {
         fontSize: 16
@@ -491,14 +501,14 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        
+
     },
     modal: {
         padding: 20,
         height: height / 1.8,
         width: width * 0.8,
         backgroundColor: "white",
-        borderRadius : 10
+        borderRadius: 10
 
     },
     textInputStyle: {

@@ -17,8 +17,8 @@ import CalloutMap from '../components/CalloutMap';
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
-import MapView,{ PROVIDER_GOOGLE, Marker, Callout } from "react-native-maps";
-//import MapView from 'react-native-map-clustering';
+import { PROVIDER_GOOGLE, Marker, Callout } from "react-native-maps";
+import MapView from 'react-native-map-clustering';
 import { CheckBox } from 'react-native-elements';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import FilterBar from '../components/FilterBar';
@@ -158,9 +158,9 @@ export default class TimKiem extends Component{
                         //region = {this.state.currentLocation}
                         customMapStyle={mapStyle}
                         loadingEnabled={true}
-                        onRegionChangeComplete={debounce(this.onRegionChange,1000)}// debounce technical
+                        //onRegionChangeComplete={debounce(this.onRegionChange,1000)}// debounce technical
                         clustering={true}
-                        moveOnMarkerPress = {false} // prevent map move when marker is press
+                        //moveOnMarkerPress = {false} // prevent map move when marker is press
                         tracksViewChanges={false}
                     >
 
@@ -174,7 +174,7 @@ export default class TimKiem extends Component{
                         {   this.props.isGetLocationInTheCircleSuccess ?
                             this.state.markers.map((item, index) => {
                                 return (
-                                    <Marker.Animated
+                                    <Marker
                                         key={item._id.toString()}
                                         coordinate={{
                                             latitude: item.coordinates.latitude,
@@ -192,7 +192,7 @@ export default class TimKiem extends Component{
                                         >
                                             <CalloutMap item={item} />
                                         </Callout> 
-                                    </Marker.Animated> 
+                                    </Marker> 
                                 );
                             })
                             : null

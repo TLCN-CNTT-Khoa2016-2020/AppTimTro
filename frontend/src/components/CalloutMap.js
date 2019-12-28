@@ -7,7 +7,7 @@ import {
     Dimensions
 } from 'react-native';
 import NumberFormat from 'react-number-format';
-
+ 
 const {height, width} = Dimensions.get('window');
 const CalloutMap = ({
     item,
