@@ -53,7 +53,14 @@ const userSchema = new Schema({
             minPrice  : { type : Number}
         }
     },
-    expoPushToken : {type : String},  
+    expoPushToken : {type : String},
+    notification : [
+        {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : "Post"
+        }
+
+    ],  
     role : {type : String , default : "User"},
     posts: [{
         type : mongoose.Schema.Types.ObjectId,

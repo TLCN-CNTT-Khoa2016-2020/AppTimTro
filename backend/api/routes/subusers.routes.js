@@ -11,8 +11,9 @@ const UsersController = require('../controllers/user.controller');
 /*<--------- GET /timtrosetting/:userID ---------> */ 
 router.get('/timtrosetting/:userID', checkAuth, UsersController.get_setting_timtro);
 router.put('/updatetimtrosetting/:userID',checkAuth,UsersController.update_setting_timtro);
-router.put('/changetimtrostatus/:userID', checkAuth, UsersController.change_timtro_status);
+router.post('/changetimtrostatus/:userID', checkAuth, UsersController.change_timtro_status);
 router.put('/updateexpopushtoken', checkAuth, UsersController.change_expo_pushToken);
+router.post('/getnotification/get',checkAuth,UsersController.get_notification);
 
 //<---------------------  EXPORT ROUTES --------------------->
 module.exports = router; 

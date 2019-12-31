@@ -28,7 +28,7 @@ export const createPostReducer = (prevState = initialState, action) => {
                 isCreateRequest : false
             };
         case CREATE_POST_ERROR : 
-            return {
+            return { 
                 ...prevState,
                 error : action.error,
                 isCreateError   : true,

@@ -13,7 +13,7 @@ const AppointmentController = require('../controllers/appoinment.controller');
 router.post('/', checkAuth, AppointmentController.create_appointment);
 /*<--------- GET / ---------> */
 /* MISSION : GET ROOMMASTER APPOINTMENT  */
-router.get('/getroommasterappointment', checkAuth, AppointmentController.get_roomMaster_appointment);
+router.post('/getappointment', checkAuth, AppointmentController.get_appointment);
 /*<--------- GET / ---------> */
 /* MISSION : GET PEOPLE BOOKING APPOINTMENT  */
 router.get('/getpeoplebookingappointment', checkAuth, AppointmentController.get_peopleBooking_appointment);

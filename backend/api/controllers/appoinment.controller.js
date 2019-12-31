@@ -39,11 +39,11 @@ exports.create_appointment = (req, res, next) => {
                })
 };
 
-//MISSION : roomMater see their appointment
-exports.get_roomMaster_appointment = (req, res, next) => {
-    Appointment.find({roomMaster: req.body.roomMaster})
+//MISSION : get appointment with userID
+exports.get_appointment = (req, res, next) => {
+        Appointment.find( { $or :[{"roomMaster": req.body.userID},{"peopleBooking._id" : req.body.userID}]})         
                 .exec()
-                .then(result => {
+                .then(result => {   
                     res.status(200).json({
                         count : result.length,
                         result : result.map(item => {

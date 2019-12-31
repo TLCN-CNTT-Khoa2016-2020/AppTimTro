@@ -60,6 +60,7 @@ exports.update_setting_timtro = (req, res, next) => {
 // MISSON : CHANGE TIMTRO STATUS
 exports.change_timtro_status = (req, res, next) => {
     const status  = req.body.status;
+    console.log(status) 
     User.findByIdAndUpdate({_id : req.params.userID},{$set : {timtroStatus : status}})
         .exec()
         .then( result => {
@@ -101,6 +102,27 @@ exports.change_expo_pushToken = (req, res, next) => {
         .catch(err => {
             res.status(500).json({
                 error : err
+            })
+        })
+}
+// MISSON : GET NOTIFICATION
+exports.get_notification = (req, res, next) => {
+    // pageOptions
+    console.log(req.body.userID)
+    const pageOptions = {
+        page : parseInt(req.query.page) || 0,
+        limit : parseInt( req.query.limit) || 10
+    }
+    User.findById(req.body.userID)
+        .skip(pageOptions.page * pageOptions.limit)
+        .limit(pageOptions.limit)
+        .select("_id notification")
+        .exec()
+        .then(result => {
+            console.log(result)
+            res.status(200).json({
+                    _id             : result._id,
+                    notification    : result.notification          
             })
         })
 }

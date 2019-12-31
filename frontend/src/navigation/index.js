@@ -24,6 +24,8 @@ import DangPhong3 from '../screens/DangPhong3';
 import DangPhong4 from '../screens/DangPhong4';
 import TaiKhoan from '../screens/TaiKhoan';
 import XemBaiDang from '../screens/XemBaiDang';
+import ThongBao from '../screens/ThongBao';
+import LichHen from '../screens/LichHen';
 //import contianer 
 import {DangNhapContainer} from '../containers/DangNhapContainer';
 import {ManHinhChinhContainer} from '../containers/ManHinhChinhContainer';
@@ -43,6 +45,12 @@ const stackTaiKhoan = createStackNavigator({
     },
     CaiDatTaiKhoan: {
         screen: CaiDatTaiKhoan
+    },
+    LichHen : {
+        screen : LichHen
+    },
+    ThongBao : {
+        screen : ThongBao
     }
 }, {
         initialRouteName: "TaiKhoan",

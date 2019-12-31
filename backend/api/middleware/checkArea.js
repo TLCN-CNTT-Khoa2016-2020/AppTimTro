@@ -51,6 +51,22 @@ module.exports = (_id_post, coordinates_post, roomPrice) => {
                                          },
                                 })
                             
+                                // Update notification
+                                User.findByIdAndUpdate({_id : itemResult._id},{$push: {notification : _id_post}})
+                                    .exec()
+                                    .then(result =>{
+                                        // res.status(200).json({
+                                        //     message : "Update notification successful !",
+                                        // })
+                                        console.log(itemResult._id)
+                                        console.log("Update notification successful ")
+                                    })
+                                    .catch(err => {
+                                        res.status(500).json({
+                                            error: err
+                                        })
+                                    })
+                
 
                             // The Expo push notification service accepts batches of notifications so
                             // that you don't need to send 1000 requests to send 1000 notifications. We

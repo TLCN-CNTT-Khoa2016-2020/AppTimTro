@@ -29,7 +29,7 @@ export default class TaiKhoan extends Component {
 
 	logOut = async () => {
 		await AsyncStorage.removeItem('authToken');
-		await this.props.navigation.navigate('DangNhap');
+		await this.props.navigation.navigate('DangNhap'); 
 	}
 	componentDidMount = async() => {
 		// get userID and authToken from asyncStorege
@@ -47,13 +47,12 @@ export default class TaiKhoan extends Component {
 				'Authorization' : 'Bearer '+`${authToken}`
 			}
 		}).then(response => {
-			console.log(response.status)
 			if(response.status === 200){
 				response.json().then(data => {
 					this.setState({
 						userID 		: data.result.userID,
 						fullname 	: data.result.fullname,
-						timTroStatus: data.result.timTroStatus,
+						timTroStatus: data.result.timtroStatus,
 						isLoading : false	 
 					})
 				})
@@ -66,15 +65,15 @@ export default class TaiKhoan extends Component {
 			console.log(error)
 		})
 	} 
-	changeTimTroStatus = (authToken, userID, navigateToLoginScreen) => {
-		fetch(`${url}`+ "/users/changetimtrostatus/" + userID,{
-			method : 'PUT',
+	changeTimTroStatus = async(authToken,status, userID, navigateToLoginScreen) => {
+		await fetch(`${url}`+ "/users/changetimtrostatus/" + userID,{
+			method : 'POST',
 			headers : {
+				Accept: 'application/json', 
+            	'Content-Type': 'application/json',
 				'Authorization' : 'Bearer '+`${authToken}`
 			},
-			body : JSON.stringify({
-				"status" : this.state.timTroStatus
-			})
+			body : JSON.stringify({"status":status})
 		}).then(response => {
 			if(response.status === 200){
 				response.json().then(data => {
@@ -102,10 +101,12 @@ export default class TaiKhoan extends Component {
 		let authToken       = await JSON.parse(dataAuthToken);
 		//
 		await this.setState({timTroStatus : !this.state.timTroStatus})
-		await this.changeTimTroStatus(authToken, userID, this.navigateToLoginScreen)
+		await console.log(this.state.timTroStatus)
+		await this.changeTimTroStatus(authToken,this.state.timTroStatus, userID, this.navigateToLoginScreen)
 	}
 	render() {
 		return (
+			console.log(this.state.timTroStatus),
 			this.state.isLoading 
 				? <ActivityIndicator size = 'large' style = {{flex : 1}} />
 				:<View style={styles.container} >
@@ -117,7 +118,7 @@ export default class TaiKhoan extends Component {
 						<Text style = {styles.text} > Tên : {this.state.fullname}</Text>
 						<View style={styles.timTroStatus} >
 							<Text style = {styles.text} > Trạng thái tìm trọ  </Text>
-							<Switch 
+							<Switch
 								value = {this.state.timTroStatus}
 								onValueChange = {this.handleChangeSwitchButton}
 								thumbColor  = {MAIN_COLOR}
@@ -133,6 +134,18 @@ export default class TaiKhoan extends Component {
 						onPress = {()=>this.props.navigation.navigate('CaiDatTaiKhoan')} >
 						<Ionicons name="ios-settings" size={38} color={TEXT_COLOR} />
 						<Text style = {styles.text} > Cài đặt trạng thái tìm trọ </Text>
+					</TouchableOpacity>
+					<TouchableOpacity 
+						style = {styles.btn}
+						onPress = {()=>this.props.navigation.navigate('ThongBao')} >
+						<Ionicons name="ios-settings" size={38} color={TEXT_COLOR} />
+						<Text style = {styles.text} > Xem Thông Báo </Text>
+					</TouchableOpacity>
+					<TouchableOpacity 
+						style = {styles.btn}
+						onPress = {()=>this.props.navigation.navigate('LichHen')} >
+						<Ionicons name="ios-settings" size={38} color={TEXT_COLOR} />
+						<Text style = {styles.text} > Xem Lịch Hẹn </Text>
 					</TouchableOpacity>
 					<TouchableOpacity 
 						style = {styles.btn}

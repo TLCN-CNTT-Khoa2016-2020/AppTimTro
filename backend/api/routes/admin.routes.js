@@ -9,13 +9,13 @@ const PostsController = require('../controllers/post.controllers');
 /*<--------------------- ROUTES --------------------->*/ 
 
 /*<--------- GET /:postID  ---------> */    
-router.get('/:postID', checkAuthAdmin,PostsController.admin_get_post_with_id);
+router.get('/:postID',PostsController.admin_get_post_with_id);
 /*<--------- PUT /checkpost ---------> */
-router.put('/:postID', checkAuthAdmin, PostsController.admin_check_post);
+router.put('/:postID', PostsController.admin_check_post);
 /*<--------- DELETE /deletepost ---------> */
-router.delete('/delete', checkAuthAdmin, PostsController.admin_delete_post);
+router.delete('/delete', PostsController.admin_delete_post);
 /*<--------- GET /getallposts/get ---------> */
-router.get('/getallposts/get', checkAuthAdmin, PostsController.get_all_posts);
+router.get('/getallposts/get', PostsController.get_all_posts);
 
 
 
