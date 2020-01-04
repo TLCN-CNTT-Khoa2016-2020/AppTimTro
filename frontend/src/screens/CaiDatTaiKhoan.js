@@ -23,6 +23,7 @@ import RadioForm from 'react-native-simple-radio-button';
 
 
 
+
 const { height, width } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
@@ -53,11 +54,13 @@ export default class CaiDatTaiKhoan extends Component {
                 minPrice: 0,
                 maxPrice: 3000000
             },
-            initialRadioForm : 0,
+            initialRadioForm: 0,
             // polygon
             polygons: [],
             editing: null,
-            creatingHole: false
+            creatingHole: false,
+            
+        
 
         };
     }
@@ -156,7 +159,7 @@ export default class CaiDatTaiKhoan extends Component {
         let authToken = await JSON.parse(dataAuthToken);
 
         try {
-            fetch(`${url}` + "/users/updatetimtrosetting/" + userID, {
+            await fetch(`${url}` + "/users/updatetimtrosetting/" + userID, {
                 method: 'PUT',
                 headers: {
                     Accept: 'application/json',
@@ -176,13 +179,15 @@ export default class CaiDatTaiKhoan extends Component {
                 // if request success
                 if (response.status === 200) {
                     response.json().then(data => {
-                        console.log(data.message);
+
+                         console.log(data.message);
+                         this.props.navigation.navigate('TaiKhoan')
                     })
                 } else if (response.status === 401) { // token expire
                     console.log(" Token expire")
                     this.navigateToLoginScreen();
                 } else {
-                    console.log("Request fail. Status code : "+ response.status)
+                    console.log("Request fail. Status code : " + response.status)
                 }
             }).catch(error => {
                 console.log(error)
@@ -193,46 +198,46 @@ export default class CaiDatTaiKhoan extends Component {
 
 
     }
-    getTimTroSetting = async() => {
+    getTimTroSetting = async () => {
         let dataUserID = await AsyncStorage.getItem("userID");
         let userID = await JSON.parse(dataUserID);
         let dataAuthToken = await AsyncStorage.getItem("authToken");
         let authToken = await JSON.parse(dataAuthToken);
 
         //
-        fetch(`${url}`+ "/users/timtrosetting/" + userID,{
-            method : 'GET',
-            headers : { 
-                Accept: 'application/json', 
+        fetch(`${url}` + "/users/timtrosetting/" + userID, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization' : 'Bearer '+`${authToken}`
+                'Authorization': 'Bearer ' + `${authToken}`
             }
         }).then(response => {
             //if success
             let id = 0;
-            if(response.status === 200){
+            if (response.status === 200) {
                 response.json().then(data => {
                     const polygons = data.result.timtroSetting.area.map(item => {
-                        return { 
-                            "coordinates" : item,
-                            "id"          : id++,
-                            "holes"       : []
+                        return {
+                            "coordinates": item,
+                            "id": id++,
+                            "holes": []
                         }
                     })
                     const rangePrice = data.result.timtroSetting.rangePrice;
                     //let initialRadioForm = 0;
                     console.log(rangePrice)
-                    if(rangePrice.minPrice === 0){
+                    if (rangePrice.minPrice === 0) {
                         this.setState({
                             polygons,
                             rangePrice,
-                            initialRadioForm : 0
+                            initialRadioForm: 0
                         })
-                    } else if(rangePrice.minPrice === 3000000){
+                    } else if (rangePrice.minPrice === 3000000) {
                         this.setState({
                             polygons,
                             rangePrice,
-                            initialRadioForm : 1
+                            initialRadioForm: 1
                         })
                     } else {
                         this.setState({
@@ -241,13 +246,13 @@ export default class CaiDatTaiKhoan extends Component {
                             initialRadioForm: 2
                         })
                     }
-                   
+
                 })
             } else if (response.status === 401) { // token expire
                 console.log(" Token expire")
                 this.navigateToLoginScreen();
             } else {
-                console.log("Request fail. Status code : "+ response.status)
+                console.log("Request fail. Status code : " + response.status)
             }
 
         }).catch(error => {
@@ -282,7 +287,7 @@ export default class CaiDatTaiKhoan extends Component {
                             initialRegion={this.state.region}
                             customMapStyle={mapStyle}
                             onPress={e => this.onPress(e)}
-                            onLongPress = {()=>this.removePolygon}
+                            onLongPress={() => this.removePolygon}
                             {...mapOptions} >
                             <Marker
                                 coordinate={this.state.currentLocation} />
@@ -294,7 +299,7 @@ export default class CaiDatTaiKhoan extends Component {
                                     strokeColor="#F00"
                                     fillColor="rgba(200,200,280,0.3)"
                                     strokeWidth={1}
-                                    //onPress = {()=>this.removePolygon}
+                                //onPress = {()=>this.removePolygon}
                                 />
                             ))}
                             {this.state.editing && (
@@ -305,7 +310,7 @@ export default class CaiDatTaiKhoan extends Component {
                                     strokeColor="#000"
                                     fillColor="rgba(200,200,800,0.3)"
                                     strokeWidth={1}
-                                    //onPress = {()=>this.removePolygon}
+                                //onPress = {()=>this.removePolygon}
                                 />
                             )}
                         </MapView>
@@ -335,7 +340,7 @@ export default class CaiDatTaiKhoan extends Component {
 
                         }} >
                             <RadioForm
-                                key = {Date.now.toString()}
+                                key={Date.now.toString()}
                                 //isSelected = {this.state.initialRadioForm}
                                 radio_props={rangePrice}
                                 initial={this.state.initialRadioForm}
@@ -346,9 +351,11 @@ export default class CaiDatTaiKhoan extends Component {
                                 labelStyle={{ fontSize: 20, fontFamily: 'roboto-regular' }}
                                 // style={{ marginVertical: 10 }}
                                 radioStyle={{ marginVertical: 10 }}
-                                onPress={(value) => { this.setState({ 
-                                    rangePrice: value 
-                                }) }} />
+                                onPress={(value) => {
+                                    this.setState({
+                                        rangePrice: value
+                                    })
+                                }} />
 
                         </View>
                         <View style={{
@@ -363,6 +370,7 @@ export default class CaiDatTaiKhoan extends Component {
                                     width: width / 3,
                                     marginRight: 10,
                                 }} />
+                            
                         </View>
 
                     </View>

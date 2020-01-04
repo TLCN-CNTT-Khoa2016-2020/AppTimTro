@@ -17,6 +17,7 @@ import { MAIN_COLOR, BORDER_COLOR, TEXT_COLOR } from '../../assets/color';
 import moment from 'moment'; 
 
 
+
 const { height, width } = Dimensions.get('window');
 export default class DangPhong4 extends Component {
     constructor(props) {
@@ -94,7 +95,11 @@ export default class DangPhong4 extends Component {
         formData.append("coordinates[longitude]", JSON.stringify(post.coordinates.longitude))
 
         console.log(formData)
-        await this.props.createPost(authToken,formData, this.handleNavigateToMainScreen, this.navigateToLoginScreen)
+        await this.props.createPost(authToken,formData, this.handleNavigateToMainScreen, this.navigateToLoginScreen);
+        // await Snackbar.show({
+        //     title: 'Hello world',
+        //     duration: Snackbar.LENGTH_SHORT,
+        //   });
 
         
     }
