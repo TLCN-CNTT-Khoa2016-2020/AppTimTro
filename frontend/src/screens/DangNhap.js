@@ -228,9 +228,9 @@ export default class DangNhap extends Component {
                                 transform: [{ translateY: this.buttonY }]
                             }}>
                             <TouchableOpacity onPress={this.signInWithGoogleAsync} >
-                                <SocialIcon
+                                {/* <SocialIcon
                                     type='google'
-                                />
+                                /> */}
                             </TouchableOpacity>
 
                         </Animated.View>
@@ -241,9 +241,9 @@ export default class DangNhap extends Component {
                                 transform: [{ translateY: this.buttonY }]
                             }}>
                             <TouchableOpacity onPress={this.signInWithGoogleAsync} >
-                                <SocialIcon
+                                {/* <SocialIcon
                                     type='facebook'
-                                />
+                                /> */}
                             </TouchableOpacity>
 
                         </Animated.View>
@@ -254,12 +254,12 @@ export default class DangNhap extends Component {
                                 transform: [{ translateY: this.buttonY }]
                             }}>
                             <TouchableOpacity onPress={() => this.props.navigation.navigate('DangKi')} >
-                                <Icon
+                                {/* <Icon
                                     reverse
                                     name='ios-add-circle'
                                     type='ionicon'
                                     color='#517fa4'
-                                />
+                                /> */}
                             </TouchableOpacity>
 
                         </Animated.View>

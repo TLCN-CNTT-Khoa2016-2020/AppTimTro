@@ -17,7 +17,7 @@ import ButtonComponent from '../components/ButtonComponent';
 import StepIndicator from '../components/StepIndicator';
 import { MAIN_COLOR, BORDER_COLOR, TEXT_COLOR } from '../../assets/color';
 import { CheckBox } from 'react-native-elements'
-import { Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons,  } from '@expo/vector-icons';
 
 const { height, width } = Dimensions.get('window');
 export default class DangPhong3 extends Component {
