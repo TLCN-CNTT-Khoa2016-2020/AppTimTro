@@ -11,6 +11,30 @@ const User = require('../models/users.model');
 
 /*<--------------------- CONTROLERS --------------------->*/
 
+//MISSION : GET POSTS WITH PRICE, GENDER, KIND OF ROOM
+exports.post_type_posts = async (req, res) => {
+    const {
+      room_price_min = 0,
+      room_price_max = 20000000,
+      kind_of_room,
+      gender
+    } = req.body;
+    console.log("price", room_price_max, room_price_min);
+    console.log("kind fo room", kind_of_room);
+    console.log("gender", gender);
+    try {
+      const posts = await Post.find({
+        kind_of_room: { $eq: kind_of_room },
+        room_price: { $gte: room_price_min, $lte: room_price_max },
+        gender: { $in: gender }
+      });
+      if (!posts) return res.status(402).send({ message: "Room not found !" });
+      res.send(posts);
+    } catch (error) {
+      res.status(500);
+    }
+  };
+
 //MISSION : GET ALL POSTS
 exports.get_all_posts =  (req, res, next) => {
     Post.find()
