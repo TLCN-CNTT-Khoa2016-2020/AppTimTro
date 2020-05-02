@@ -10,7 +10,7 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
-  AsyncStorage
+  AsyncStorage,
 } from "react-native";
 import { MAIN_COLOR } from "../../assets/color";
 import CalloutMap from "../components/CalloutMap";
@@ -28,6 +28,8 @@ import isEqual from "lodash.isequal";
 import debounce from "lodash.debounce";
 
 import { mockData } from "../mockData";
+//new
+import TimKiemServices from "../Services/TimkiemServices";
 
 const { height, width } = Dimensions.get("window");
 const ASPECT_RATIO = width / height;
@@ -63,15 +65,15 @@ export default class TimKiem extends Component {
         room_price_min: 0,
         room_price_max: 30000000,
         kind_of_room: "",
-        gender: ""
-      }
+        gender: "",
+      },
     };
   }
 
   componentWillReceiveProps(nextProps) {
     if (!isEqual(this.props, nextProps)) {
       this.setState(() => ({
-        tracksViewChanges: true
+        tracksViewChanges: true,
       }));
     }
   }
@@ -82,7 +84,7 @@ export default class TimKiem extends Component {
     if (this.state.tracksViewChanges) {
       this.setState(() => ({
         tracksViewChanges: false,
-        markers: this.props.data
+        markers: this.props.data,
       }));
     }
   }
@@ -90,7 +92,8 @@ export default class TimKiem extends Component {
     await this._getLocationAsync();
     await this.getMarker(this.state.region);
     await this.setState({
-      isLoading: false
+      isLoading: false,
+      markers: this.props.data,
     });
   };
 
@@ -98,7 +101,7 @@ export default class TimKiem extends Component {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== "granted") {
       this.setState({
-        errorMessage: "Permission to access location was denied"
+        errorMessage: "Permission to access location was denied",
       });
     }
 
@@ -107,22 +110,24 @@ export default class TimKiem extends Component {
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
       latitudeDelta: LATITUDE_DELTA,
-      longitudeDelta: LONGITUDE_DELTA
+      longitudeDelta: LONGITUDE_DELTA,
     };
+    // console.log("location", currentLocation);
+
     this.setState({
       currentLocation,
-      region: currentLocation
+      region: currentLocation,
     });
   };
 
-  setFilterModalVisible = visible => {
+  setFilterModalVisible = (visible) => {
     this.setState({ isFilterModalVisible: visible });
   };
 
-  onRegionChange = async region => {
-    //await this.getMarker(region)
+  onRegionChange = async (region) => {
+    await this.getMarker(region);
   };
-  getMarker = async region => {
+  getMarker = async (region) => {
     let dataAuthToken = await AsyncStorage.getItem("authToken");
     let authToken = await JSON.parse(dataAuthToken);
     //clone region state
@@ -143,14 +148,35 @@ export default class TimKiem extends Component {
     await AsyncStorage.removeItem("userID");
     await this.props.navigation.navigate("DangNhap");
   };
-  _handleSubmit = e => {
-    e.preventDefault();
-    //call api {url}/post/postdataroom truyền vào this.state.filterCondition
-    
+  // _handleFilterMarker = async () => {
+  //   console.log(this.state.filterCondition);
+  //   const newDataMK = await fetch(
+  //     "http://192.168.0.20:8080/posts/postdataroom",
+  //     {
+  //       method: "POST",
+  //       body: JSON.stringify(this.state.filterCondition),
+  //     }
+  //   )
+  //     .then((res) => res.json())
+  //     .catch((err) => console.log(err));
+  //   console.log("data", newDataMK);
+  // };
+  _handleFilterMarker = () => {
+    TimKiemServices.getMarkerFollowFilter(this.state.filterCondition)
+      .then((res) => {
+        this.setState({
+          markers: res.data,
+        });
+      })
+      .catch((err) => console.log(err));
+
+    this.setFilterModalVisible(false);
   };
 
   render() {
     console.log("render");
+    console.log("marker", this.state.markers[0]);
+
     return this.state.isLoading ? (
       <ActivityIndicator size="large" style={styles.container} />
     ) : (
@@ -159,12 +185,12 @@ export default class TimKiem extends Component {
           style={styles.mapStyle}
           provider={PROVIDER_GOOGLE}
           initialRegion={this.state.currentLocation}
-          //region = {this.state.currentLocation}
+          region={this.state.currentLocation}
           customMapStyle={mapStyle}
           loadingEnabled={true}
-          //onRegionChangeComplete={debounce(this.onRegionChange,1000)}// debounce technical
+          // onRegionChangeComplete={debounce(this.onRegionChange,1000)}// debounce technical
           clustering={true}
-          //moveOnMarkerPress = {false} // prevent map move when marker is press
+          // moveOnMarkerPress = {false} // prevent map move when marker is press
           tracksViewChanges={false}
         >
           <Marker
@@ -179,7 +205,7 @@ export default class TimKiem extends Component {
                     key={item._id.toString()}
                     coordinate={{
                       latitude: item.coordinates.latitude,
-                      longitude: item.coordinates.longitude
+                      longitude: item.coordinates.longitude,
                     }}
                     cluster={false}
                     tracksViewChanges={this.state.tracksViewChanges}
@@ -192,7 +218,7 @@ export default class TimKiem extends Component {
                     <Callout
                       onPress={() =>
                         this.props.navigation.navigate("XemBaiDang", {
-                          post_id: item._id
+                          post_id: item._id,
                         })
                       }
                     >
@@ -230,7 +256,7 @@ export default class TimKiem extends Component {
                       center
                       containerStyle={{
                         backgroundColor: "rgba(52, 52, 52, 0)",
-                        borderColor: "#fff"
+                        borderColor: "#fff",
                       }}
                       textStyle={{ fontFamily: "roboto-regular" }}
                       checkedIcon={
@@ -252,8 +278,8 @@ export default class TimKiem extends Component {
                         this.setState({
                           filterCondition: {
                             ...this.state.filterCondition,
-                            kind_of_room: "Phòng cho thuê"
-                          }
+                            kind_of_room: "Phòng cho thuê",
+                          },
                         })
                       }
                     />
@@ -262,7 +288,7 @@ export default class TimKiem extends Component {
                       center
                       containerStyle={{
                         backgroundColor: "rgba(52, 52, 52, 0)",
-                        borderColor: "#fff"
+                        borderColor: "#fff",
                       }}
                       textStyle={{ fontFamily: "roboto-regular" }}
                       checkedIcon={
@@ -284,8 +310,8 @@ export default class TimKiem extends Component {
                         this.setState({
                           filterCondition: {
                             ...this.state.filterCondition,
-                            kind_of_room: "Phòng ở ghép"
-                          }
+                            kind_of_room: "Phòng ở ghép",
+                          },
                         })
                       }
                     />
@@ -294,7 +320,7 @@ export default class TimKiem extends Component {
                       center
                       containerStyle={{
                         backgroundColor: "rgba(52, 52, 52, 0)",
-                        borderColor: "#fff"
+                        borderColor: "#fff",
                       }}
                       textStyle={{ fontFamily: "roboto-regular" }}
                       checkedIcon={
@@ -316,8 +342,8 @@ export default class TimKiem extends Component {
                         this.setState({
                           filterCondition: {
                             ...this.state.filterCondition,
-                            kind_of_room: "Nhà nguyên căn"
-                          }
+                            kind_of_room: "Nhà nguyên căn",
+                          },
                         })
                       }
                     />
@@ -326,7 +352,7 @@ export default class TimKiem extends Component {
                       center
                       containerStyle={{
                         backgroundColor: "rgba(52, 52, 52, 0)",
-                        borderColor: "#fff"
+                        borderColor: "#fff",
                       }}
                       textStyle={{ fontFamily: "roboto-regular" }}
                       checkedIcon={
@@ -348,8 +374,8 @@ export default class TimKiem extends Component {
                         this.setState({
                           filterCondition: {
                             ...this.state.filterCondition,
-                            kind_of_room: "Căn hộ"
-                          }
+                            kind_of_room: "Căn hộ",
+                          },
                         })
                       }
                     />
@@ -363,7 +389,7 @@ export default class TimKiem extends Component {
                       center
                       containerStyle={{
                         backgroundColor: "rgba(52, 52, 52, 0)",
-                        borderColor: "#fff"
+                        borderColor: "#fff",
                       }}
                       textStyle={{ fontFamily: "roboto-regular" }}
                       checkedIcon={
@@ -385,8 +411,8 @@ export default class TimKiem extends Component {
                         this.setState({
                           filterCondition: {
                             ...this.state.filterCondition,
-                            gender: "Nam"
-                          }
+                            gender: "Nam",
+                          },
                         })
                       }
                     />
@@ -395,7 +421,7 @@ export default class TimKiem extends Component {
                       center
                       containerStyle={{
                         backgroundColor: "rgba(52, 52, 52, 0)",
-                        borderColor: "#fff"
+                        borderColor: "#fff",
                       }}
                       textStyle={{ fontFamily: "roboto-regular" }}
                       checkedIcon={
@@ -417,8 +443,8 @@ export default class TimKiem extends Component {
                         this.setState({
                           filterCondition: {
                             ...this.state.filterCondition,
-                            gender: "Nữ"
-                          }
+                            gender: "Nữ",
+                          },
                         })
                       }
                     />
@@ -428,7 +454,7 @@ export default class TimKiem extends Component {
                   <Text style={styles.smallTitle}>Giá phòng</Text>
                   <View
                     style={{
-                      flexDirection: "column"
+                      flexDirection: "column",
                     }}
                   >
                     <CheckBox
@@ -436,7 +462,7 @@ export default class TimKiem extends Component {
                       center
                       containerStyle={{
                         backgroundColor: "rgba(52, 52, 52, 0)",
-                        borderColor: "#fff"
+                        borderColor: "#fff",
                       }}
                       textStyle={{ fontFamily: "roboto-regular" }}
                       checkedIcon={
@@ -459,8 +485,8 @@ export default class TimKiem extends Component {
                           filterCondition: {
                             ...this.state.filterCondition,
                             room_price_min: 0,
-                            room_price_max: 3000000
-                          }
+                            room_price_max: 3000000,
+                          },
                         })
                       }
                     />
@@ -469,7 +495,7 @@ export default class TimKiem extends Component {
                       center
                       containerStyle={{
                         backgroundColor: "rgba(52, 52, 52, 0)",
-                        borderColor: "#fff"
+                        borderColor: "#fff",
                       }}
                       textStyle={{ fontFamily: "roboto-regular" }}
                       checkedIcon={
@@ -492,8 +518,8 @@ export default class TimKiem extends Component {
                           filterCondition: {
                             ...this.state.filterCondition,
                             room_price_min: 3000000,
-                            room_price_max: 7000000
-                          }
+                            room_price_max: 7000000,
+                          },
                         })
                       }
                     />
@@ -502,7 +528,7 @@ export default class TimKiem extends Component {
                       center
                       containerStyle={{
                         backgroundColor: "rgba(52, 52, 52, 0)",
-                        borderColor: "#fff"
+                        borderColor: "#fff",
                       }}
                       textStyle={{ fontFamily: "roboto-regular" }}
                       checkedIcon={
@@ -525,8 +551,8 @@ export default class TimKiem extends Component {
                           filterCondition: {
                             ...this.state.filterCondition,
                             room_price_min: 7000000,
-                            room_price_max: 20000000
-                          }
+                            room_price_max: 20000000,
+                          },
                         })
                       }
                     />
@@ -537,7 +563,7 @@ export default class TimKiem extends Component {
                 style={{
                   flexDirection: "row",
                   justifyContent: "space-between",
-                  marginHorizontal: 15
+                  marginHorizontal: 15,
                 }}
               >
                 <ButtonComponent
@@ -546,7 +572,7 @@ export default class TimKiem extends Component {
                 />
                 <ButtonComponent
                   title="Xác nhận"
-                  onPress={() => console.log(this.state.filterCondition)}
+                  onPress={() => this._handleFilterMarker()}
                 />
               </View>
             </View>
@@ -561,10 +587,10 @@ export default class TimKiem extends Component {
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    marginTop: Constants.statusBarHeight
+    marginTop: Constants.statusBarHeight,
   },
   mapStyle: {
-    ...StyleSheet.absoluteFillObject
+    ...StyleSheet.absoluteFillObject,
   },
   btnFilter: {
     borderRadius: 50,
@@ -575,21 +601,21 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   btnContainer: {
     position: "absolute",
     top: 0,
     right: 0,
     marginHorizontal: 10,
-    marginVertical: 10
+    marginVertical: 10,
   },
   containerModal: {
     flex: 1,
     backgroundColor: "rgba(52, 52, 52, 0)",
     flexDirection: "column",
     //justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   modal: {
     marginTop: 65,
@@ -597,22 +623,22 @@ const styles = StyleSheet.create({
     height: height * 0.75,
     width: width * 0.95,
     backgroundColor: "white",
-    borderRadius: 10
+    borderRadius: 10,
   },
   scrollModal: {
     flexDirection: "column",
     justifyContent: "center",
-    padding: 10
+    padding: 10,
   },
   modalCell: {},
   groupCheckbox: {
     flexDirection: "column",
-    alignItems: "flex-start"
+    alignItems: "flex-start",
   },
   smallTitle: {
     fontSize: 18,
-    fontFamily: "roboto-medium"
-  }
+    fontFamily: "roboto-medium",
+  },
 });
 const mapStyle = [
   {
@@ -620,33 +646,33 @@ const mapStyle = [
     elementType: "geometry",
     stylers: [
       {
-        visibility: "off"
-      }
-    ]
+        visibility: "off",
+      },
+    ],
   },
   {
     featureType: "poi",
     stylers: [
       {
-        visibility: "off"
-      }
-    ]
+        visibility: "off",
+      },
+    ],
   },
   {
     featureType: "road",
     elementType: "labels.icon",
     stylers: [
       {
-        visibility: "off"
-      }
-    ]
+        visibility: "off",
+      },
+    ],
   },
   {
     featureType: "transit",
     stylers: [
       {
-        visibility: "off"
-      }
-    ]
-  }
+        visibility: "off",
+      },
+    ],
+  },
 ];
