@@ -43,6 +43,9 @@ const checkArea = require("../middleware/checkArea");
 /* MISSION : GET ROOM WITH PRICE, TYPE, GENDER  */
 router.post("/postdataroom", PostsController.post_type_posts);
 
+
+/* MISSION : DELETE POST  */
+router.post("/deletepost", PostsController.delete_post_with_id);
 /*<--------- GET / ---------> */
 
 /* MISSION : GET ALL POSTS  */
@@ -66,7 +69,7 @@ router.put("/:postID", checkAuth, PostsController.update_posts);
 /*<--------- DELETE /:postID ---------> */
 
 /* MISSION : DELETE POST WITH ID  */
-router.delete("/", checkAuth, PostsController.delete_posts);
+router.delete("/", PostsController.delete_posts);
 
 /*<--------- GET /approvedpost ---------> */
 

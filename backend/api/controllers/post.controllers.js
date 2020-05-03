@@ -14,29 +14,30 @@ exports.post_type_posts = async (req, res) => {
     room_price_min = 0,
     room_price_max = 20000000,
     kind_of_room,
-    gender
+    gender,
   } = req.body;
+  console.log("body", req.body.gender);
   let ObjectQuery = {};
   if (!gender) {
     if (!kind_of_room) {
       ObjectQuery = {
-        room_price: { $gte: room_price_min, $lte: room_price_max }
+        room_price: { $gte: room_price_min, $lte: room_price_max },
       };
-      console.log('no gender, no kind');
+      console.log("no gender, no kind");
     } else {
       ObjectQuery = {
         room_price: { $gte: room_price_min, $lte: room_price_max },
-        kind_of_room: { $eq: kind_of_room }
+        kind_of_room: { $eq: kind_of_room },
       };
-      console.log('no gender, have kind');
+      console.log("no gender, have kind");
     }
   } else {
     ObjectQuery = {
       kind_of_room: { $eq: kind_of_room },
       room_price: { $gte: room_price_min, $lte: room_price_max },
-      gender: { $in: gender }
+      gender: { $in: gender },
     };
-    console.log('full option');
+    console.log("full option");
   }
   console.log(ObjectQuery);
   try {
@@ -48,16 +49,27 @@ exports.post_type_posts = async (req, res) => {
   }
 };
 
+exports.delete_post_with_id = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const existedPost = await Post.findByIdAndDelete(id);
+    if (!existedPost) res.status(404).send();
+    res.status(200);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 //MISSION : GET ALL POSTS
 exports.get_all_posts = (req, res, next) => {
   Post.find()
     .populate("userId")
     //.select("_id title address day_submit kind_of_room room_price room_area room_deposi electric_price water_price parking_price wifi_price gender description utilities userId")
     .exec()
-    .then(result => {
+    .then((result) => {
       res.status(200).json({
         count: result.length,
-        result: result.map(item => {
+        result: result.map((item) => {
           return {
             _id: item.id,
             title: item.title,
@@ -78,10 +90,10 @@ exports.get_all_posts = (req, res, next) => {
             is_approved: item.is_approved,
             user: {
               _id: item.userId.id,
-              fullname: item.userId.fullname
-            }
+              fullname: item.userId.fullname,
+            },
           };
-        })
+        }),
       });
     });
 };
@@ -118,44 +130,44 @@ exports.create_posts = (req, res, next) => {
       tu_lanh: req.body.utilities.tu_lanh,
       may_giat: req.body.utilities.may_giat,
       nha_bep: req.body.utilities.nha_bep,
-      thu_cung: req.body.utilities.thu_cung
+      thu_cung: req.body.utilities.thu_cung,
     },
-    room_image: req.body.images.map(item => {
+    room_image: req.body.images.map((item) => {
       return `uploads/${item}`;
     }),
     coordinates: {
       latitude: req.body.coordinates.latitude,
-      longitude: req.body.coordinates.longitude
+      longitude: req.body.coordinates.longitude,
     },
-    userId: req.body.userId
+    userId: req.body.userId,
   });
   //console.log(post )
   //save post to database
   post
     .save()
-    .then(result => {
+    .then((result) => {
       // save postsID to userShema
       User.findByIdAndUpdate(
         { _id: req.body.userId },
         { $push: { posts: post._id } }
       )
         .exec()
-        .then(result => {
+        .then((result) => {
           res.status(201).json({
-            message: "Posts created !"
+            message: "Posts created !",
           });
           checkArea(post._id, post.coordinates, post.room_price);
         })
-        .catch(err => {
+        .catch((err) => {
           res.status(500).json({
-            error: err
+            error: err,
           });
         });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json({
         error: err,
-        mess: "loi"
+        mess: "loi",
       });
     });
 };
@@ -165,7 +177,7 @@ exports.get_posts_withID = (req, res, next) => {
   Post.findById(req.params.postID)
     .populate("userId")
     .exec()
-    .then(result => {
+    .then((result) => {
       res.status(200).json({
         result: {
           _id: result.id,
@@ -186,15 +198,15 @@ exports.get_posts_withID = (req, res, next) => {
           room_image: result.room_image,
           user: {
             _id: result.userId.id,
-            fullname: result.userId.fullname
-          }
-        }
+            fullname: result.userId.fullname,
+          },
+        },
       });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json({
         error: err,
-        message: "ID không tồn tại"
+        message: "ID không tồn tại",
       });
     });
 };
@@ -227,28 +239,28 @@ exports.update_posts = (req, res, next) => {
       tu_lanh: req.body.utilities.tu_lanh,
       may_giat: req.body.utilities.may_giat,
       nha_bep: req.body.utilities.nha_bep,
-      thu_cung: req.body.utilities.thu_cung
-    }
+      thu_cung: req.body.utilities.thu_cung,
+    },
   };
   //userId : req.body.userId
   // find post and update with id
   Post.findOneAndUpdate({ _id: req.params.postID }, { $set: post })
     .exec()
-    .then(result => {
+    .then((result) => {
       //if result === null => no post
       if (result === null) {
         res.status(500).json({
-          message: "Can't find posts"
+          message: "Can't find posts",
         });
       }
       res.status(200).json({
         message: "Update Successful !",
-        result: result
+        result: result,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json({
-        error: err
+        error: err,
       });
     });
 };
@@ -257,27 +269,27 @@ exports.delete_posts = (req, res, next) => {
   // find and detele post with ID
   Post.findByIdAndRemove({ _id: req.body.postID })
     .exec()
-    .then(result => {
+    .then((result) => {
       // remove id in usersSchema
       User.findByIdAndUpdate(
         { _id: req.body.userID },
         { $pull: { posts: { $in: req.body.postID } } }
       )
         .exec()
-        .then(result => {
+        .then((result) => {
           res.status(200).json({
-            messsage: "Delete Successfull !"
+            messsage: "Delete Successfull !",
           });
         })
-        .catch(err => {
+        .catch((err) => {
           res.status(500).json({
-            error: err
+            error: err,
           });
         });
     })
-    .catch(err => {
+    .catch((err) => {
       req.status(500).json({
-        error: err
+        error: err,
       });
     });
 };
@@ -287,33 +299,33 @@ exports.get_posts_isApproved = (req, res, next) => {
   // pageOptions
   const pageOptions = {
     page: parseInt(req.query.page) || 0,
-    limit: parseInt(req.query.limit) || 10
+    limit: parseInt(req.query.limit) || 10,
   };
   Post.find({
     userId: req.params.userID,
-    is_approved: true
+    is_approved: true,
   })
     .skip(pageOptions.page * pageOptions.limit)
     .limit(pageOptions.limit)
     .select("_id title room_price address room_image")
     .exec()
-    .then(result => {
+    .then((result) => {
       res.status(200).json({
         count: result.length,
-        result: result.map(item => {
+        result: result.map((item) => {
           return {
             _id: item.id,
             title: item.title,
             room_price: item.room_price,
             address: item.address,
-            room_image: item.room_image[0]
+            room_image: item.room_image[0],
           };
-        })
+        }),
       });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json({
-        error: err
+        error: err,
       });
     });
 };
@@ -322,33 +334,33 @@ exports.get_posts_isUnApproved = (req, res, next) => {
   // pageOptions
   const pageOptions = {
     page: parseInt(req.query.page) || 0,
-    limit: parseInt(req.query.limit) || 10
+    limit: parseInt(req.query.limit) || 10,
   };
   Post.find({
     userId: req.params.userID,
-    is_approved: false
+    is_approved: false,
   })
     .skip(pageOptions.page * pageOptions.limit)
     .limit(pageOptions.limit)
     .select("_id title room_price address room_image")
     .exec()
-    .then(result => {
+    .then((result) => {
       res.status(200).json({
         count: result.length,
-        result: result.map(item => {
+        result: result.map((item) => {
           return {
             _id: item.id,
             title: item.title,
             room_price: item.room_price,
             address: item.address,
-            room_image: item.room_image[0]
+            room_image: item.room_image[0],
           };
-        })
+        }),
       });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json({
-        error: err
+        error: err,
       });
     });
 };
@@ -359,7 +371,7 @@ exports.admin_get_post_with_id = (req, res, next) => {
   Post.findById(req.params.postID)
     .populate("userId")
     .exec()
-    .then(result => {
+    .then((result) => {
       res.status(200).json({
         result: {
           _id: result.id,
@@ -380,15 +392,15 @@ exports.admin_get_post_with_id = (req, res, next) => {
           is_approved: result.is_approved,
           user: {
             _id: result.userId.id,
-            fullname: result.userId.fullname
-          }
-        }
+            fullname: result.userId.fullname,
+          },
+        },
       });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json({
         error: err,
-        message: "ID không tồn tại"
+        message: "ID không tồn tại",
       });
     });
 };
@@ -399,20 +411,20 @@ exports.admin_check_post = (req, res, next) => {
     { $set: { is_approved: true } }
   )
     .exec()
-    .then(result => {
+    .then((result) => {
       //if result === null => no post
       if (result === null) {
         res.status(500).json({
-          message: "Can't find posts"
+          message: "Can't find posts",
         });
       }
       res.status(200).json({
-        message: "Update Successful !"
+        message: "Update Successful !",
       });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json({
-        error: err
+        error: err,
       });
     });
 };
@@ -421,27 +433,27 @@ exports.admin_delete_post = (req, res, next) => {
   // find and detele post with ID
   Post.findByIdAndRemove({ _id: req.body.postID })
     .exec()
-    .then(result => {
+    .then((result) => {
       // remove id in usersSchema
       User.findByIdAndUpdate(
         { _id: req.body.userID },
         { $pull: { posts: { $in: req.body.postID } } }
       )
         .exec()
-        .then(result => {
+        .then((result) => {
           res.status(200).json({
-            messsage: "Delete Successfull !"
+            messsage: "Delete Successfull !",
           });
         })
-        .catch(err => {
+        .catch((err) => {
           res.status(500).json({
-            error: err
+            error: err,
           });
         });
     })
-    .catch(err => {
+    .catch((err) => {
       req.status(500).json({
-        error: err
+        error: err,
       });
     });
 };
@@ -451,29 +463,29 @@ exports.get_post_for_mainscreen = (req, res, next) => {
   // pageOptions
   const pageOptions = {
     page: parseInt(req.query.page) || 0,
-    limit: parseInt(req.query.limit) || 10
+    limit: parseInt(req.query.limit) || 10,
   };
   Post.find()
     .skip(pageOptions.page * pageOptions.limit)
     .limit(pageOptions.limit)
     .select("_id title room_price room_image")
     .exec()
-    .then(result => {
+    .then((result) => {
       res.status(200).json({
         count: result.length,
-        result: result.map(item => {
+        result: result.map((item) => {
           return {
             _id: item.id,
             title: item.title,
             room_price: item.room_price,
-            room_image: item.room_image[0]
+            room_image: item.room_image[0],
           };
-        })
+        }),
       });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json({
-        error: err
+        error: err,
       });
     });
 };
