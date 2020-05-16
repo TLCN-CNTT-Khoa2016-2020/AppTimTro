@@ -7,20 +7,18 @@ import { url } from "../ultils/index";
 import ButtonComponent from "../components/ButtonComponent";
 import { Button } from "react-native-paper";
 
-const CardPostHorizontal = ({
-  item,
-  isApprove,
-  _deletePostChuaDuyet,
-  index,
-  onPress,
-}) => {
-  // console.log("item", item);
+const CardPostTimkiem = ({ item, index, onPress }) => {
+  console.log("item", item);
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.post} onPress={() => onPress()}>
         <Image
           style={styles.image}
-          source={{ uri: `${url}` + "/" + item.room_image }}
+          source={
+            item.room_image
+              ? { uri: `${url}` + "/" + item.room_image[0] }
+              : "https://mk0theworldandtbvs1v.kinstacdn.com/wp-content/uploads/2015/09/Screen-Shot-2015-09-07-at-18.01.12.png"
+          }
         />
         <View style={styles.content}>
           <Text
@@ -29,9 +27,11 @@ const CardPostHorizontal = ({
               fontSize: 18,
             }}
           >
-            {item.title.length < 23
-              ? `${item.title}`
-              : `${item.title.substring(0, 20)}...`}
+            {item.title
+              ? item.title.length < 23
+                ? `${item.title}`
+                : `${item.title.substring(0, 20)}...`
+              : "No title"}
           </Text>
           <NumberFormat
             value={item.room_price}
@@ -56,16 +56,12 @@ const CardPostHorizontal = ({
               fontSize: 14,
             }}
           >
-            {item.address.length < 33
-              ? `${item.address}`
-              : `${item.address.substring(0, 30)}...`}
+            {item.address
+              ? item.address.length < 33
+                ? `${item.address}`
+                : `${item.address.substring(0, 25)}...`
+              : "No adddress"}
           </Text>
-          {!isApprove && (
-            <ButtonComponent
-              onPress={() => _deletePostChuaDuyet(item._id)}
-              title="Delete"
-            />
-          )}
         </View>
       </TouchableOpacity>
       {/* <Foundation name="pencil" size={26} color={MAIN_COLOR} /> */}
@@ -98,4 +94,4 @@ const styles = StyleSheet.create({
   text: {},
 });
 
-export default CardPostHorizontal;
+export default CardPostTimkiem;

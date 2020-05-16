@@ -7,6 +7,7 @@ import {
   Modal,
   Platform,
   Dimensions,
+  FlatList,
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
@@ -22,14 +23,21 @@ import MapView from "react-native-map-clustering";
 import { CheckBox } from "react-native-elements";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import FilterBar from "../components/FilterBar";
-import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import {
+  MaterialCommunityIcons,
+  Ionicons,
+  FontAwesome5,
+  MaterialIcons,
+  AntDesign,
+} from "@expo/vector-icons";
 import ButtonComponent from "../components/ButtonComponent";
 import isEqual from "lodash.isequal";
 import debounce from "lodash.debounce";
-
+import CardPostHorizontal from "../components/CardPostHorizontal";
 import { mockData } from "../mockData";
 //new
 import TimKiemServices from "../Services/TimkiemServices";
+import CardPostTimkiem from "../components/CardPostTimKiem";
 
 const { height, width } = Dimensions.get("window");
 const ASPECT_RATIO = width / height;
@@ -49,6 +57,7 @@ export default class TimKiem extends Component {
       tracksViewChanges: true,
       //modal Filter
       isFilterModalVisible: false,
+      isModalScreen: false,
       //filter consition
       // filterCondition: {
       //     phongChoThue: false,
@@ -95,6 +104,7 @@ export default class TimKiem extends Component {
       isLoading: false,
       markers: this.props.data,
     });
+    await this._handleFilterMarker();
   };
 
   _getLocationAsync = async () => {
@@ -122,6 +132,9 @@ export default class TimKiem extends Component {
 
   setFilterModalVisible = (visible) => {
     this.setState({ isFilterModalVisible: visible });
+  };
+  setModalScreen = (visible) => {
+    this.setState({ isModalScreen: visible });
   };
 
   onRegionChange = async (region) => {
@@ -172,10 +185,25 @@ export default class TimKiem extends Component {
 
     this.setFilterModalVisible(false);
   };
+  _resetFilter = () => {
+    this.setState(
+      (prevState) => {
+        return {
+          filterCondition: {
+            room_price_min: 0,
+            room_price_max: 30000000,
+            kind_of_room: "",
+            gender: "",
+          },
+        };
+      },
+      () => this._handleFilterMarker()
+    );
+  };
 
   render() {
-    console.log("render");
-    console.log("marker", this.state.markers[0]);
+    // console.log("render");
+    // console.log("marker", this.state.markers);
 
     return this.state.isLoading ? (
       <ActivityIndicator size="large" style={styles.container} />
@@ -237,9 +265,30 @@ export default class TimKiem extends Component {
               this.setFilterModalVisible(!this.state.isFilterModalVisible)
             }
           >
-            <Ionicons name="ios-list" size={32} color={MAIN_COLOR} />
+            <FontAwesome5 name="filter" size={25} color={MAIN_COLOR} />
           </TouchableOpacity>
         </View>
+        <View style={styles.btnModelView}>
+          <TouchableOpacity
+            style={styles.btnFilter}
+            onPress={() => this.setModalScreen(!this.state.isModalScreen)}
+          >
+            <MaterialIcons name="event-note" size={25} color={MAIN_COLOR} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.btnResertFilter}>
+          <TouchableOpacity
+            style={styles.btnFilter}
+            onPress={() => this._resetFilter()}
+          >
+            <MaterialCommunityIcons
+              name="filter-remove"
+              size={25}
+              color={MAIN_COLOR}
+            />
+          </TouchableOpacity>
+        </View>
+
         <Modal
           visible={this.state.isFilterModalVisible}
           transparent={true}
@@ -273,7 +322,12 @@ export default class TimKiem extends Component {
                           color="gray"
                         />
                       }
-                      checked={this.state.filterCondition.phongChoThue}
+                      checked={
+                        this.state.filterCondition.kind_of_room ===
+                        "Phòng cho thuê"
+                          ? true
+                          : false
+                      }
                       onPress={() =>
                         this.setState({
                           filterCondition: {
@@ -305,7 +359,12 @@ export default class TimKiem extends Component {
                           color="gray"
                         />
                       }
-                      checked={this.state.filterCondition.phongOGhep}
+                      checked={
+                        this.state.filterCondition.kind_of_room ===
+                        "Phòng ở ghép"
+                          ? true
+                          : false
+                      }
                       onPress={() =>
                         this.setState({
                           filterCondition: {
@@ -337,7 +396,12 @@ export default class TimKiem extends Component {
                           color="gray"
                         />
                       }
-                      checked={this.state.filterCondition.nhaNguyenCan}
+                      checked={
+                        this.state.filterCondition.kind_of_room ===
+                        "Nhà nguyên căn"
+                          ? true
+                          : false
+                      }
                       onPress={() =>
                         this.setState({
                           filterCondition: {
@@ -369,7 +433,11 @@ export default class TimKiem extends Component {
                           color="gray"
                         />
                       }
-                      checked={this.state.filterCondition.canHo}
+                      checked={
+                        this.state.filterCondition.kind_of_room === "Căn hộ"
+                          ? true
+                          : false
+                      }
                       onPress={() =>
                         this.setState({
                           filterCondition: {
@@ -406,7 +474,11 @@ export default class TimKiem extends Component {
                           color="gray"
                         />
                       }
-                      checked={this.state.filterCondition.gioiTinhNam}
+                      checked={
+                        this.state.filterCondition.gender === "Nam"
+                          ? true
+                          : false
+                      }
                       onPress={() =>
                         this.setState({
                           filterCondition: {
@@ -438,7 +510,11 @@ export default class TimKiem extends Component {
                           color="gray"
                         />
                       }
-                      checked={this.state.filterCondition.gioiTinhNu}
+                      checked={
+                        this.state.filterCondition.gender === "Nữ"
+                          ? true
+                          : false
+                      }
                       onPress={() =>
                         this.setState({
                           filterCondition: {
@@ -455,6 +531,7 @@ export default class TimKiem extends Component {
                   <View
                     style={{
                       flexDirection: "column",
+                      alignItems: "flex-start",
                     }}
                   >
                     <CheckBox
@@ -479,7 +556,11 @@ export default class TimKiem extends Component {
                           color="gray"
                         />
                       }
-                      checked={this.state.filterCondition.duoi_3m}
+                      checked={
+                        this.state.filterCondition.room_price_max === 3000000
+                          ? true
+                          : false
+                      }
                       onPress={() =>
                         this.setState({
                           filterCondition: {
@@ -512,7 +593,11 @@ export default class TimKiem extends Component {
                           color="gray"
                         />
                       }
-                      checked={this.state.filterCondition.tu_3m_den_7m}
+                      checked={
+                        this.state.filterCondition.room_price_max === 7000000
+                          ? true
+                          : false
+                      }
                       onPress={() =>
                         this.setState({
                           filterCondition: {
@@ -545,7 +630,11 @@ export default class TimKiem extends Component {
                           color="gray"
                         />
                       }
-                      checked={this.state.filterCondition.tren_7m}
+                      checked={
+                        this.state.filterCondition.room_price_max === 20000000
+                          ? true
+                          : false
+                      }
                       onPress={() =>
                         this.setState({
                           filterCondition: {
@@ -580,6 +669,56 @@ export default class TimKiem extends Component {
         </Modal>
 
         {/*  */}
+        <Modal
+          visible={this.state.isModalScreen}
+          transparent={true}
+          onRequestClose={() => this.setModalScreen(false)}
+        >
+          <View style={styles.containerModal}>
+            <View style={styles.modal}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginHorizontal: 15,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "roboto-medium",
+                    fontSize: 18,
+                  }}
+                >
+                  Phòng phù hợp :&nbsp;
+                  {this.state.markers ? this.state.markers.length : 0}
+                </Text>
+                <TouchableOpacity
+                  // style={styles.btnFilter}
+                  onPress={() => this.setModalScreen(false)}
+                >
+                  <AntDesign name="closecircle" size={32} color={MAIN_COLOR} />
+                </TouchableOpacity>
+              </View>
+              <ScrollView contentContainerStyle={styles.scrollModal}>
+                {this.state.markers.map((item, index) => {
+                  return (
+                    <CardPostTimkiem
+                      item={item}
+                      key={index}
+                      onPress={() => {
+                        this.setModalScreen(false);
+                        this.props.navigation.navigate("XemBaiDang", {
+                          post_id: item._id,
+                        });
+                      }}
+                    />
+                  );
+                })}
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   }
@@ -610,6 +749,20 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginVertical: 10,
   },
+  btnModelView: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    marginHorizontal: 10,
+    marginVertical: 10,
+  },
+  btnResertFilter: {
+    position: "absolute",
+    top: 55,
+    right: 0,
+    marginHorizontal: 10,
+    marginVertical: 10,
+  },
   containerModal: {
     flex: 1,
     backgroundColor: "rgba(52, 52, 52, 0)",
@@ -620,7 +773,7 @@ const styles = StyleSheet.create({
   modal: {
     marginTop: 65,
 
-    height: height * 0.75,
+    height: height * 0.85,
     width: width * 0.95,
     backgroundColor: "white",
     borderRadius: 10,
