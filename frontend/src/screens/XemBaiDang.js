@@ -182,7 +182,7 @@ export default class XemBaiDang extends Component {
         return (
             this.state.isLoading
                 ? <ActivityIndicator size='large' style={{ flex: 1 }} />
-                : <KeyboardAvoidingView style={styles.container} behavior="padding" enable >
+                : <KeyboardAvoidingView style={styles.container} behavior="height" enable >
 
                     <ScrollView contentContainerStyle={{ marginTop: 0 }} >
                         {/* body */}

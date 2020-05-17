@@ -184,7 +184,7 @@ export default class DangNhap extends Component {
                     backgroundColor: 'white',
                     justifyContent: 'flex-end'
                 }}
-                behavior="padding" enabled>
+                behavior="height" enabled>
                 <Animated.View
                     style={{
                         ...StyleSheet.absoluteFill,

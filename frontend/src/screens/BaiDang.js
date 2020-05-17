@@ -118,6 +118,7 @@ export default class BaiDang extends Component {
     this.setState({
       baiChuaDuyetPage: this.state.baiChuaDuyetPage + 1,
       dataBaiChuaDuyetIsLoading: false,
+      renderwhendelete: !this.state.renderwhendelete,
     });
   };
   navigateToLoginScreen = async () => {
@@ -131,16 +132,15 @@ export default class BaiDang extends Component {
   };
   _deletePostChuaDuyet = (postID) => {
     BaiDangServices.deletePost(postID)
-      .then((res) => {
-        console.log("res");
-        this.setState({
-          renderwhendelete: !this.state.renderwhendelete,
-        });
+      .then(async (res) => {
+        console.log("object");
+        await this.loadBaiChuaDuyet();
       })
       .catch((err) => console.log(err));
   };
 
   render() {
+    console.log('reenderrere');
     return (
       <View style={styles.container}>
         <View style={styles.header}>

@@ -117,7 +117,7 @@ export default class DangPhong4 extends Component {
         return (
             this.state.isLoading 
                 ? <ActivityIndicator size = 'large' style ={{flex : 1}} />
-                : <KeyboardAvoidingView style={styles.container} behavior="padding" enable >
+                : <KeyboardAvoidingView style={styles.container} behavior="height" enable >
                 <StepIndicator step={4} />
                 <ScrollView contentContainerStyle={{ marginTop: 0 }} >
                     {/* body */}

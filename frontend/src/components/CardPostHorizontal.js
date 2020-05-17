@@ -1,12 +1,11 @@
 import React from "react";
 import { Text, View, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { MAIN_COLOR, TEXT_COLOR } from "../../assets/color";
-import { Foundation } from "@expo/vector-icons";
+import { Foundation, AntDesign } from "@expo/vector-icons";
 import NumberFormat from "react-number-format";
 import { url } from "../ultils/index";
 import ButtonComponent from "../components/ButtonComponent";
 import { Button } from "react-native-paper";
-
 const CardPostHorizontal = ({
   item,
   isApprove,
@@ -61,10 +60,12 @@ const CardPostHorizontal = ({
               : `${item.address.substring(0, 30)}...`}
           </Text>
           {!isApprove && (
-            <ButtonComponent
+            <TouchableOpacity
+              style={styles.iconDelete}
               onPress={() => _deletePostChuaDuyet(item._id)}
-              title="Delete"
-            />
+            >
+              <AntDesign name="delete" color="black" size={24} color="black" />
+            </TouchableOpacity>
           )}
         </View>
       </TouchableOpacity>
@@ -79,6 +80,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginVertical: 5,
     marginHorizontal: 5,
+  },
+  iconDelete: {
+    position: "absolute",
+    bottom: 0,
+    right: 10,
   },
   post: {
     flexDirection: "row",

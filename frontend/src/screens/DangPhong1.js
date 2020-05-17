@@ -19,7 +19,7 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { MAIN_COLOR, BORDER_COLOR, TEXT_COLOR } from "../../assets/color";
 import { quanHuyen, xaPhuong } from "../dataPlace";
 import { GEOCODINGAPI } from "react-native-dotenv";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+// import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const { height, width } = Dimensions.get("window");
 export default class DangPhong1 extends Component {
@@ -149,7 +149,7 @@ export default class DangPhong1 extends Component {
     return this.state.isLoading ? (
       <ActivityIndicator size="large" style={{ flex: 1 }} />
     ) : (
-      <KeyboardAvoidingView style={styles.container} behavior="padding" enable>
+      <KeyboardAvoidingView style={styles.container} behavior="height" enable>
         <StepIndicator step={1} />
         <ScrollView contentContainerStyle={{ marginTop: 0 }}>
           {/* body */}
