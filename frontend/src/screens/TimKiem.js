@@ -27,6 +27,7 @@ import {
   MaterialCommunityIcons,
   Ionicons,
   FontAwesome5,
+  FontAwesome,
   MaterialIcons,
   AntDesign,
 } from "@expo/vector-icons";
@@ -53,23 +54,10 @@ export default class TimKiem extends Component {
       errorMessage: null,
       markers: [],
       region: null,
-      //
       tracksViewChanges: true,
-      //modal Filter
       isFilterModalVisible: false,
       isModalScreen: false,
-      //filter consition
-      // filterCondition: {
-      //     phongChoThue: false,
-      //     phongOGhep: false,
-      //     nhaNguyenCan: false,
-      //     canHo: false,
-      //     gioiTinhNam: false,
-      //     gioiTinhNu: false,
-      //     duoi_3m : false,
-      //     tu_3m_den_7m : false,
-      //     tren_7m : false
-      // },
+      isMapView: false,
       filterCondition: {
         room_price_min: 0,
         room_price_max: 30000000,
@@ -200,6 +188,11 @@ export default class TimKiem extends Component {
       () => this._handleFilterMarker()
     );
   };
+  _changeView = () => {
+    this.setState({
+      isMapView: !this.state.isMapView,
+    });
+  };
 
   render() {
     // console.log("render");
@@ -207,6 +200,49 @@ export default class TimKiem extends Component {
 
     return this.state.isLoading ? (
       <ActivityIndicator size="large" style={styles.container} />
+    ) : !this.state.isMapView ? (
+      <View style={styles.container}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginHorizontal: 15,
+          }}
+        >
+          <TouchableOpacity
+            style={styles.btnChangeV}
+            onPress={() => this._changeView()}
+          >
+            <FontAwesome name="exchange" size={25} color={MAIN_COLOR} />
+          </TouchableOpacity>
+          <Text
+            style={{
+              fontFamily: "roboto-medium",
+              fontSize: 18,
+            }}
+          >
+            Phòng phù hợp :&nbsp;
+            {this.state.markers ? this.state.markers.length : 0}
+          </Text>
+        </View>
+        <ScrollView contentContainerStyle={styles.scrollModal}>
+          {this.state.markers.map((item, index) => {
+            return (
+              <CardPostTimkiem
+                item={item}
+                key={index}
+                onPress={() => {
+                  this.setModalScreen(false);
+                  this.props.navigation.navigate("XemBaiDang", {
+                    post_id: item._id,
+                  });
+                }}
+              />
+            );
+          })}
+        </ScrollView>
+      </View>
     ) : (
       <View style={styles.container}>
         <MapView
@@ -268,14 +304,7 @@ export default class TimKiem extends Component {
             <FontAwesome5 name="filter" size={25} color={MAIN_COLOR} />
           </TouchableOpacity>
         </View>
-        <View style={styles.btnModelView}>
-          <TouchableOpacity
-            style={styles.btnFilter}
-            onPress={() => this.setModalScreen(!this.state.isModalScreen)}
-          >
-            <MaterialIcons name="event-note" size={25} color={MAIN_COLOR} />
-          </TouchableOpacity>
-        </View>
+
         <View style={styles.btnResertFilter}>
           <TouchableOpacity
             style={styles.btnFilter}
@@ -286,6 +315,14 @@ export default class TimKiem extends Component {
               size={25}
               color={MAIN_COLOR}
             />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.btnChangeScreen}>
+          <TouchableOpacity
+            style={styles.btnFilter}
+            onPress={() => this._changeView()}
+          >
+            <FontAwesome name="exchange" size={25} color={MAIN_COLOR} />
           </TouchableOpacity>
         </View>
 
@@ -669,56 +706,6 @@ export default class TimKiem extends Component {
         </Modal>
 
         {/*  */}
-        <Modal
-          visible={this.state.isModalScreen}
-          transparent={true}
-          onRequestClose={() => this.setModalScreen(false)}
-        >
-          <View style={styles.containerModal}>
-            <View style={styles.modal}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginHorizontal: 15,
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: "roboto-medium",
-                    fontSize: 18,
-                  }}
-                >
-                  Phòng phù hợp :&nbsp;
-                  {this.state.markers ? this.state.markers.length : 0}
-                </Text>
-                <TouchableOpacity
-                  // style={styles.btnFilter}
-                  onPress={() => this.setModalScreen(false)}
-                >
-                  <AntDesign name="closecircle" size={32} color={MAIN_COLOR} />
-                </TouchableOpacity>
-              </View>
-              <ScrollView contentContainerStyle={styles.scrollModal}>
-                {this.state.markers.map((item, index) => {
-                  return (
-                    <CardPostTimkiem
-                      item={item}
-                      key={index}
-                      onPress={() => {
-                        this.setModalScreen(false);
-                        this.props.navigation.navigate("XemBaiDang", {
-                          post_id: item._id,
-                        });
-                      }}
-                    />
-                  );
-                })}
-              </ScrollView>
-            </View>
-          </View>
-        </Modal>
       </View>
     );
   }
@@ -742,10 +729,30 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  btnChangeV: {
+    borderRadius: 50,
+    width: 50,
+    height: 50,
+    marginTop: 10,
+    backgroundColor: "#fff",
+    borderColor: MAIN_COLOR,
+    borderWidth: 2,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
   btnContainer: {
     position: "absolute",
     top: 0,
     right: 0,
+    marginHorizontal: 10,
+    marginVertical: 10,
+  },
+  btnChangeScreen: {
+    position: "absolute",
+    top: 0,
+    left: 0,
     marginHorizontal: 10,
     marginVertical: 10,
   },
@@ -756,6 +763,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginVertical: 10,
   },
+
   btnResertFilter: {
     position: "absolute",
     top: 55,
