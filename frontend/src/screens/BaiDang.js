@@ -28,7 +28,8 @@ export default class BaiDang extends Component {
       baiChuaDuyetPage: 0,
       dataBaiDaDuyetIsLoading: true,
       dataBaiChuaDuyetIsLoading: true,
-      renderwhendelete: true,
+      renderwhendelete: false,
+      postIDdelete: null,
     };
   }
   baiDaDuyet = () => {
@@ -60,11 +61,18 @@ export default class BaiDang extends Component {
     );
   };
   baiChuaDuyet = () => {
+    const dataUnApproved =
+      this.state.postIDdelete === null
+        ? this.props.dataGetPostUnApproved
+        : this.props.dataGetPostUnApproved.filter(
+            (item) => item._id !== this.state.postIDdelete
+          );
+    // console.log("dataUnApproved", dataUnApproved);
     return this.state.dataBaiChuaDuyetIsLoading ? (
       <ActivityIndicator size="large" />
     ) : (
       <FlatList
-        data={this.props.dataGetPostUnApproved}
+        data={dataUnApproved}
         renderItem={({ item, index }) => (
           <CardPostHorizontal
             item={item}
@@ -133,14 +141,18 @@ export default class BaiDang extends Component {
   _deletePostChuaDuyet = (postID) => {
     BaiDangServices.deletePost(postID)
       .then(async (res) => {
-        console.log("object");
         await this.loadBaiChuaDuyet();
+        this.setState({
+          ...this.state,
+          postIDdelete: postID,
+        });
       })
       .catch((err) => console.log(err));
   };
 
   render() {
-    console.log('reenderrere');
+    console.log("reenderrere");
+
     return (
       <View style={styles.container}>
         <View style={styles.header}>
