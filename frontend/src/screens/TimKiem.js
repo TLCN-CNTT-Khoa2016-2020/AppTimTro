@@ -251,11 +251,11 @@ export default class TimKiem extends Component {
           initialRegion={this.state.currentLocation}
           region={this.state.currentLocation}
           customMapStyle={mapStyle}
-          loadingEnabled={true}
+          // loadingEnabled={true}
           // onRegionChangeComplete={debounce(this.onRegionChange,1000)}// debounce technical
-          clustering={true}
-          // moveOnMarkerPress = {false} // prevent map move when marker is press
-          tracksViewChanges={false}
+          // clustering={true}
+          moveOnMarkerPress = {false} // prevent map move when marker is press
+          // tracksViewChanges={false}
         >
           <Marker
             coordinate={this.state.currentLocation}
